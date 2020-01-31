@@ -35,3 +35,9 @@ Languages and Technologies
   * TBD
 
 
+Core Features
+------
+  * Allow users to post pictures
+  * Allow users to follow one another: Followers will be notified of new pictures posted by the followee
+  * Allow users to leave comments on picture posts
+
