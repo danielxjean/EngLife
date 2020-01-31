@@ -29,7 +29,7 @@ Team Members
 Languages and Technologies
 ------
   * Android Studio
-  * MySQL Lite
+  * SQLite
   * Java
   * Gimp or Photoshop variant for sprites and logos
   * TBD
