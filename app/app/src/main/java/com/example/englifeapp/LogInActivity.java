@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class logInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity {
 
     TextView emailLogInEditText, passwordLogInEditText;
     DatabaseHelper db;
