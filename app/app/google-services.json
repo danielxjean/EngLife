@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "944362644574",
+    "firebase_url": "https://englife-c7a6a.firebaseio.com",
+    "project_id": "englife-c7a6a",
+    "storage_bucket": "englife-c7a6a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944362644574:android:684f5aad9cda7e71b140cf",
+        "android_client_info": {
+          "package_name": "com.example.englifeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "944362644574-d0n125bf9p9at0jqrr3reuc6kuqgqiqf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.englifeapp",
+            "certificate_hash": "c0ad38ba8ea63a1862e6bac745a1a6fa6e292bc3"
+          }
+        },
+        {
+          "client_id": "944362644574-di4e6uq3q9jfbfbau0prou7s2g4jue1g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlJO136EyN0qkt8-mSWdz1A6TNICYpuT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "944362644574-di4e6uq3q9jfbfbau0prou7s2g4jue1g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
