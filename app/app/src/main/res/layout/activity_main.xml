@@ -6,36 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/finish_groups_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:duplicateParentState="false"
-        android:text="@string/finish"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="222dp"
+        android:layout_marginBottom="437dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/logo_groups_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_marginStart="177dp"
-        android:layout_marginLeft="177dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="177dp"
-        android:layout_marginRight="177dp"
-        android:layout_marginBottom="588dp"
-        android:text="ENGLife"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textSize="36sp"
-        app:fontFamily="@font/abril_fatface"
-        app:layout_constraintBottom_toTopOf="@+id/finish_groups_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
+        app:srcCompat="@android:drawable/sym_def_app_icon"
+        tools:srcCompat="@android:drawable/sym_def_app_icon"
+        tools:ignore="ExtraText"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
