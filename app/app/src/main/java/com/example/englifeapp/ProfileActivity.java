@@ -9,10 +9,19 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private final int MAX_PHOTO_PER_ROW = 3;
+    private final int MAX_PHOTO_PER_ROW = 4;
+    private int numberOfPhotos = 0;
+    private int numberOfLayouts = 0;
+    private ArrayList<LinearLayout> layoutList = new ArrayList<LinearLayout>();
+    private ArrayList<ImageView> photoList = new ArrayList<ImageView>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +55,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             Uri selectedImage = data.getData();
 
-            
+            ImageView image = new ImageView(ProfileActivity.this);
+            LinearLayout layout = (LinearLayout)findViewById(R.id.linearLayoutProfile);
+            image.setImageURI(selectedImage);
+            layout.addView(image);
         }
 
     }

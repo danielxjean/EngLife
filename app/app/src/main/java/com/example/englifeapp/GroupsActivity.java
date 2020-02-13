@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 public class GroupsActivity extends AppCompatActivity {
 
     @Override
@@ -18,6 +16,20 @@ public class GroupsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_groups);
 
         configureInfoTextView();
+        configureSwitchToGroupsButton();
+    }
+
+    private void configureSwitchToGroupsButton(){
+        Button finishBtn = (Button)findViewById(R.id.finish_group_button);
+
+        finishBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GroupsActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void configureInfoTextView(){

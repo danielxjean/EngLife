@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/finish_groups_button"
+        android:id="@+id/finish_main_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -32,7 +32,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textSize="36sp"
         app:fontFamily="@font/abril_fatface"
-        app:layout_constraintBottom_toTopOf="@+id/finish_groups_button"
+        app:layout_constraintBottom_toTopOf="@+id/finish_main_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

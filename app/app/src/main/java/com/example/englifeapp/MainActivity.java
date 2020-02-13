@@ -1,6 +1,5 @@
 package com.example.englifeapp;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -19,24 +18,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void configureSwitchToGroupsButton(){
-        Button finishBtn = (Button)findViewById(R.id.finish_groups_button);
+        Button finishBtn = (Button)findViewById(R.id.finish_main_button);
 
         finishBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                startActivityForResult(intent, 1);
+                Intent intent = new Intent(MainActivity.this, GroupsActivity.class);
+                startActivity(intent);
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null){
-
-        }
     }
 }
