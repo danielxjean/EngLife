@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class logInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity {
 
     TextView emailLogInEditText, passwordLogInEditText;
     DatabaseHelper db;
@@ -32,14 +32,14 @@ public class logInActivity extends AppCompatActivity {
 
         if(Chkemailpassword == true) {
             Toast.makeText(getApplicationContext(), "Logging In...", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(logInActivity.this, MainActivity.class));
+            startActivity(new Intent(LogInActivity.this, ProfileActivity.class));
         }else{
             Toast.makeText(getApplicationContext(), "Wrong Email or Password", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void signUpLogIn (View view){
-        startActivity(new Intent(logInActivity.this, SignUpActivity.class));
+        startActivity(new Intent(LogInActivity.this, SignUpActivity.class));
     }
 
 }
