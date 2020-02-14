@@ -23,7 +23,7 @@ public class SignUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-
+      
         majorSignUpSpinner = findViewById(R.id.majorSignupSpinner);
         String[] majors = new String[]{"Software Engineering", "Computer Engineering", "Aerospace Engineering", "Building Engineering", "Civil Engineering", "Electrical Engineering", "Industrial Engineering", "Mechanical Engineering"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, majors);
