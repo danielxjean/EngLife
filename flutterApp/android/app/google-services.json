@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "154448628482",
+    "firebase_url": "https://englife-608ff.firebaseio.com",
+    "project_id": "englife-608ff",
+    "storage_bucket": "englife-608ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154448628482:android:66aabedaeaa68f8c23d01b",
+        "android_client_info": {
+          "package_name": "com.cedubois.englife"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154448628482-7guejoaj29p5m2sjkd4mh6gb68r1od7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcyRTv8eZSvBwVYEaeTLJJo_TzcYAPuX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154448628482-7guejoaj29p5m2sjkd4mh6gb68r1od7q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
