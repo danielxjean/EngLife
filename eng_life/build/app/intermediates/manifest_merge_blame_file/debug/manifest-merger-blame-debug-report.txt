@@ -12,14 +12,14 @@
 12         to allow setting breakpoints, to provide hot reload, etc.
 13    -->
 14    <uses-permission android:name="android.permission.INTERNET" />
-14-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/debug/AndroidManifest.xml:6:5-66
-14-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/debug/AndroidManifest.xml:6:22-64
+14-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/debug/AndroidManifest.xml:6:5-66
+14-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/debug/AndroidManifest.xml:6:22-64
 15    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-15-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-80
-15-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-77
+15-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-80
+15-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-77
 16    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
-16-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-81
-16-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:22-78
+16-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-81
+16-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:22-78
 17    <!-- <uses-sdk android:minSdkVersion="14"/> -->
 18    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 18-->[com.google.firebase:firebase-storage:17.0.0] /Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/7d5c4b97dfb22ea0801f5dc17a97742b/jetified-firebase-storage-17.0.0/AndroidManifest.xml:26:5-79
@@ -32,39 +32,39 @@
 24         FlutterApplication and put your custom class here.
 25    -->
 26    <application
-26-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:8:5-29:19
+26-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:8:5-29:19
 27        android:name="io.flutter.app.FlutterApplication"
-27-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:9:9-57
+27-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:9:9-57
 28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 28-->[androidx.core:core:1.0.2] /Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/3aabd8abbe4aca13d5de98eb4193fb62/core-1.0.2/AndroidManifest.xml:22:18-86
 29        android:debuggable="true"
 30        android:icon="@mipmap/ic_launcher"
-30-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:11:9-43
+30-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:11:9-43
 31        android:label="eng_life" >
-31-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:10:9-33
+31-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:10:9-33
 32        <activity
-32-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:12:9-23:20
+32-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:12:9-23:20
 33            android:name="com.cedubois.eng_life.MainActivity"
-33-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:13:13-41
+33-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:13:13-41
 34            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-34-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:16:13-163
+34-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:16:13-163
 35            android:hardwareAccelerated="true"
-35-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:17:13-47
+35-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:17:13-47
 36            android:launchMode="singleTop"
-36-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:14:13-43
+36-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:14:13-43
 37            android:theme="@style/LaunchTheme"
-37-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:15:13-47
+37-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:15:13-47
 38            android:windowSoftInputMode="adjustResize" >
-38-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:18:13-55
+38-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:18:13-55
 39            <intent-filter>
-39-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:19:13-22:29
+39-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:19:13-22:29
 40                <action android:name="android.intent.action.MAIN" />
-40-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:20:17-68
-40-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:20:25-66
+40-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:20:17-68
+40-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:20:25-66
 41
 42                <category android:name="android.intent.category.LAUNCHER" />
-42-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:21:17-76
-42-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:21:27-74
+42-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:21:17-76
+42-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:21:27-74
 43            </intent-filter>
 44        </activity>
 45        <!--
@@ -72,44 +72,44 @@
 47             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
 48        -->
 49        <meta-data
-49-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:26:9-28:33
+49-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:26:9-28:33
 50            android:name="flutterEmbedding"
-50-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:27:13-44
+50-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:27:13-44
 51            android:value="2" />
-51-->/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/AndroidManifest.xml:28:13-30
+51-->/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/AndroidManifest.xml:28:13-30
 52
 53        <service
-53-->[:firebase_storage] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:8:9-12:19
+53-->[:firebase_storage] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:8:9-12:19
 54            android:name="com.google.firebase.components.ComponentDiscoveryService"
-54-->[:firebase_storage] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:8:18-89
+54-->[:firebase_storage] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:8:18-89
 55            android:directBootAware="true"
 55-->[com.google.firebase:firebase-common:19.3.0] /Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/b4a8201949bb7a44ef96f2c99d94bf3e/jetified-firebase-common-19.3.0/AndroidManifest.xml:34:13-43
 56            android:exported="false" >
 56-->[com.google.firebase:firebase-auth:19.2.0] /Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/a83bb62cb43b672cf00b874e0ee6110c/firebase-auth-19.2.0/AndroidManifest.xml:35:13-37
 57            <meta-data
-57-->[:firebase_storage] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+57-->[:firebase_storage] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
 58                android:name="com.google.firebase.components:io.flutter.plugins.firebase.storage.FlutterFirebaseAppRegistrar"
-58-->[:firebase_storage] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-126
+58-->[:firebase_storage] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-126
 59                android:value="com.google.firebase.components.ComponentRegistrar" />
-59-->[:firebase_storage] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+59-->[:firebase_storage] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_storage/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
 60            <meta-data
-60-->[:firebase_auth] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+60-->[:firebase_auth] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
 61                android:name="com.google.firebase.components:io.flutter.plugins.firebaseauth.FlutterFirebaseAppRegistrar"
-61-->[:firebase_auth] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-122
+61-->[:firebase_auth] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-122
 62                android:value="com.google.firebase.components.ComponentRegistrar" />
-62-->[:firebase_auth] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+62-->[:firebase_auth] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_auth/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
 63            <meta-data
-63-->[:cloud_firestore] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+63-->[:cloud_firestore] /Users/cedrikdubois/Documents/EngLife/eng_life/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
 64                android:name="com.google.firebase.components:io.flutter.plugins.firebase.cloudfirestore.FlutterFirebaseAppRegistrar"
-64-->[:cloud_firestore] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-133
+64-->[:cloud_firestore] /Users/cedrikdubois/Documents/EngLife/eng_life/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-133
 65                android:value="com.google.firebase.components.ComponentRegistrar" />
-65-->[:cloud_firestore] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+65-->[:cloud_firestore] /Users/cedrikdubois/Documents/EngLife/eng_life/build/cloud_firestore/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
 66            <meta-data
-66-->[:firebase_core] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
+66-->[:firebase_core] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:85
 67                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseAppRegistrar"
-67-->[:firebase_core] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-123
+67-->[:firebase_core] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-123
 68                android:value="com.google.firebase.components.ComponentRegistrar" />
-68-->[:firebase_core] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
+68-->[:firebase_core] /Users/cedrikdubois/Documents/EngLife/eng_life/build/firebase_core/intermediates/library_manifest/debug/AndroidManifest.xml:11:17-82
 69            <meta-data
 69-->[com.google.firebase:firebase-auth:19.2.0] /Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/a83bb62cb43b672cf00b874e0ee6110c/firebase-auth-19.2.0/AndroidManifest.xml:36:13-38:85
 70                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
@@ -131,21 +131,21 @@
 78        </service>
 79
 80        <provider
-80-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:11:9-19:20
+80-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:11:9-19:20
 81            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
-81-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:12:13-82
+81-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:12:13-82
 82            android:authorities="com.cedubois.englife.flutter.image_provider"
-82-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-74
+82-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-74
 83            android:exported="false"
-83-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-37
+83-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-37
 84            android:grantUriPermissions="true" >
-84-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-47
+84-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-47
 85            <meta-data
-85-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-18:75
+85-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-18:75
 86                android:name="android.support.FILE_PROVIDER_PATHS"
-86-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:17:17-67
+86-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:17:17-67
 87                android:resource="@xml/flutter_image_picker_file_paths" />
-87-->[:image_picker] /Users/cedrikdubois/AndroidStudioProjects/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-72
+87-->[:image_picker] /Users/cedrikdubois/Documents/EngLife/eng_life/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-72
 88        </provider>
 89
 90        <activity

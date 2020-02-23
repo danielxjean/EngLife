@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/cedrikdubois/AndroidStudioProjects/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-nl/values-nl.xml",
+            "outputFile": "/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-nl/values-nl.xml",
             "map": [
                 {
                     "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/6eb14f512292913515d869914807ad40/play-services-base-17.1.0/res/values-nl/values.xml",

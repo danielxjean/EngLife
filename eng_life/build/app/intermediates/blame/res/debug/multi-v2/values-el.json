@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/cedrikdubois/AndroidStudioProjects/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-el/values-el.xml",
+            "outputFile": "/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-el/values-el.xml",
             "map": [
                 {
                     "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/fce819f64b0cda5002b5216a29736923/jetified-play-services-basement-17.0.0/res/values-el/values.xml",

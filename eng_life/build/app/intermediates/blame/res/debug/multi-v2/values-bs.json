@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/cedrikdubois/AndroidStudioProjects/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-bs/values-bs.xml",
+            "outputFile": "/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-bs/values-bs.xml",
             "map": [
                 {
                     "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/3aabd8abbe4aca13d5de98eb4193fb62/core-1.0.2/res/values-bs/values-bs.xml",

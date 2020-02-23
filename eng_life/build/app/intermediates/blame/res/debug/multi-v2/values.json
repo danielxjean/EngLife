@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/cedrikdubois/AndroidStudioProjects/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+            "outputFile": "/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
             "map": [
                 {
-                    "source": "/Users/cedrikdubois/AndroidStudioProjects/eng_life/android/app/src/main/res/values/styles.xml",
+                    "source": "/Users/cedrikdubois/Documents/EngLife/eng_life/android/app/src/main/res/values/styles.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -61,23 +61,6 @@
                     }
                 },
                 {
-                    "source": "/Users/cedrikdubois/AndroidStudioProjects/eng_life/build/app/generated/res/google-services/debug/values/values.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,199,307,389,493,602,722,819",
-                        "endColumns": "143,107,81,103,108,119,96,73",
-                        "endOffsets": "194,302,384,488,597,717,814,888"
-                    },
-                    "to": {
-                        "startLines": "67,68,69,70,71,72,73,74",
-                        "startColumns": "4,4,4,4,4,4,4,4",
-                        "startOffsets": "5528,5672,5780,5862,5966,6075,6195,6292",
-                        "endColumns": "143,107,81,103,108,119,96,73",
-                        "endOffsets": "5667,5775,5857,5961,6070,6190,6287,6361"
-                    }
-                },
-                {
                     "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/d255798b3263f4a3c8e304b7de4de531/coordinatorlayout-1.0.0/res/values/values.xml",
                     "from": {
                         "startLines": "2,102,3,13",
@@ -111,6 +94,23 @@
                         "startOffsets": "3057,4235",
                         "endColumns": "67,166",
                         "endOffsets": "3120,4397"
+                    }
+                },
+                {
+                    "source": "/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/generated/res/google-services/debug/values/values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,199,307,389,493,602,722,819",
+                        "endColumns": "143,107,81,103,108,119,96,73",
+                        "endOffsets": "194,302,384,488,597,717,814,888"
+                    },
+                    "to": {
+                        "startLines": "67,68,69,70,71,72,73,74",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "5528,5672,5780,5862,5966,6075,6195,6292",
+                        "endColumns": "143,107,81,103,108,119,96,73",
+                        "endOffsets": "5667,5775,5857,5961,6070,6190,6287,6361"
                     }
                 }
             ]
