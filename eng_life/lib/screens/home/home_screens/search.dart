@@ -12,15 +12,19 @@ class _SearchState extends State<Search> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      child: Container(
-        color: Colors.grey[100],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red[900],
+        title: Text("Search Users"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Text("Search users page in production")
+              Car
             ],
           ),
         ),

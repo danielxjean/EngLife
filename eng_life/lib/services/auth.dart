@@ -34,6 +34,10 @@ class AuthService {
     return currentUser;
   }
 
+  String getCurrentUserId() {
+    return _uid;
+  }
+
   //sign in anon
   Future signInAnon() async {
     try {
