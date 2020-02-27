@@ -1,27 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-pa/values-pa.xml",
+            "outputFile": "C:\\Users\\anthc\\Desktop\\EngLife\\eng_life\\build\\app\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-pa\\values-pa.xml",
             "map": [
                 {
-                    "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/fce819f64b0cda5002b5216a29736923/jetified-play-services-basement-17.0.0/res/values-pa/values.xml",
-                    "from": {
-                        "startLines": "4",
-                        "startColumns": "0",
-                        "startOffsets": "247",
-                        "endColumns": "209",
-                        "endOffsets": "456"
-                    },
-                    "to": {
-                        "startLines": "10",
-                        "startColumns": "4",
-                        "startOffsets": "1275",
-                        "endColumns": "209",
-                        "endOffsets": "1480"
-                    }
-                },
-                {
-                    "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/6eb14f512292913515d869914807ad40/play-services-base-17.1.0/res/values-pa/values.xml",
+                    "source": "C:\\Users\\anthc\\.gradle\\caches\\transforms-2\\files-2.1\\6eb14f512292913515d869914807ad40\\play-services-base-17.1.0\\res\\values-pa\\values.xml",
                     "from": {
                         "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
                         "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
@@ -38,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/3aabd8abbe4aca13d5de98eb4193fb62/core-1.0.2/res/values-pa/values-pa.xml",
+                    "source": "C:\\Users\\anthc\\.gradle\\caches\\transforms-2\\files-2.1\\3aabd8abbe4aca13d5de98eb4193fb62\\core-1.0.2\\res\\values-pa\\values-pa.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -52,6 +35,23 @@
                         "startOffsets": "2861",
                         "endColumns": "100",
                         "endOffsets": "2957"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\anthc\\.gradle\\caches\\transforms-2\\files-2.1\\0e7e3f5c6da0b7ad8eaa5b38957aad2a\\jetified-play-services-basement-17.0.0\\res\\values-pa\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "247",
+                        "endColumns": "209",
+                        "endOffsets": "456"
+                    },
+                    "to": {
+                        "startLines": "10",
+                        "startColumns": "4",
+                        "startOffsets": "1275",
+                        "endColumns": "209",
+                        "endOffsets": "1480"
                     }
                 }
             ]
