@@ -40,7 +40,8 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
-        title: Text("ENGLife"),
+        title: Text("Current User"),
+        centerTitle: true,
         elevation: 0.0,
         actions: <Widget>[
           FlatButton.icon(

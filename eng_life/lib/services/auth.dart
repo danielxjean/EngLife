@@ -121,4 +121,9 @@ class AuthService {
     return querySnapshot.documents;
   }
 
+  Future<List<DocumentSnapshot>> retreiveUsers() async {
+    QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
+    return querySnapshot.documents;
+  }
+
 }
