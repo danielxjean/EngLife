@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
+import 'package:eng_life/screens/home/home_screens/profile.dart';
+import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -44,9 +46,34 @@ class _PostDetailState extends State<PostDetail> {
                     radius: 25.0,
                   ),
                   SizedBox(width: 5.0),
-                  Text(
-                    widget.documentSnapshot.documentID,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  GestureDetector(
+                    child: Text(
+                      widget.userId,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) {
+                                if (widget.userId == widget.currentUserId) {
+
+                                  /*
+
+                                  Must change the fow here to go back to the home page showing profile.
+                                  Or else user can loop infinitely to his profile creating a new page every time and eventually
+                                  causing a stack overflow
+
+                                   */
+
+                                  return Profile();
+                                }
+                                else {
+                                  return UserProfile(userId: widget.userId);
+                                }
+                              }
+                          )
+                      );
+                    },
                   )
                 ],
               ),

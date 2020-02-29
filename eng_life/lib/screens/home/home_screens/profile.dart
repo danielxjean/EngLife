@@ -15,7 +15,8 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
 
   final _auth = AuthService();
-  User currentUser;
+  User _currentUser;
+  Future<User> _currentUserFuture;
   Future<List<DocumentSnapshot>> _future;
 
   List<Widget> photos = [];
@@ -27,12 +28,13 @@ class _ProfileState extends State<Profile> {
   }
 
   retreiveUserDetails() async {
-    FirebaseUser currentUser = await _auth.getCurrentUser();
-    User user = User(uid: currentUser.uid);
+    User currentUser = await _auth.getCurrentUser();
+
     setState(() {
-      this.currentUser = user;
+      _future = _auth.retreiveUserPhotos(currentUser.uid);
+      _currentUserFuture = _auth.getCurrentUser();
+      _currentUser = currentUser;
     });
-    _future = _auth.retreiveUserPhotos(user.uid);
   }
 
   @override
@@ -40,7 +42,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
-        title: Text("Current User"),
+        title: Text("Profile"),
         centerTitle: true,
         elevation: 0.0,
         actions: <Widget>[
@@ -62,75 +64,91 @@ class _ProfileState extends State<Profile> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            color: Colors.red[900],
-            padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundImage: NetworkImage('https://developer.apple.com/library/archive/referencelibrary/GettingStarted/DevelopiOSAppsSwift/Art/defaultphoto_2x.png'),
-                      radius: 50.0,
-                    ),
-                    Column(
+          FutureBuilder(
+            future: _currentUserFuture,
+            builder: ((context, AsyncSnapshot<User> user) {
+              if (user.hasData) {
+                if (user.connectionState == ConnectionState.done) {
+                  return Container(
+                    color: Colors.red[900],
+                    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Text(
-                          "1",
-                          style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            CircleAvatar(
+                              backgroundImage: CachedNetworkImageProvider(
+                                user.data.profilePictureUrl
+                              ),
+                              radius: 50.0,
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                  user.data.numOfPosts,
+                                  style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
+                                ),
+                                Text(
+                                  "Posts",
+                                  style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
+                                )
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                  user.data.numOfFollowers,
+                                  style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
+                                ),
+                                Text(
+                                  "Followers",
+                                  style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
+                                )
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                  user.data.numOfFollowing,
+                                  style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
+                                ),
+                                Text(
+                                  "Following",
+                                  style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
+                                )
+                              ],
+                            )
+                          ],
                         ),
+                        SizedBox(height: 10.0),
                         Text(
-                          "Posts",
+                          user.data.displayName,
                           style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
+                        ),
+                        SizedBox(height: 10.0),
+                        RaisedButton(
+                            color: Colors.grey[200],
+                            child: Text("Edit profile"),
+                            onPressed: () {
+                              print("You pressed me");
+                            }
                         )
                       ],
                     ),
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          "0",
-                          style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
-                        ),
-                        Text(
-                          "Followers",
-                          style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
-                        )
-                      ],
-                    ),
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          "1",
-                          style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
-                        ),
-                        Text(
-                          "Following",
-                          style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  "username here",
-                  style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
-                ),
-                SizedBox(height: 10.0),
-                RaisedButton(
-                  color: Colors.grey[200],
-                  child: Text("Edit profile"),
-                  onPressed: () {
-                    print("You pressed me");
-                  }
-                )
-              ],
-            ),
+                  );
+                }
+                else {
+                  return Container();
+                }
+              }
+              else {
+                return Container();
+              }
+            }),
           ),
-
-         FutureBuilder(
+          FutureBuilder(
            future: _future,
            builder: ((context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
              if (snapshot.hasData) {
@@ -156,7 +174,7 @@ class _ProfileState extends State<Profile> {
                          onTap: () {
                            Navigator.push(context,
                                MaterialPageRoute(
-                                   builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: currentUser.uid, currentUserId: currentUser.uid,)
+                                   builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: _currentUser.uid, currentUserId: _currentUser.uid,)
                                )
                            );
                          },

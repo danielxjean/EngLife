@@ -57,6 +57,11 @@ class _SignInState extends State<SignIn> {
                 children: <Widget>[
                   SizedBox(height: 20.0),
                   TextFormField(
+
+                    /*
+                    TextFormField for user email
+                     */
+
                     validator: (val) {
                       if (val.isEmpty) {
                         return "Enter an email";
@@ -78,6 +83,11 @@ class _SignInState extends State<SignIn> {
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
+
+                    /*
+                    TextFormField for user password
+                     */
+
                     validator: (val) {
                       if (val.length < 6)
                         return "Enter a password 6+ characters long";

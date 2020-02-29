@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
 
-  DocumentSnapshot documentSnapshot;
+  String userId;
 
-  UserProfile({this.documentSnapshot});
+  UserProfile({this.userId});
 
   @override
   _UserProfileState createState() => _UserProfileState();
@@ -29,11 +29,8 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   retreiveUserDetails() async {
-    FirebaseUser currentUser = await _auth.getCurrentUser();
-    User user = User(uid: currentUser.uid);
     setState(() {
-      this._currentUser = user;
-      _future = _auth.retreiveUserPhotos(widget.documentSnapshot.documentID);
+      _future = _auth.retreiveUserPhotos(widget.userId);
     });
   }
 
@@ -41,7 +38,7 @@ class _UserProfileState extends State<UserProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.documentSnapshot.documentID),
+        title: Text(widget.userId),
         backgroundColor: Colors.red[900],
         elevation: 0.0,
       ),
@@ -100,7 +97,7 @@ class _UserProfileState extends State<UserProfile> {
                             var currentUser;
                             Navigator.push(context,
                                 MaterialPageRoute(
-                                    builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: _currentUser.uid, currentUserId: _currentUser.uid,)
+                                    builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: widget.userId, currentUserId: _currentUser.uid,)
                                 )
                             );
                           },

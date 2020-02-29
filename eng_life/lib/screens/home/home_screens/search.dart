@@ -67,7 +67,7 @@ class _SearchState extends State<Search> {
                           print("Tapped on document id: " + snapshot.data[index].documentID);
                           Navigator.push(context,
                               MaterialPageRoute(
-                                  builder: (context) => UserProfile(documentSnapshot: snapshot.data[index])
+                                  builder: (context) => UserProfile(userId: snapshot.data[index].documentID)
                               )
                           );
                         },
