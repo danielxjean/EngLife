@@ -3,12 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/services/auth.dart';
+import 'package:eng_life/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
 
-  String userId;
+  final String userId;
 
   UserProfile({this.userId});
 
@@ -20,7 +21,9 @@ class _UserProfileState extends State<UserProfile> {
 
   AuthService _auth = AuthService();
   User _currentUser;
+  User _user;
   Future<List<DocumentSnapshot>> _future;
+  bool loading = true;
 
   @override
   void initState() {
@@ -29,18 +32,22 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   retreiveUserDetails() async {
+    _user = await _auth.getUser(widget.userId);
+    _currentUser = await _auth.getCurrentUser();
     setState(() {
-      _future = _auth.retreiveUserPhotos(widget.userId);
+      _future = _auth.retreiveUserPosts(widget.userId);
+      loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading == true ? Loading() : Scaffold(
       appBar: AppBar(
-        title: Text(widget.userId),
+        title: Text(_user.username),
         backgroundColor: Colors.red[900],
         elevation: 0.0,
+        centerTitle: true,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -52,11 +59,60 @@ class _UserProfileState extends State<UserProfile> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Row(
-
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    CircleAvatar(
+                      backgroundImage: CachedNetworkImageProvider(
+                          _user.profilePictureUrl
+                      ),
+                      radius: 50.0,
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          _user.numOfPosts,
+                          style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
+                        ),
+                        Text(
+                          "Posts",
+                          style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          _user.numOfFollowing,
+                          style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
+                        ),
+                        Text(
+                          "Followers",
+                          style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Text(
+                          _user.numOfFollowers,
+                          style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
+                        ),
+                        Text(
+                          "Following",
+                          style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
+                        )
+                      ],
+                    )
+                  ],
                 ),
                 SizedBox(height: 10.0),
                 Text(
-                  "Bio here",
+                  _user.displayName,
+                  style: TextStyle(color: Colors.white, fontSize: 15.0, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10.0),
+                Text(
+                  _user.bio,
                   style: TextStyle(color: Colors.white),
                 ),
                 SizedBox(height: 10.0),
@@ -88,7 +144,7 @@ class _UserProfileState extends State<UserProfile> {
                       itemBuilder: ((context, index) {
                         return GestureDetector(
                           child: CachedNetworkImage(
-                            imageUrl: snapshot.data[index].data['imageUrl'],
+                            imageUrl: snapshot.data[index].data['postPhotoUrl'],
                             width: 125.0,
                             height: 125.0,
                             fit: BoxFit.cover,

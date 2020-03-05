@@ -31,7 +31,7 @@ class _ProfileState extends State<Profile> {
     User currentUser = await _auth.getCurrentUser();
 
     setState(() {
-      _future = _auth.retreiveUserPhotos(currentUser.uid);
+      _future = _auth.retreiveUserPosts(currentUser.uid);
       _currentUserFuture = _auth.getCurrentUser();
       _currentUser = currentUser;
     });
@@ -166,7 +166,7 @@ class _ProfileState extends State<Profile> {
                      itemBuilder: ((context, index) {
                        return GestureDetector(
                          child: CachedNetworkImage(
-                           imageUrl: snapshot.data[index].data['imageUrl'],
+                           imageUrl: snapshot.data[index].data['postPhotoUrl'],
                            width: 125.0,
                            height: 125.0,
                            fit: BoxFit.cover,

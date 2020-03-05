@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:eng_life/screens/home/home_screens/edit_new_photo.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/database.dart';
 import 'package:flutter/material.dart';
@@ -41,18 +42,6 @@ class _AddPhotoState extends State<AddPhoto> {
 
   }
 
-  void uploadPicture() async {
-
-    await _auth.getCurrentUser().then((user) {
-      _auth.uploadImageToStorage(_imageSelected).then((url) {
-        _auth.addPhotoToDb(url);
-      });
-    });
-    setState(() {
-      _imageSelected = null;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -63,18 +52,7 @@ class _AddPhotoState extends State<AddPhoto> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Center(
-              child: _imageSelected != null ? AspectRatio(
-                aspectRatio: 300 / 300,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.fitWidth,
-                      alignment: FractionalOffset.center,
-                      image: FileImage(_imageSelected),
-                    )
-                  ),
-                ),
-              ) : SizedBox(height: 300.0),
+              child: SizedBox(height: 300.0),
             ),
             SizedBox(height: 10.0),
             RaisedButton(
@@ -82,8 +60,15 @@ class _AddPhotoState extends State<AddPhoto> {
                 "Choose Photo From Gallery",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
               ),
-              onPressed: () {
-                chooseImageFromGallery();
+              onPressed: () async {
+                await chooseImageFromGallery();
+                if (_imageSelected != null) {
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) => EditNewPhoto(imageSelected: _imageSelected)
+                      )
+                  );
+                }
               },
             ),
             SizedBox(height: 10.0),
@@ -92,27 +77,17 @@ class _AddPhotoState extends State<AddPhoto> {
                 "Take Photo With Camera",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
               ),
-              onPressed: () {
-                chooseImageFromCamera();
+              onPressed: () async {
+                await chooseImageFromCamera();
+                if (_imageSelected != null) {
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context) => EditNewPhoto(imageSelected: _imageSelected)
+                      )
+                  );
+                }
               },
             ),
-            SizedBox(height: 10.0),
-            RaisedButton(
-              child: Text(
-                "Upload Photo",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-              ),
-              onPressed: () {
-
-                if (_imageSelected != null) {
-                  uploadPicture();
-                }
-                else {
-
-                }
-
-              },
-            )
           ],
         ),
       ),

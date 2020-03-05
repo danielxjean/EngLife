@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
@@ -42,44 +43,38 @@ class _PostDetailState extends State<PostDetail> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: NetworkImage('https://developer.apple.com/library/archive/referencelibrary/GettingStarted/DevelopiOSAppsSwift/Art/defaultphoto_2x.png'),
+                    backgroundImage: CachedNetworkImageProvider(
+                      widget.documentSnapshot.data['userProfilePictureUrl']
+                    ),
                     radius: 25.0,
                   ),
                   SizedBox(width: 5.0),
                   GestureDetector(
                     child: Text(
-                      widget.userId,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      widget.documentSnapshot.data['displayName'],
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(
-                              builder: (context) {
-                                if (widget.userId == widget.currentUserId) {
-
-                                  /*
-
-                                  Must change the fow here to go back to the home page showing profile.
-                                  Or else user can loop infinitely to his profile creating a new page every time and eventually
-                                  causing a stack overflow
-
-                                   */
-
-                                  return Profile();
-                                }
-                                else {
+                      if (widget.userId == widget.currentUserId) {
+                        Navigator.pop(context);
+                      }
+                      else {
+                        Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (context) {
                                   return UserProfile(userId: widget.userId);
+
                                 }
-                              }
-                          )
-                      );
+                            )
+                        );
+                      }
                     },
                   )
                 ],
               ),
             ),
             CachedNetworkImage(
-              imageUrl: widget.documentSnapshot.data['imageUrl'],
+              imageUrl: widget.documentSnapshot.data['postPhotoUrl'],
               height: 400.0,
               fit: BoxFit.cover,
             ),
@@ -100,6 +95,9 @@ class _PostDetailState extends State<PostDetail> {
                       size: 40.0,
                     ),
                     onTap: () {
+                      //Post.mapToPost(widget.documentSnapshot.data);
+                      //widget.currentUserId
+                      //widget.documentSnapshot.documentID
                       setState(() {
                         liked = !liked;
                       });
@@ -118,8 +116,15 @@ class _PostDetailState extends State<PostDetail> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Caption goes over here",
+                widget.documentSnapshot.data['numberOfLikes'] + " likes",
                 style: TextStyle(fontSize: 15.0),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                widget.documentSnapshot.data['caption'],
+                style: TextStyle(fontSize: 20.0),
               ),
             )
           ],
