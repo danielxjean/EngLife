@@ -2,9 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/models/like.dart';
-import 'package:eng_life/models/post.dart';
-import 'package:eng_life/models/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 
@@ -33,31 +30,6 @@ class DatabaseService {
 
   void setUid(String uid){
     this.uid = uid;
-  }
-
-  Future<void> addLikeToPost(User curUser, Post likedPost, String postId){
-    CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
-    //Will construct like.
-    Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
-    //convert Like to map.
-    Map map = like.toMap()
-    _ref.document(curUser.uid).setData(map);
-   
-    //update post's number of likes.
-    int numLike = int.parse(likedPost.numberOfLikes);
-    numLike++;
-    likedPost.numberOfLikes = numLike;
-    return userCollection.document(likedPost.userId).collection("posts").document("$postid").setData(likedPost.toMap(likedPost));
-  }
-  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
-    CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
-    _ref.document(curUser.uid).delete();
-    
-    //update post's number of likes.
-    int numLike = int.parse(likedPost.numberOfLikes);
-    numLike--;
-    likedPost.numberOfLikes = numLike;
-    return userCollection.document(likedPost.userId).collection("posts").document("$postid").setData(likedPost.toMap(likedPost));
   }
   
 }
