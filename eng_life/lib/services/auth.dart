@@ -119,18 +119,33 @@ class AuthService {
 
   
   
-  Future<void> addUserFollow(String uid1, String uid2){
-    returnList.add(_addUserAsFollowerOf(uid1, uid2));
-    returnList.add(_addUserAsFollowing(uid1, uid2));
+  Future<void> addUserFollow(String curUser, String uid2){
+    _addUserAsFollowerOf(curUser, uid2);
+    _addUserAsFollowing(curUser, uid2);
   }
-  Future<void> _addUserAsFollowerOf(String uid1, String uid2){
+  Future<void> _addUserAsFollowerOf(String curUser, String uid2){
     CollectionReference _ref = userCollection.document(uid2).collection("followers");
-    Map map = {'userid': uid1};
-    return _ref.document(uid1).setData(map);
+    Map map = {'userid': curUser};
+    return _ref.document(curUser).setData(map);
   }
-  Future<void> _addUserAsFollowing(String uid1, String uid2){
-    CollectionReference _ref = userCollection.document(uid1).collection("following");
+  Future<void> _addUserAsFollowing(String curUser, String uid2){
+    CollectionReference _ref = userCollection.document(curUser).collection("following");
     Map map = {'userid': uid2};
     return _ref.document(uid2).setData(map);
+  }
+  
+  Future<void> removeUserFollow(String curUser, String uid2){
+    _removeUserAsFollowerOf(curUser, uid2);
+    _removeUserAsFollowing(curUser, uid2);
+  }
+  Future<void> _removeUserAsFollowerOf(String curUser, String uid2){
+    CollectionReference _ref = userCollection.document(uid2).collection("followers");
+    Map map = {'userid': curUser};
+    return _ref.document(curUser).delete();
+  }
+  Future<void> _removeUserAsFollowing(String curUser, String uid2){
+    CollectionReference _ref = userCollection.document(curUser).collection("following");
+    Map map = {'userid': uid2};
+    return _ref.document(uid2).delete();
   }
 }
