@@ -1,4 +1,4 @@
-#Tue Mar 03 20:56:04 EST 2020
+#Thu Mar 05 15:39:15 EST 2020
 base.2=/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/dex/debug/mergeExtDexDebug/out/classes2.dex
 base.1=/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/dex/debug/mergeProjectDexDebug/out/classes.dex
 base.0=/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/dex/debug/mergeExtDexDebug/out/classes.dex

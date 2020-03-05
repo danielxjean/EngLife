@@ -11,7 +11,7 @@ class User {
   String bio;
   String educationMajor;
 
-  User({this.uid, this.email, this.profilePictureUrl, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor});
+  User({this.uid, this.email, this.profilePictureUrl, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor, this.username});
 
   Map<String, dynamic> userToMap(User user) {
     var map = Map<String, dynamic>();
@@ -24,6 +24,7 @@ class User {
     map['numOfPosts'] = user.numOfPosts;
     map['bio'] = user.bio;
     map['educationMajor'] = user.educationMajor;
+    map['username'] = user.username;
     return map;
   }
 
@@ -37,6 +38,7 @@ class User {
     this.numOfPosts = map['numOfPosts'];
     this.bio = map['bio'];
     this.educationMajor = map['educationMajor'];
+    this.username = map['username'];
   }
 
 

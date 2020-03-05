@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -25,13 +26,16 @@ class AuthService {
     else {
       print("DEBUG*********USER NOY NULL");
       return  User(
+          bio: "",
           uid: user.uid,
           email: user.email,
           displayName: _displayName,
           educationMajor: 'Default',
           numOfPosts: '0',
           numOfFollowers: '0',
-          numOfFollowing: '0');
+          numOfFollowing: '0',
+          profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
+          username: "Default"); //username input needs to be added to register form, must be unique
     }
   }
 
@@ -51,6 +55,18 @@ class AuthService {
 
     //first get user information from database
     DocumentSnapshot _userInfo = await _firestore.collection("users").document(currentUser.uid).get();
+    //create new user from user info
+    User _currentUser = User.mapToUser(_userInfo.data);
+
+    this._currentUser = _currentUser;
+
+    return _currentUser;
+  }
+
+  Future<User> getUser(String userId) async {
+
+    //first get user information from database
+    DocumentSnapshot _userInfo = await _firestore.collection("users").document(userId).get();
     //create new user from user info
     User _currentUser = User.mapToUser(_userInfo.data);
 
@@ -140,19 +156,34 @@ class AuthService {
   }
 
   //add photo to database for current user
-  Future<void> addPhotoToDb(String imageUrl) {
-    CollectionReference _collectionRef = _firestore.collection("users").document("${_currentUser.uid}").collection("photos");
+  Future<void> addPhostToDb(String imageUrl, String caption, User user) {
+    CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
     print("IMAGE URL: ${imageUrl}");
 
-    Map<String, dynamic> map = {
-      "imageUrl": imageUrl
-    };
-    return _collectionRef.add(map);
+    Post post = Post(
+        userId: user.uid,
+        postPhotoUrl: imageUrl,
+        caption: caption,
+        displayName: user.displayName,
+        userProfilePictureUrl:
+        user.profilePictureUrl,
+        numberOfLikes: "0");
+
+    //add post to db
+    _collectionRef.add(post.toMap(post));
+
+    //increment number of posts in user
+    int numOfPosts = int.parse(user.numOfPosts);
+    numOfPosts++;
+    user.numOfPosts = "${numOfPosts}";
+
+    //update user information in db
+    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
   }
 
   //retrieve photo for current user
-  Future<List<DocumentSnapshot>> retreiveUserPhotos(String userId) async {
-    QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("photos").getDocuments();
+  Future<List<DocumentSnapshot>> retreiveUserPosts(String userId) async {
+    QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("posts").getDocuments();
     return querySnapshot.documents;
   }
 

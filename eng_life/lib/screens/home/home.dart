@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
           ),
           Container(
             color: Colors.grey[100],
-            child: Search(),
+            child: Search(pageController: pageController),
           ),
           Container(
             color: Colors.grey[100],

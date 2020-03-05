@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
@@ -6,6 +7,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
+
+  PageController pageController;
+
+  Search({this.pageController});
+
   @override
   _SearchState createState() => _SearchState();
 }
@@ -13,6 +19,7 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
 
   final _auth = AuthService();
+  User _currentUser;
 
   Future<List<DocumentSnapshot>> _future;
 
@@ -23,6 +30,7 @@ class _SearchState extends State<Search> {
   }
 
   retreiveUsers() async {
+    _currentUser = await _auth.getCurrentUser();
     setState(() {
       _future = _auth.retreiveUsers();
     });
@@ -51,13 +59,20 @@ class _SearchState extends State<Search> {
                         child: Card(
                           margin: const EdgeInsets.all(10.0),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
+                                CircleAvatar(
+                                  radius: 30.0,
+                                  backgroundImage: CachedNetworkImageProvider(
+                                    snapshot.data[index].data['profilePictureUrl']
+                                  ),
+                                ),
+                                SizedBox(width: 10.0),
                                 Text(
-                                  snapshot.data[index].documentID,
-                                  style: TextStyle(fontSize: 15.0),
+                                  snapshot.data[index].data['displayName'],
+                                  style: TextStyle(fontSize: 20.0),
                                 )
                               ],
                             ),
@@ -65,11 +80,19 @@ class _SearchState extends State<Search> {
                         ),
                         onTap: () {
                           print("Tapped on document id: " + snapshot.data[index].documentID);
-                          Navigator.push(context,
-                              MaterialPageRoute(
-                                  builder: (context) => UserProfile(userId: snapshot.data[index].documentID)
-                              )
-                          );
+
+                          if (snapshot.data[index].documentID == _currentUser.uid) {
+                            widget.pageController.jumpToPage(3);
+                          }
+                          else {
+                            Navigator.push(context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        UserProfile(userId: snapshot.data[index]
+                                            .documentID)
+                                )
+                            );
+                          }
                         },
                       );
                     },
