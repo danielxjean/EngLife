@@ -1,15 +1,13 @@
 import 'package:eng_life/screens/home/home_screens/add_photo.dart';
 import 'package:eng_life/screens/home/home_screens/feed.dart';
+import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/search.dart';
 import 'package:eng_life/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  
-  final String uid;
-  
-  Home({this.uid});
 
   @override
   _HomeState createState() => _HomeState();
@@ -17,41 +15,59 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  final AuthService _auth = AuthService();
+  static final AuthService _auth = AuthService();
 
-  int _selectedIndex = 0;
+  int _page= 0;
+  PageController pageController;
 
-  List<Widget> _screens = [
-    Feed(),
-    AddPhoto(),
-    Search(),
-    Profile()
-  ];
+  onNavigationItemTapped(int page) {
+    pageController.jumpToPage(page);
+  }
+
+  onPageChanged(int page) {
+    setState(() {
+      this._page = page;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      body: _screens.elementAt(_selectedIndex),
-      appBar: AppBar(
-        backgroundColor: Colors.red[900],
-        title: Text("ENGLife"),
-        elevation: 0.0,
-        actions: <Widget>[
-          FlatButton.icon(
-            icon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            label: Text(
-              "Logout",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () async {
-              await _auth.signOut();
-            },
+      body: PageView(
+        children: <Widget>[
+          Container(
+            color: Colors.grey[100],
+            child: Feed(),
+          ),
+          Container(
+            color: Colors.grey[100],
+            child: AddPhoto(),
+          ),
+          Container(
+            color: Colors.grey[100],
+            child: Search(),
+          ),
+          Container(
+            color: Colors.grey[100],
+            child: Profile(),
           )
         ],
+        controller: pageController,
+        physics: NeverScrollableScrollPhysics(),
+        onPageChanged: onPageChanged,
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[100],
@@ -103,12 +119,8 @@ class _HomeState extends State<Home> {
         ],
         unselectedItemColor: Colors.grey[700],
         selectedItemColor: Colors.red[900],
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        currentIndex: _page,
+        onTap: onNavigationItemTapped
       ),
     );
   }

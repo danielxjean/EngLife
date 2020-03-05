@@ -1,3 +1,4 @@
+import 'package:eng_life/models/user.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
 
   //text field state
+  String displayName = '';
   String email = '';
   String password = '';
   String confirmPassword = '';
@@ -58,8 +60,40 @@ class _RegisterState extends State<Register> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SizedBox(height: 20.0),
+                  //display name input
+                  TextFormField(
+
+                    /*
+                    TextFormField for user display name
+                     */
+
+                    validator: (val) {
+                      if (val.isEmpty) {
+                        return "Enter your display name.";
+                      }
+                      else {
+                        return null;
+                      }
+                    },
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.person),
+                        labelText: "display name"
+                    ),
+                    onChanged: (val) {
+                      //runs every time the value of the formfield is changed
+                      setState(() {
+                        displayName = val;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 20.0),
                   //email input
                   TextFormField(
+
+                    /*
+                    TextFormField for user email
+                     */
+
                     validator: (val) {
                       if (val.isEmpty) {
                         return "Enter an email.";
@@ -82,6 +116,11 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //password input
                   TextFormField(
+
+                    /*
+                    TextFormField for user password
+                     */
+
                     validator: (val) {
                       if (val.length < 6)
                         return "Enter a password 6+ characters long.";
@@ -104,6 +143,11 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //confirm password input
                   TextFormField(
+
+                    /*
+                    TextFormField for user confirmed password
+                     */
+
                     validator: (val) {
                       if (val != password) {
                         return "Passwords must match.";
@@ -139,7 +183,7 @@ class _RegisterState extends State<Register> {
                           loading = true;
                         });
 
-                        dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                        dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName);
                         if (result == 1) {
                           setState(() {
                             error = "The email address is badly formatted.";
@@ -154,7 +198,7 @@ class _RegisterState extends State<Register> {
                         }
                         else {
                           setState(() {
-                            error = "Something wrong with either email or password.";
+                            error = "Something went wrong, incorrect email or password.";
                             loading = false;
                           });
                         }
