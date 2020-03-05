@@ -41,11 +41,23 @@ class DatabaseService {
     Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
     //convert Like to map.
     Map map = like.toMap()
-    return _ref.document(curUser.uid).setData(map);
+    _ref.document(curUser.uid).setData(map);
+   
+    //update post's number of likes.
+    int numLike = int.parse(likedPost.numberOfLikes);
+    nunmLike++;
+    likedPost.numberOfLikes = numLike;
+    return userCollection.document(likedPost.userId).collection("posts").document("$postid").setData(likedPost.toMap(likedPost));
   }
   Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
     CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
-    return _ref.document(curUser.uid).delete();
+    _ref.document(curUser.uid).delete();
+    
+    //update post's number of likes.
+    int numLike = int.parse(likedPost.numberOfLikes);
+    nunmLike--;
+    likedPost.numberOfLikes = numLike;
+    return userCollection.document(likedPost.userId).collection("posts").document("$postid").setData(likedPost.toMap(likedPost));
   }
   
 }
