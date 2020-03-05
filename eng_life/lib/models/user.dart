@@ -1,6 +1,7 @@
 class User {
 
   String uid;
+  String username;
   String email;
   String profilePictureUrl;
   String displayName;
