@@ -8,8 +8,9 @@ class Post {
   FieldValue timeStamp; //timestamp of post creation
   String userName; //name of user posting
   String userProfilePictureUrl; //imageUrl of user's profile picture
-
-  Post({this.userId, this.postPhotoUrl, this.caption, this.timeStamp, this.userName, this.userProfilePictureUrl});
+  String numberOfLikes;
+  
+  Post({this.userId, this.postPhotoUrl, this.caption, this.timeStamp, this.userName, this.userProfilePictureUrl, this.numberOfLikes});
 
   //return a map of the object post
   Map<String, dynamic> toMap(Post post) {
@@ -19,7 +20,8 @@ class Post {
       'caption' : post.caption,
       'timestamp' : post.timeStamp,
       'userName' : post.userName,
-      'profileUrl' : post.userProfilePictureUrl
+      'profileUrl' : post.userProfilePictureUrl,
+      'numberOfLikes' : post.numberOfLikes
     };
     return map;
   }
