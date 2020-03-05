@@ -35,12 +35,17 @@ class DatabaseService {
     this.uid = uid;
   }
 
-  Future<void> addLiketoPost(User curUser, Post likedPost, String postId){
+  Future<void> addLikeToPost(User curUser, Post likedPost, String postId){
     CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
     //Will construct like.
     Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
     //convert Like to map.
-    return _ref.add(like.toMap());
+    Map map = like.toMap()
+    return _ref.document(curUser.uid).setData(map);
   }
-
+  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
+    CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
+    return _ref.document(curUser.uid).delete();
+  }
+  
 }
