@@ -198,7 +198,7 @@ class _RegisterState extends State<Register> {
                         }
                         else {
                           setState(() {
-                            error = "Something went wrong.";
+                            error = "Something went wrong, incorrect email or password.";
                             loading = false;
                           });
                         }

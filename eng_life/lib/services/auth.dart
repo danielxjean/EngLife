@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eng_life/models/like.dart';
 import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -185,6 +186,94 @@ class AuthService {
   Future<List<DocumentSnapshot>> retreiveUserPosts(String userId) async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("posts").getDocuments();
     return querySnapshot.documents;
+  }
+  
+  //curUser will follow user2.
+  Future<void> addUserFollow(User curUser, User user2){
+    _addUserAsFollowerOf(curUser.uid, user2);
+    _addUserAsFollowing(curUser, user2.uid);
+  }
+  
+  Future<void> _addUserAsFollowerOf(String curUserid, User user2){
+	String uid2 = user2.uid;
+    CollectionReference _ref = userCollection.document(uid2).collection("followers");
+    Map map = {'userid': curUserid};
+    _ref.document(curUserid).setData(map);
+    
+	//update number of followers
+    int numFollowers = int.parse(user2.numberOfFollowers);
+    numFollowers++;
+    user2.numberOfFollowers = numFollowers;
+    return _ref.parent.setData(user2.userToMap(user2));
+  }
+  
+  Future<void> _addUserAsFollowing(User curUser, String uid2){
+	String curUserid = curUser.uid;
+    CollectionReference _ref = userCollection.document(curUserid).collection("following");
+    Map map = {'userid': uid2};
+    return _ref.document(uid2).setData(map);
+	
+	//update number of following
+    int numFollowing = int.parse(curUser.numberOfFollowing);
+    numFollowing++;
+    curUser.numberOfFollowing = numFollowing;
+    return _ref.parent.setData(curUser.userToMap(curUser))
+  }
+
+  //curUser will unfollow user2.
+  Future<void> removeUserFollow(User curUser, User user2){
+    _removeUserAsFollowerOf(curUser.uid, user2);
+    _removeUserAsFollowing(curUser, user2.uid);
+  }
+  Future<void> _removeUserAsFollowerOf(String curUserid, User user2){
+	String uid2 = user2.uid;
+    CollectionReference _ref = userCollection.document(uid2).collection("followers");
+    Map map = {'userid': curUserid};
+    _ref.document(curUserid).delete();
+	
+	//update number of followers
+    int numFollowers = int.parse(user2.numberOfFollowers);
+    numFollowers--;
+    user2.numberOfFollowers = numFollowers;
+    return _ref.parent.setData(user2.userToMap(user2));
+  }
+  Future<void> _removeUserAsFollowing(User curUser, String uid2){
+	String curUserid = curUser.uid;
+    CollectionReference _ref = userCollection.document(curUserid).collection("following");
+    Map map = {'userid': uid2};
+    _ref.document(uid2).delete();
+	
+	//update number of following
+    int numFollowing = int.parse(curUser.numberOfFollowing);
+    numFollowing--;
+    curUser.numberOfFollowing = numFollowing;
+    return _ref.parent.setData(curUser.userToMap(curUser))
+  }
+
+  Future<void> addLikeToPost(User curUser, Post likedPost, String postId){
+    CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
+    //Will construct like.
+    Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
+    //convert Like to map.
+    Map map = like.toMap()
+    _ref.document(curUser.uid).setData(map);
+   
+    //update post's number of likes.
+    int numLike = int.parse(likedPost.numberOfLikes);
+    numLike++;
+    likedPost.numberOfLikes = numLike;
+    return _ref.parent.setData(likedPost.toMap(likedPost));
+  }
+  
+  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
+    CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
+    _ref.document(curUser.uid).delete();
+    
+    //update post's number of likes.
+    int numLike = int.parse(likedPost.numberOfLikes);
+    numLike--;
+    likedPost.numberOfLikes = numLike;
+    return _ref.parent.setData(likedPost.toMap(likedPost));
   }
 
   Future<List<DocumentSnapshot>> retreiveUsers() async {
