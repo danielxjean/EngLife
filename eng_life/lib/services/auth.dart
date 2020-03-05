@@ -117,4 +117,20 @@ class AuthService {
     return querySnapshot.documents;
   }
 
+  
+  
+  Future<void> addUserFollow(String uid1, String uid2){
+    returnList.add(_addUserAsFollowerOf(uid1, uid2));
+    returnList.add(_addUserAsFollowing(uid1, uid2));
+  }
+  Future<void> _addUserAsFollowerOf(String uid1, String uid2){
+    CollectionReference _ref = userCollection.document(uid2).collection("followers");
+    Map map = {'userid': uid1};
+    return _ref.document(uid1).setData(map);
+  }
+  Future<void> _addUserAsFollowing(String uid1, String uid2){
+    CollectionReference _ref = userCollection.document(uid1).collection("following");
+    Map map = {'userid': uid2};
+    return _ref.document(uid2).setData(map);
+  }
 }
