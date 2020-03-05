@@ -117,4 +117,29 @@ class AuthService {
     return querySnapshot.documents;
   }
 
+  Future<void> addLikeToPost(User curUser, Post likedPost, String postId){
+    CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
+    //Will construct like.
+    Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
+    //convert Like to map.
+    Map map = like.toMap()
+    _ref.document(curUser.uid).setData(map);
+   
+    //update post's number of likes.
+    int numLike = int.parse(likedPost.numberOfLikes);
+    numLike++;
+    likedPost.numberOfLikes = numLike;
+    return _ref.parent.setData(likedPost.toMap(likedPost));
+  }
+  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
+    CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
+    _ref.document(curUser.uid).delete();
+    
+    //update post's number of likes.
+    int numLike = int.parse(likedPost.numberOfLikes);
+    numLike--;
+    likedPost.numberOfLikes = numLike;
+    return _ref.parent.setData(likedPost.toMap(likedPost));
+  }
+  
 }
