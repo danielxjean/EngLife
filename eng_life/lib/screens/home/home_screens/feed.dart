@@ -8,6 +8,12 @@ class Feed extends StatefulWidget {
 class _FeedState extends State<Feed> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red[900],
+        title: Text("ENGLife"),
+        elevation: 0.0,
+      ),
+    );
   }
 }

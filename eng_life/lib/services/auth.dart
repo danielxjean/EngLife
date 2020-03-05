@@ -12,11 +12,27 @@ class AuthService {
   final Firestore _firestore = Firestore.instance;
   StorageReference _storageReference;
 
-  String _uid;
+  String _displayName = "Default";
+
+  User _currentUser;
 
   //create user object based on firebase user
   User _userFromFirebaseUser(FirebaseUser user){
-    return user != null ? User(uid: user.uid) : null;
+    if (user == null) {
+      print("DEBUG*********USER IS NULL");
+      return null;
+    }
+    else {
+      print("DEBUG*********USER NOY NULL");
+      return  User(
+          uid: user.uid,
+          email: user.email,
+          displayName: _displayName,
+          educationMajor: 'Default',
+          numOfPosts: '0',
+          numOfFollowers: '0',
+          numOfFollowing: '0');
+    }
   }
 
   //auth change user stream
@@ -27,11 +43,20 @@ class AuthService {
   }
 
   //get the current user connected
-  Future<FirebaseUser> getCurrentUser() async {
+  Future<User> getCurrentUser() async {
+    print("Fetching current user...");
     FirebaseUser currentUser = await _auth.currentUser();
-    print("Fetching user ID: ${currentUser.uid}");
-    _uid = currentUser.uid;
-    return currentUser;
+
+    //convert firebaseuser into our user model
+
+    //first get user information from database
+    DocumentSnapshot _userInfo = await _firestore.collection("users").document(currentUser.uid).get();
+    //create new user from user info
+    User _currentUser = User.mapToUser(_userInfo.data);
+
+    this._currentUser = _currentUser;
+
+    return _currentUser;
   }
 
   //sign in anon
@@ -65,11 +90,17 @@ class AuthService {
   }
 
   //register email & password
-  Future registerWithEmailAndPassword(String email, String password) async {
+  Future registerWithEmailAndPassword(String email, String password, String displayName) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      FirebaseUser user = result.user;
-      return _userFromFirebaseUser(user);
+      FirebaseUser firebaseUser = result.user;
+
+      print("PRINTING FROM REGISTER****: " + firebaseUser.toString());
+
+      this._displayName = displayName;
+
+      createNewUserInDatabase(_userFromFirebaseUser(firebaseUser));
+      return _userFromFirebaseUser(firebaseUser);
     } catch(e) {
       print(e.message);
       switch(e.message) {
@@ -92,6 +123,14 @@ class AuthService {
     }
   }
 
+  Future<void> createNewUserInDatabase(User user) {
+    Map<String, dynamic> userMap = user.userToMap(user);
+
+    print(userMap.toString());
+
+    return _firestore.collection("users").document(user.uid).setData(userMap);
+  }
+
   //upload image to storage
   Future<String> uploadImageToStorage(File imageFile) async {
     _storageReference = FirebaseStorage.instance.ref().child('${DateTime.now().millisecondsSinceEpoch}');
@@ -102,7 +141,7 @@ class AuthService {
 
   //add photo to database for current user
   Future<void> addPhotoToDb(String imageUrl) {
-    CollectionReference _collectionRef = _firestore.collection("users").document("${_uid}").collection("photos");
+    CollectionReference _collectionRef = _firestore.collection("users").document("${_currentUser.uid}").collection("photos");
     print("IMAGE URL: ${imageUrl}");
 
     Map<String, dynamic> map = {
@@ -114,6 +153,11 @@ class AuthService {
   //retrieve photo for current user
   Future<List<DocumentSnapshot>> retreiveUserPhotos(String userId) async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("photos").getDocuments();
+    return querySnapshot.documents;
+  }
+
+  Future<List<DocumentSnapshot>> retreiveUsers() async {
+    QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
     return querySnapshot.documents;
   }
 
