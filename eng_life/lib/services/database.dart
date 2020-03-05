@@ -45,7 +45,7 @@ class DatabaseService {
    
     //update post's number of likes.
     int numLike = int.parse(likedPost.numberOfLikes);
-    nunmLike++;
+    numLike++;
     likedPost.numberOfLikes = numLike;
     return userCollection.document(likedPost.userId).collection("posts").document("$postid").setData(likedPost.toMap(likedPost));
   }
@@ -55,7 +55,7 @@ class DatabaseService {
     
     //update post's number of likes.
     int numLike = int.parse(likedPost.numberOfLikes);
-    nunmLike--;
+    numLike--;
     likedPost.numberOfLikes = numLike;
     return userCollection.document(likedPost.userId).collection("posts").document("$postid").setData(likedPost.toMap(likedPost));
   }
