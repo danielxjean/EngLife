@@ -157,6 +157,68 @@ class AuthService {
     QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("photos").getDocuments();
     return querySnapshot.documents;
   }
+  
+  //curUser will follow user2.
+  Future<void> addUserFollow(User curUser, User user2){
+    _addUserAsFollowerOf(curUser.uid, user2);
+    _addUserAsFollowing(curUser, user2.uid);
+  }
+  
+  Future<void> _addUserAsFollowerOf(String curUserid, User user2){
+	String uid2 = user2.uid;
+    CollectionReference _ref = userCollection.document(uid2).collection("followers");
+    Map map = {'userid': curUserid};
+    _ref.document(curUserid).setData(map);
+    
+	//update number of followers
+    int numFollowers = int.parse(user2.numberOfFollowers);
+    numFollowers++;
+    user2.numberOfFollowers = numFollowers;
+    return _ref.parent.setData(user2.userToMap(user2));
+  }
+  
+  Future<void> _addUserAsFollowing(User curUser, String uid2){
+	String curUserid = curUser.uid;
+    CollectionReference _ref = userCollection.document(curUserid).collection("following");
+    Map map = {'userid': uid2};
+    return _ref.document(uid2).setData(map);
+	
+	//update number of following
+    int numFollowing = int.parse(curUser.numberOfFollowing);
+    numFollowing++;
+    curUser.numberOfFollowing = numFollowing;
+    return _ref.parent.setData(curUser.userToMap(curUser))
+  }
+
+  //curUser will unfollow user2.
+  Future<void> removeUserFollow(User curUser, User user2){
+    _removeUserAsFollowerOf(curUser.uid, user2);
+    _removeUserAsFollowing(curUser, user2.uid);
+  }
+  Future<void> _removeUserAsFollowerOf(String curUserid, User user2){
+	String uid2 = user2.uid;
+    CollectionReference _ref = userCollection.document(uid2).collection("followers");
+    Map map = {'userid': curUserid};
+    _ref.document(curUserid).delete();
+	
+	//update number of followers
+    int numFollowers = int.parse(user2.numberOfFollowers);
+    numFollowers--;
+    user2.numberOfFollowers = numFollowers;
+    return _ref.parent.setData(user2.userToMap(user2));
+  }
+  Future<void> _removeUserAsFollowing(User curUser, String uid2){
+	String curUserid = curUser.uid;
+    CollectionReference _ref = userCollection.document(curUserid).collection("following");
+    Map map = {'userid': uid2};
+    _ref.document(uid2).delete();
+	
+	//update number of following
+    int numFollowing = int.parse(curUser.numberOfFollowing);
+    numFollowing--;
+    curUser.numberOfFollowing = numFollowing;
+    return _ref.parent.setData(curUser.userToMap(curUser))
+  }
 
   Future<void> addLikeToPost(User curUser, Post likedPost, String postId){
     CollectionReference _ref = userCollection.document(likedPost.userId).collection("posts").document("$postid").collection("likes");
