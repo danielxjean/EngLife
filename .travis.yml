@@ -11,6 +11,7 @@ addons:
 #    - echo $(ant -version)
 
 #install: ant deps
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -34,8 +35,11 @@ android:
     # if you need to run emulator(s) during your tests
     #- sys-img-x86-android-29
     #- sys-img-armeabi-v7a-android-17
-
+before_script:
+  - git clone https://github.com/danielxjean/EngLife.git -b beta
+  - ./flutter/bin/flutter doctor
 script:
     #- which java
     - ant -version
     #- find / -xdev \( -name ant -o -name mvn -o -name gradle \)
+- ./flutter/bin/flutter test
