@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:eng_life/models/comment.dart';
@@ -14,6 +15,7 @@ class CommentsPage extends StatefulWidget {
 
 class _CommentsScreenState extends State<CommentsPage> {
   TextEditingController _comment =  new TextEditingController();
+  String _commentText = "";
   var _formKey = GlobalKey<FormState>();
 
 
@@ -27,7 +29,7 @@ class _CommentsScreenState extends State<CommentsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 5,
+        elevation: 0.0,
         backgroundColor: Colors.red[900],
         title: Text('Comments'),
       ),
@@ -60,7 +62,7 @@ class _CommentsScreenState extends State<CommentsPage> {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(45.0),
-              image: DecorationImage(image: NetworkImage(widget.user.profilePictureUrl))
+              image: DecorationImage(image: CachedNetworkImageProvider(widget.user.profilePictureUrl))
             ),
           ),
           Flexible(
@@ -71,7 +73,7 @@ class _CommentsScreenState extends State<CommentsPage> {
                   if (commentInput.isEmpty)
                     return "Please enter a comment";
                   else
-                    return "Comment posted";
+                    return null;
                 },
                 controller: _comment,
                 decoration: InputDecoration(
@@ -79,6 +81,9 @@ class _CommentsScreenState extends State<CommentsPage> {
                 ),
                 onFieldSubmitted: (value) {
                   _comment.text = value;
+                },
+                onChanged: (value) {
+                  _commentText = value;
                 },
               ),
             ),
@@ -107,13 +112,17 @@ class _CommentsScreenState extends State<CommentsPage> {
     var inputComment = Comment(
       displayName: widget.user.displayName,
       profilePictureUrl: widget.user.profilePictureUrl,
-      comment: _comment.text,
+      comment: _commentText,
       uid: widget.user.uid,
       timeStamp: FieldValue.serverTimestamp(),
     );
-    widget.documentReference.collection("comments").document().setData(inputComment.toMap(inputComment)).whenComplete(() {
-    _comment.text = "";
-  });
+    print(inputComment.toMap(inputComment).toString());
+    widget.documentReference.collection("comments").add(inputComment.toMap(inputComment)).whenComplete(() {
+      _comment.text = "";
+    });
+    setState(() {
+      print("refresh comments");
+    });
 }
 
   Widget listOfComments () {
