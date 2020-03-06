@@ -36,10 +36,14 @@ android:
     #- sys-img-x86-android-29
     #- sys-img-armeabi-v7a-android-17
 before_script:
-  - git clone https://github.com/flutter/flutter.git -b beta
-  - ./flutter/bin/flutter doctor
+  - git clone https://github.com/flutter/flutter.git -b stable
+  - export PATH="$PATH:`pwd`/flutter/bin"
+  - flutter precache
+  - flutter doctor
+  #- /usr/local/android-sdk/tools/bin/sdkmanager --update
+  #- flutter doctor --android-licenses
 script:
     #- which java
     - ant -version
     #- find / -xdev \( -name ant -o -name mvn -o -name gradle \)
-    - ./flutter/bin/flutter test
+    - flutter test
