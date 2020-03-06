@@ -36,7 +36,7 @@ android:
     #- sys-img-x86-android-29
     #- sys-img-armeabi-v7a-android-17
 before_script:
-  - git clone https://github.com/danielxjean/EngLife.git -b beta
+  - git clone https://github.com/flutter/flutter.git -b beta
   - ./flutter/bin/flutter doctor
 script:
     #- which java
