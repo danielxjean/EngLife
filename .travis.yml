@@ -40,8 +40,8 @@ before_script:
   - export PATH="$PATH:`pwd`/flutter/bin"
   - flutter precache
   - flutter doctor
-  - /usr/local/android-sdk/tools/bin/sdkmanager --update
-  - flutter doctor --android-licenses
+  #- /usr/local/android-sdk/tools/bin/sdkmanager --update
+  #- flutter doctor --android-licenses
 script:
     #- which java
     - ant -version
