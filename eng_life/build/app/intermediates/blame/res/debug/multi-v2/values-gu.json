@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "/Users/cedrikdubois/Documents/EngLife/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-gu/values-gu.xml",
+            "outputFile": "/Users/cedrikdubois/Documents/EngLife 2/eng_life/build/app/intermediates/incremental/mergeDebugResources/merged.dir/values-gu/values-gu.xml",
             "map": [
                 {
                     "source": "/Users/cedrikdubois/.gradle/caches/transforms-2/files-2.1/fce819f64b0cda5002b5216a29736923/jetified-play-services-basement-17.0.0/res/values-gu/values.xml",

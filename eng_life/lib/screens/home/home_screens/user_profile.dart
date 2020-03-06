@@ -23,7 +23,9 @@ class _UserProfileState extends State<UserProfile> {
   User _currentUser;
   User _user;
   Future<List<DocumentSnapshot>> _future;
-  bool loading = true;
+
+  bool _loading = true;
+  bool _isFollowing = false;
 
   @override
   void initState() {
@@ -34,15 +36,23 @@ class _UserProfileState extends State<UserProfile> {
   retreiveUserDetails() async {
     _user = await _auth.getUser(widget.userId);
     _currentUser = await _auth.getCurrentUser();
+    _isFollowing = await _auth.checkIfCurrentUserIsFollowing(widget.userId, _currentUser.uid);
     setState(() {
       _future = _auth.retreiveUserPosts(widget.userId);
-      loading = false;
+      _loading = false;
+    });
+  }
+
+  refreshUserDetails() async {
+    _user = await _auth.getUser(widget.userId);
+    setState(() {
+      print("user refreshed");
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return loading == true ? Loading() : Scaffold(
+    return _loading == true ? Loading() : Scaffold(
       appBar: AppBar(
         title: Text(_user.username),
         backgroundColor: Colors.red[900],
@@ -118,9 +128,25 @@ class _UserProfileState extends State<UserProfile> {
                 SizedBox(height: 10.0),
                 RaisedButton(
                     color: Colors.grey[200],
-                    child: Text("Follow"),
+                    child: _isFollowing == true ? Text("Unfollow") : Text("Follow"),
                     onPressed: () {
-                      print("You pressed me");
+
+                      if (_isFollowing == true) {
+                        _auth.removeUserFollow(_currentUser, _user);
+                        refreshUserDetails();
+                        setState(() {
+                          _isFollowing = false;
+                        });
+                      }
+                      else {
+                        _auth.addUserFollow(_currentUser, _user);
+                        refreshUserDetails();
+                        setState(() {
+                          _isFollowing = true;
+                        });
+                      }
+
+
                     }
                 )
               ],

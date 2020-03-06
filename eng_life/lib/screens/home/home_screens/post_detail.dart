@@ -5,6 +5,7 @@ import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
+import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class PostDetail extends StatefulWidget {
@@ -22,11 +23,36 @@ class _PostDetailState extends State<PostDetail> {
 
   final _auth = AuthService();
 
-  bool liked = false;
+  bool _liked = false;
+  bool _loading = true;
+  User _currentUser;
+  DocumentSnapshot _documentSnapshot;
+
+  @override
+  void initState() {
+    super.initState();
+    retreiveInformation();
+  }
+
+  retreiveInformation() async {
+    _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
+    _currentUser = await _auth.getCurrentUser();
+    _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
+    setState(() {
+      _loading = false;
+    });
+  }
+
+  refreshLikes() async {
+    _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
+    setState(() {
+      print("likes refreshed");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _loading == true ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Post"),
@@ -84,7 +110,7 @@ class _PostDetailState extends State<PostDetail> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   GestureDetector(
-                    child: liked
+                    child: _liked
                         ? Icon(
                       Icons.favorite,
                       color: Colors.red[900],
@@ -98,9 +124,22 @@ class _PostDetailState extends State<PostDetail> {
                       //Post.mapToPost(widget.documentSnapshot.data);
                       //widget.currentUserId
                       //widget.documentSnapshot.documentID
-                      setState(() {
-                        liked = !liked;
-                      });
+                      if (_liked == true) {
+                        //unlike post
+                        _auth.deleteLikeFromPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID);
+                        setState(() {
+                          _liked = false;
+                          refreshLikes();
+                        });
+                      }
+                      else {
+                        //like post
+                        _auth.addLikeToPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID);
+                        setState(() {
+                          _liked = true;
+                          refreshLikes();
+                        });
+                      }
                     },
                   ),
                   SizedBox(width: 15),
@@ -109,6 +148,11 @@ class _PostDetailState extends State<PostDetail> {
                       Icons.comment,
                       size: 40.0,
                     ),
+                    onTap: () {
+
+                      
+
+                    },
                   )
                 ],
               ),
@@ -116,14 +160,14 @@ class _PostDetailState extends State<PostDetail> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                widget.documentSnapshot.data['numberOfLikes'] + " likes",
+                _documentSnapshot.data['numberOfLikes'] + " likes",
                 style: TextStyle(fontSize: 15.0),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                widget.documentSnapshot.data['caption'],
+                _documentSnapshot.data['caption'],
                 style: TextStyle(fontSize: 20.0),
               ),
             )

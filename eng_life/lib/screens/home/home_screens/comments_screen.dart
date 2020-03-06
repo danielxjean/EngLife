@@ -60,7 +60,7 @@ class _CommentsScreenState extends State<CommentsPage> {
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(45.0),
-              image: DecorationImage(image: NetworkImage(widget.user.photoUrl))
+              image: DecorationImage(image: NetworkImage(widget.user.profilePictureUrl))
             ),
           ),
           Flexible(
