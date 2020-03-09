@@ -25,7 +25,7 @@ class AuthService {
       return null;
     }
     else {
-      print("DEBUG*********USER NOY NULL");
+      print("DEBUG*********USER NOT NULL");
       return  User(
           bio: "",
           uid: user.uid,
