@@ -24,6 +24,7 @@ class _RegisterState extends State<Register> {
   String password = '';
   String confirmPassword = '';
   String error = '';
+  bool isGroup = false;
 
   bool loading = false;
 
@@ -186,7 +187,7 @@ class _RegisterState extends State<Register> {
                               loading = true;
                             });
 
-                            dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName);
+                            dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName, isGroup);
                             if (result == 1) {
                               setState(() {
                                 error = "The email address is badly formatted.";

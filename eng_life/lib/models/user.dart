@@ -10,8 +10,9 @@ class User {
   String numOfPosts;
   String bio;
   String educationMajor;
+  bool isGroup;
 
-  User({this.uid, this.email, this.profilePictureUrl, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor, this.username});
+  User({this.uid, this.email, this.profilePictureUrl, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor, this.username, this.isGroup});
 
   Map<String, dynamic> userToMap(User user) {
     var map = Map<String, dynamic>();
@@ -25,6 +26,7 @@ class User {
     map['bio'] = user.bio;
     map['educationMajor'] = user.educationMajor;
     map['username'] = user.username;
+    map['isGroup'] = user.isGroup;
     return map;
   }
 
@@ -39,6 +41,7 @@ class User {
     this.bio = map['bio'];
     this.educationMajor = map['educationMajor'];
     this.username = map['username'];
+    this.isGroup = map['isGroup'];
   }
 
 

@@ -15,6 +15,7 @@ class AuthService {
   StorageReference _storageReference;
 
   String _displayName = "Default";
+  bool _isGroup = false;
 
   User _currentUser;
 
@@ -35,8 +36,10 @@ class AuthService {
           numOfPosts: '0',
           numOfFollowers: '0',
           numOfFollowing: '0',
+          //added here
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
-          username: "Default"); //username input needs to be added to register form, must be unique
+          username: "Default",//username input needs to be added to register form, must be unique
+          isGroup: _isGroup);
     }
   }
 
@@ -107,7 +110,7 @@ class AuthService {
   }
 
   //register email & password
-  Future registerWithEmailAndPassword(String email, String password, String displayName) async {
+  Future registerWithEmailAndPassword(String email, String password, String displayName, bool isGroup) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = result.user;
@@ -115,6 +118,7 @@ class AuthService {
       print("PRINTING FROM REGISTER****: " + firebaseUser.toString());
 
       this._displayName = displayName;
+      this._isGroup = isGroup;
 
       createNewUserInDatabase(_userFromFirebaseUser(firebaseUser));
       return _userFromFirebaseUser(firebaseUser);
@@ -129,6 +133,8 @@ class AuthService {
       //The email address is already in use by another account. (2)
     }
   }
+
+  //registerGroupWithEmailAndPassword
 
   //sign out
   Future signOut() async {

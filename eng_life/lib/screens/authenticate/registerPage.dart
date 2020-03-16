@@ -23,7 +23,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String confirmPassword = '';
   String error = '';
   String groupCode = '';
-
+  bool isGroup = true;
   bool loading = false;
 
   @override
@@ -183,12 +183,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         labelText: "ECA password"
                     ),
                     obscureText: true,
-                    onChanged: (val) {
-                      //runs every time the value of the formfield is changed
-                      setState(() {
-                        groupCode = val;
-                      });
-                    },
                   ),
                   SizedBox(height: 20.0),
                   Row(
@@ -207,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               loading = true;
                             });
 
-                            dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName);
+                            dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName, isGroup);
                             if (result == 1) {
                               setState(() {
                                 error = "The email address is badly formatted.";
