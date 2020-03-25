@@ -46,6 +46,5 @@ script:
     #- which java
     - ant -version
     #- find / -xdev \( -name ant -o -name mvn -o -name gradle \)
-    #list directories
-    - find . -type d 
-    - ./eng_life/flutter test
+    - cd ./eng_life
+    - flutter test
