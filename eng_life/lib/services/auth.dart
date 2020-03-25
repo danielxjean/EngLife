@@ -315,9 +315,18 @@ class AuthService {
     return snapshot;
   }
 
-  Future<void> deleteUserPost(String uid, String pid){
+  Future<void> deleteUserPost(String uid, String pid) async {
+    DocumentSnapshot documentSnapshot = await _firestore.collection("users").document(uid).get();
+    User user = await User.mapToUser(documentSnapshot.data);
+
     CollectionReference _ref = _firestore.collection("users").document(uid).collection("posts");
-    return _ref.document(pid).delete();
+    _ref.document(pid).delete();
+
+    int numPosts = int.parse(user.numOfPosts);
+    numPosts--;
+    user.numOfPosts = "$numPosts";
+
+    return _firestore.collection("users").document(uid).setData(user.userToMap(user));
   }
 
 }

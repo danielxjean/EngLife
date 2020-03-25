@@ -131,6 +131,13 @@ class _ProfileState extends State<Profile> {
                           style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
                         ),
                         SizedBox(height: 10.0),
+                        Center(
+                          child: Text(
+                            user.data.bio,
+                            style: TextStyle(color: Colors.grey[100], fontSize: 15),
+                          ),
+                        ),
+                        SizedBox(height: 10.0),
                         RaisedButton(
                             color: Colors.grey[200],
                             child: Text("Edit profile"),
