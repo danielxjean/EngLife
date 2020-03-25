@@ -51,6 +51,32 @@ class _PostDetailState extends State<PostDetail> {
     });
   }
 
+  Future<bool> createConfirmationDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Confirm Post Delete"),
+            content: Text("Are you sure you want to delete this post?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text("Delete"),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              )
+            ],
+          );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return _loading == true ? Loading() : Scaffold(
@@ -67,36 +93,57 @@ class _PostDetailState extends State<PostDetail> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(
-                      widget.documentSnapshot.data['userProfilePictureUrl']
-                    ),
-                    radius: 25.0,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(
+                          widget.documentSnapshot.data['userProfilePictureUrl']
+                        ),
+                        radius: 25.0,
+                      ),
+                      SizedBox(width: 5.0),
+                      GestureDetector(
+                        child: Text(
+                          widget.documentSnapshot.data['displayName'],
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        ),
+                        onTap: () {
+                          if (widget.userId == widget.currentUserId) {
+                            Navigator.pop(context);
+                          }
+                          else {
+                            Navigator.push(context,
+                                MaterialPageRoute(
+                                    builder: (context) {
+                                      return UserProfile(userId: widget.userId);
+
+                                    }
+                                )
+                            );
+                          }
+                        },
+                      )
+                    ],
                   ),
-                  SizedBox(width: 5.0),
-                  GestureDetector(
-                    child: Text(
-                      widget.documentSnapshot.data['displayName'],
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-                    ),
-                    onTap: () {
-                      if (widget.userId == widget.currentUserId) {
-                        Navigator.pop(context);
+                  widget.userId == widget.currentUserId ? IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async {
+                      if (await createConfirmationDialog(context) == true) {
+                        print("Delete post");
+                        setState(() {
+                          _loading = true;
+                        });
+                        await _auth.deleteUserPost(widget.userId, widget.documentSnapshot.documentID);
+                        Navigator.of(context).pop();
                       }
                       else {
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) {
-                                  return UserProfile(userId: widget.userId);
-
-                                }
-                            )
-                        );
+                        //do nothing
                       }
                     },
-                  )
+                  ) : Container()
                 ],
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/services/auth.dart';
+import 'package:eng_life/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,7 @@ class _ProfileState extends State<Profile> {
   User _currentUser;
   Future<User> _currentUserFuture;
   Future<List<DocumentSnapshot>> _future;
+  bool _loading = true;
 
   List<Widget> photos = [];
 
@@ -34,12 +36,13 @@ class _ProfileState extends State<Profile> {
       _future = _auth.retreiveUserPosts(currentUser.uid);
       _currentUserFuture = _auth.getCurrentUser();
       _currentUser = currentUser;
+      _loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _loading == true ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Profile"),
@@ -171,12 +174,17 @@ class _ProfileState extends State<Profile> {
                            height: 125.0,
                            fit: BoxFit.cover,
                          ),
-                         onTap: () {
-                           Navigator.push(context,
+                         onTap: () async {
+                           await Navigator.push(context,
                                MaterialPageRoute(
                                    builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: _currentUser.uid, currentUserId: _currentUser.uid,)
                                )
                            );
+                           setState(() {
+                             //refresh page
+                             _loading = true;
+                             retreiveUserDetails();
+                           });
                          },
                        );
                      }),

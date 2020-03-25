@@ -315,4 +315,9 @@ class AuthService {
     return snapshot;
   }
 
+  Future<void> deleteUserPost(String uid, String pid){
+    CollectionReference _ref = _firestore.collection("users").document(uid).collection("posts");
+    return _ref.document(pid).delete();
+  }
+
 }
