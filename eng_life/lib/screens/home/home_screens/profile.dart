@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
+import 'package:eng_life/screens/home/home_screens/edit_profile.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/shared/loading.dart';
@@ -20,8 +21,6 @@ class _ProfileState extends State<Profile> {
   Future<User> _currentUserFuture;
   Future<List<DocumentSnapshot>> _future;
   bool _loading = true;
-
-  List<Widget> photos = [];
 
   @override
   void initState() {
@@ -141,8 +140,17 @@ class _ProfileState extends State<Profile> {
                         RaisedButton(
                             color: Colors.grey[200],
                             child: Text("Edit profile"),
-                            onPressed: () {
-                              print("You pressed me");
+                            onPressed: () async {
+                              await Navigator.push(context,
+                                  MaterialPageRoute(
+                                      builder: (context) => EditProfile()
+                                  )
+                              );
+                              setState(() {
+                                //refresh page
+                                _loading = true;
+                                retreiveUserDetails();
+                              });
                             }
                         )
                       ],

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">154448628482-7guejoaj29p5m2sjkd4mh6gb68r1od7q.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://englife-608ff.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">154448628482</string>
+    <string name="google_api_key" translatable="false">AIzaSyBcyRTv8eZSvBwVYEaeTLJJo_TzcYAPuX0</string>
+    <string name="google_app_id" translatable="false">1:154448628482:android:66aabedaeaa68f8c23d01b</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBcyRTv8eZSvBwVYEaeTLJJo_TzcYAPuX0</string>
+    <string name="google_storage_bucket" translatable="false">englife-608ff.appspot.com</string>
+    <string name="project_id" translatable="false">englife-608ff</string>
+</resources>
