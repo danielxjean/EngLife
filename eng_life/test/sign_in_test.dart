@@ -25,7 +25,7 @@ void main() {
       ),
     );
   }
-  group('SignIn page to sign in', (){
+  group('Sign in', (){
     testWidgets('empty email and password, does not sign in', (WidgetTester tester) async {
 
     //1. Create
@@ -33,12 +33,10 @@ void main() {
     SignIn signInPage = SignIn();
 
     //2. Stub
-    //when(mockAuthService.signInWithEmailAndPassword('', '')).thenReturn(null);
 
     //3. Act
     //Load page
     await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
-    //await tester.pumpWidget(makeTestableWidget(childHome: signInPage));
     //Tap sign-in button
     await tester.tap(find.byKey(Key('signIn')));
 
