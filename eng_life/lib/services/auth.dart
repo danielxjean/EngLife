@@ -9,7 +9,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthService {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
   StorageReference _storageReference;
@@ -25,7 +24,7 @@ class AuthService {
       return null;
     }
     else {
-      print("DEBUG*********USER NOY NULL");
+      print("DEBUG*********USER NOT NULL");
       return  User(
           bio: "",
           uid: user.uid,
