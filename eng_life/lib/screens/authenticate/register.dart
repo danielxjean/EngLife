@@ -1,5 +1,5 @@
-import 'package:eng_life/models/user.dart';
 import 'package:eng_life/services/auth.dart';
+import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +14,6 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
 
-  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   //text field state
@@ -62,6 +61,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //display name input
                   TextFormField(
+                    key: Key('name'),
 
                     /*
                     TextFormField for user display name
@@ -89,6 +89,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //email input
                   TextFormField(
+                    key: Key('email'),
 
                     /*
                     TextFormField for user email
@@ -116,6 +117,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //password input
                   TextFormField(
+                    key: Key('password'),
 
                     /*
                     TextFormField for user password
@@ -143,6 +145,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //confirm password input
                   TextFormField(
+                    key: Key('password2'),
 
                     /*
                     TextFormField for user confirmed password
@@ -170,6 +173,7 @@ class _RegisterState extends State<Register> {
                   ),
                   SizedBox(height: 20.0),
                   RaisedButton(
+                    key: Key('register'),
                     color: Colors.red[900],
                     child: Text(
                       "Register",
@@ -182,6 +186,8 @@ class _RegisterState extends State<Register> {
                         setState(() {
                           loading = true;
                         });
+
+                        final AuthService _auth = AuthInfo.of(context).authService;
 
                         dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName);
                         if (result == 1) {

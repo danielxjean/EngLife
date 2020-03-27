@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="fc4cc937-00df-4173-9feb-f9a6b8b2b11c" name="Default Changelist" comment="Added test cases for the SignIn page.&#10;Modified the widget tree to allow a custom AuthService be common to the rest of the widgets, by using the newly added auth_info.dart with an InheritedWidget. This is for the testing process, and shouldn't affect the rest of the app (..?).&#10;Fixed a minor typo in a debug line in the auth.dart file.&#10;&#10;May require the newly added auth_info.dart file to move package.&#10;Adds a dependency for Mockito v4.1.1 in the pubspec.yaml file.">
-      <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/sign_in_test.dart" afterDir="false" />
+    <list default="true" id="fc4cc937-00df-4173-9feb-f9a6b8b2b11c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/test/register_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/authenticate/register.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/authenticate/register.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/sign_in_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/sign_in_test.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +39,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/test" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -44,6 +47,9 @@
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Newre\OneDrive\Desktop\GitRepositories\Proj\SOEN341\eng_life\test" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -60,9 +66,14 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Flutter Test.SignIn page to sign in">
+  <component name="RunManager" selected="Flutter Test.tests in sign_in_test.dart">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Sign in" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="Sign in" />
+      <option name="testFile" value="$PROJECT_DIR$/test/sign_in_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="SignIn page to sign in" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
@@ -70,14 +81,9 @@
       <option name="testFile" value="$PROJECT_DIR$/test/widget_test.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="empty email and password, does not sign in" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="empty email and password, does not sign in" />
-      <option name="testFile" value="$PROJECT_DIR$/test/widget_test.dart" />
-      <method v="2" />
-    </configuration>
-    <configuration name="non-empty email and password, invalid user, does not sign in" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
-      <option name="testName" value="non-empty email and password, invalid user, does not sign in" />
-      <option name="testFile" value="$PROJECT_DIR$/test/widget_test.dart" />
+    <configuration name="empty email and non-empty password, does not sign in" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testName" value="empty email and non-empty password, does not sign in" />
+      <option name="testFile" value="$PROJECT_DIR$/test/sign_in_test.dart" />
       <method v="2" />
     </configuration>
     <configuration name="non-empty email and password, valid user, does sign in" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
@@ -85,12 +91,17 @@
       <option name="testFile" value="$PROJECT_DIR$/test/widget_test.dart" />
       <method v="2" />
     </configuration>
+    <configuration name="tests in sign_in_test.dart" type="FlutterTestConfigType" factoryName="Flutter Test" temporary="true" nameIsGenerated="true">
+      <option name="testFile" value="$PROJECT_DIR$/test/sign_in_test.dart" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Flutter Test.tests in sign_in_test.dart" />
+        <item itemvalue="Flutter Test.empty email and non-empty password, does not sign in" />
+        <item itemvalue="Flutter Test.Sign in" />
         <item itemvalue="Flutter Test.SignIn page to sign in" />
         <item itemvalue="Flutter Test.non-empty email and password, valid user, does sign in" />
-        <item itemvalue="Flutter Test.non-empty email and password, invalid user, does not sign in" />
-        <item itemvalue="Flutter Test.empty email and password, does not sign in" />
       </list>
     </recent_temporary>
   </component>
@@ -105,6 +116,14 @@
       <option name="presentableId" value="Default" />
       <updated>1582317315594</updated>
     </task>
+    <task id="LOCAL-00001" summary="Small refactor to rename test file and remove comment artifacts.">
+      <created>1585341839080</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1585341839080</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -124,6 +143,29 @@
     <option name="CHECK_CODE_CLEANUP_BEFORE_PROJECT_COMMIT" value="true" />
     <MESSAGE value="Added test cases for the SignIn page.&#10;Modified the widget tree to allow a custom AuthService be common to the rest of the widgets, by using the newly added auth_info.dart with an InheritedWidget. This is for the testing process, and shouldn't affect the rest of the app (..?).&#10;Fixed a minor typo in a debug line in the auth.dart file.&#10;&#10;May require the newly added auth_info.dart file to move package.&#10;This also adds a dependency for Mockito v4.1.1 in the pubspec.yaml file." />
     <MESSAGE value="Added test cases for the SignIn page.&#10;Modified the widget tree to allow a custom AuthService be common to the rest of the widgets, by using the newly added auth_info.dart with an InheritedWidget. This is for the testing process, and shouldn't affect the rest of the app (..?).&#10;Fixed a minor typo in a debug line in the auth.dart file.&#10;Removed an unused attribute in auth.dart file to remove a warning given.&#10;&#10;May require the newly added auth_info.dart file to move package.&#10;Adds a dependency for Mockito v4.1.1 in the pubspec.yaml file." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added test cases for the SignIn page.&#10;Modified the widget tree to allow a custom AuthService be common to the rest of the widgets, by using the newly added auth_info.dart with an InheritedWidget. This is for the testing process, and shouldn't affect the rest of the app (..?).&#10;Fixed a minor typo in a debug line in the auth.dart file.&#10;Removed an unused attribute in auth.dart file to remove a warning given.&#10;&#10;May require the newly added auth_info.dart file to move package.&#10;Adds a dependency for Mockito v4.1.1 in the pubspec.yaml file." />
+    <MESSAGE value="Added test cases for the SignIn page.&#10;Modified the widget tree to allow a custom AuthService be common to the rest of the widgets, by using the newly added auth_info.dart with an InheritedWidget. This is for the testing process, and shouldn't affect the rest of the app (..?).&#10;Fixed a minor typo in a debug line in the auth.dart file.&#10;&#10;May require the newly added auth_info.dart file to move package.&#10;Adds a dependency for Mockito v4.1.1 in the pubspec.yaml file." />
+    <MESSAGE value="Small refactor to rename test file and remove comment artifacts." />
+    <option name="LAST_COMMIT_MESSAGE" value="Small refactor to rename test file and remove comment artifacts." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/test/sign_in_test.dart</url>
+          <line>49</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/screens/authenticate/sign_in.dart</url>
+          <line>127</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/lib/screens/authenticate/sign_in.dart</url>
+          <line>120</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
