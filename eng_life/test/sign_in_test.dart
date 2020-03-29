@@ -1,6 +1,5 @@
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/authenticate/sign_in.dart';
-import 'package:eng_life/screens/wrapper.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
 
@@ -20,13 +19,14 @@ void main() {
       child: StreamProvider<User>.value(
         value: authService.user,
         child: MaterialApp(
-          home: Wrapper(),
+          home: childHome,
         ),
       ),
     );
   }
   group('Sign in', (){
-    testWidgets('empty email and password, does not sign in', (WidgetTester tester) async {
+    //region 'SignIn: empty email and password, does not sign in'
+    testWidgets('SignIn: empty email and password, does not sign in', (WidgetTester tester) async {
       //1. Create
       MockAuthService mockAuthService = MockAuthService();
       SignIn signInPage = SignIn();
@@ -44,8 +44,9 @@ void main() {
       //No attempt to sign in should be made
       verifyNever(mockAuthService.signInWithEmailAndPassword(any, any));
     });//testWidgets
-
-    testWidgets('empty email and non-empty password, does not sign in', (WidgetTester tester) async {
+    //endregion
+    //region 'SignIn: empty email and non-empty password, does not sign in'
+    testWidgets('SignIn: empty email and non-empty password, does not sign in', (WidgetTester tester) async {
       //1. Create
       MockAuthService mockAuthService = MockAuthService();
       SignIn signInPage = SignIn();
@@ -69,8 +70,9 @@ void main() {
       //No attempt to sign in should be made
       verifyNever(mockAuthService.signInWithEmailAndPassword(any, password));
     });//testWidgets
-
-    testWidgets('non-empty email and empty password, does not sign in', (WidgetTester tester) async {
+    //endregion
+    //region 'SignIn: non-empty email and empty password, does not sign in'
+    testWidgets('SignIn: non-empty email and empty password, does not sign in', (WidgetTester tester) async {
       //1. Create
       MockAuthService mockAuthService = MockAuthService();
       SignIn signInPage = SignIn();
@@ -94,8 +96,9 @@ void main() {
       //No attempt to sign in should be made
       verifyNever(mockAuthService.signInWithEmailAndPassword(email, any));
     });//testWidgets
-
-    testWidgets('non-empty email and password, invalid password length, does not sign in', (WidgetTester tester) async {
+    //endregion
+    //region 'SignIn: non-empty email and password, invalid password length, does not sign in'
+    testWidgets('SignIn: non-empty email and password, invalid password length, does not sign in', (WidgetTester tester) async {
       //1. Create Mocks
       MockAuthService mockAuthService = MockAuthService();
       SignIn signInPage = SignIn();
@@ -124,8 +127,9 @@ void main() {
       //No attempt to sign in should be made
       verifyNever(mockAuthService.signInWithEmailAndPassword(any, password));
     });//testWidgets
-
-    testWidgets('non-empty email and password, invalid user, does not sign in', (WidgetTester tester) async {
+    //endregion
+    //region 'SignIn: non-empty email and password, invalid user, does not sign in'
+    testWidgets('SignIn: non-empty email and password, invalid user, does not sign in', (WidgetTester tester) async {
       //1. Create Mocks
       MockAuthService mockAuthService = MockAuthService();
       SignIn signInPage = SignIn();
@@ -137,7 +141,6 @@ void main() {
       //3. Act
       //Load page
       await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
-
       //Enter email and password
       Finder emailField = find.byKey(Key('email'));
       Finder passwordField = find.byKey(Key('password'));
@@ -161,8 +164,9 @@ void main() {
       verify(mockAuthService.signInWithEmailAndPassword(email, password));
       expect(errorFinder, findsOneWidget);
     });//testWidgets
-
-    testWidgets('non-empty email and password, valid user, does sign in', (WidgetTester tester) async {
+    //endregion
+    //region 'SignIn: non-empty email and password, valid user, does sign in'
+    testWidgets('SignIn: non-empty email and password, valid user, does sign in', (WidgetTester tester) async {
       //1. Create Mocks
       MockAuthService mockAuthService = MockAuthService();
       SignIn signInPage = SignIn();
@@ -199,7 +203,10 @@ void main() {
       expect(errorFinder2, findsNothing);
       expect(errorFinder3, findsNothing);
     });//testWidgets
-
+    //endregion
   });//group
 
+ group('Unit Tests', (){
+   //TODO: implement unit tests for SignIn page
+ });//group
 }

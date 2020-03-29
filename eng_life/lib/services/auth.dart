@@ -122,7 +122,7 @@ class AuthService {
       switch(e.message) {
         case 'The email address is badly formatted.': return 1; break;
         case 'The email address is already in use by another account.': return 2; break;
-        default: return null;
+        default: return -1;
       }
       //The email address is badly formatted. (1)
       //The email address is already in use by another account. (2)
@@ -182,7 +182,7 @@ class AuthService {
   }
 
   //retrieve photo for current user
-  Future<List<DocumentSnapshot>> retreiveUserPosts(String userId) async {
+  Future<List<DocumentSnapshot>> retrieveUserPosts(String userId) async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("posts").getDocuments();
     return querySnapshot.documents;
   }
@@ -294,7 +294,7 @@ class AuthService {
     return _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
   }
 
-  Future<List<DocumentSnapshot>> retreiveUsers() async {
+  Future<List<DocumentSnapshot>> retrieveUsers() async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
     return querySnapshot.documents;
   }
