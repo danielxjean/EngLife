@@ -15,6 +15,7 @@ class AuthService {
   StorageReference _storageReference;
 
   String _displayName = "Default";
+  bool _isGroup = false;
 
   User _currentUser;
 
@@ -25,7 +26,7 @@ class AuthService {
       return null;
     }
     else {
-      print("DEBUG*********USER NOY NULL");
+      print("DEBUG*********USER NOT NULL");
       return  User(
           bio: "",
           uid: user.uid,
@@ -35,8 +36,10 @@ class AuthService {
           numOfPosts: '0',
           numOfFollowers: '0',
           numOfFollowing: '0',
+          //added here
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
-          username: "Default"); //username input needs to be added to register form, must be unique
+          username: "Default",//username input needs to be added to register form, must be unique
+          isGroup: _isGroup);
     }
   }
 
@@ -107,7 +110,7 @@ class AuthService {
   }
 
   //register email & password
-  Future registerWithEmailAndPassword(String email, String password, String displayName) async {
+  Future registerWithEmailAndPassword(String email, String password, String displayName, bool isGroup) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = result.user;
@@ -115,6 +118,7 @@ class AuthService {
       print("PRINTING FROM REGISTER****: " + firebaseUser.toString());
 
       this._displayName = displayName;
+      this._isGroup = isGroup;
 
       createNewUserInDatabase(_userFromFirebaseUser(firebaseUser));
       return _userFromFirebaseUser(firebaseUser);
@@ -129,6 +133,8 @@ class AuthService {
       //The email address is already in use by another account. (2)
     }
   }
+
+  //registerGroupWithEmailAndPassword
 
   //sign out
   Future signOut() async {
@@ -187,28 +193,28 @@ class AuthService {
     QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("posts").getDocuments();
     return querySnapshot.documents;
   }
-  
+
   //curUser will follow user2.
   Future<void> addUserFollow(User curUser, User user2){
     _addUserAsFollowerOf(curUser.uid, user2);
     _addUserAsFollowing(curUser, user2.uid);
   }
-  
+
   Future<void> _addUserAsFollowerOf(String curUserid, User user2){
-	String uid2 = user2.uid;
+    String uid2 = user2.uid;
     CollectionReference _ref = _firestore.collection("users").document(uid2).collection("followers");
     Map<String, dynamic> map = {'userid': curUserid};
     _ref.document(curUserid).setData(map);
-    
-	//update number of followers
+
+    //update number of followers
     int numFollowers = int.parse(user2.numOfFollowers);
     numFollowers++;
     user2.numOfFollowers = "$numFollowers";
     return _firestore.collection("users").document(uid2).setData(user2.userToMap(user2));
   }
-  
+
   Future<void> _addUserAsFollowing(User curUser, String uid2){
-	String curUserid = curUser.uid;
+    String curUserid = curUser.uid;
     CollectionReference _ref = _firestore.collection("users").document(curUserid).collection("following");
     Map<String, dynamic> map = {'userid': uid2};
     _ref.document(uid2).setData(map);
@@ -276,18 +282,18 @@ class AuthService {
     //convert Like to map.
     Map map = like.toMap();
     _ref.document(curUser.uid).setData(map);
-   
+
     //update post's number of likes.
     int numLike = int.parse(likedPost.numberOfLikes);
     numLike++;
     likedPost.numberOfLikes = "$numLike";
     return _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
   }
-  
+
   Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
     CollectionReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId").collection("likes");
     _ref.document(curUser.uid).delete();
-    
+
     //update post's number of likes.
     int numLike = int.parse(likedPost.numberOfLikes);
     numLike--;

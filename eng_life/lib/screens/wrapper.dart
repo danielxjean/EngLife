@@ -20,7 +20,7 @@ class _WrapperState extends State<Wrapper> {
 
     //return either Home or Authenticate widget
     if (user == null) {
-      return Authenticate();
+      return Authenticate();  // have to insert a page after the user so they can follow some pages
     }
     else {
       return Home();
