@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
+import 'package:eng_life/screens/home/home_screens/comments_screen.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
@@ -153,7 +154,11 @@ class _PostDetailState extends State<PostDetail> {
                     ),
                     onTap: () {
 
-                      
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context) => CommentsPage(user: _currentUser, documentReference: widget.documentSnapshot.reference)
+                          )
+                      );
 
                     },
                   )

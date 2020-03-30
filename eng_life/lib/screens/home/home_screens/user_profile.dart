@@ -93,7 +93,7 @@ class _UserProfileState extends State<UserProfile> {
                     Column(
                       children: <Widget>[
                         Text(
-                          _user.numOfFollowing,
+                          _user.numOfFollowers,
                           style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
                         Text(
@@ -105,7 +105,7 @@ class _UserProfileState extends State<UserProfile> {
                     Column(
                       children: <Widget>[
                         Text(
-                          _user.numOfFollowers,
+                          _user.numOfFollowing,
                           style: TextStyle(color: Colors.grey[100], fontWeight: FontWeight.bold, fontSize: 18.0),
                         ),
                         Text(
