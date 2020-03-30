@@ -25,190 +25,227 @@ void main() {
     );
   }
   group('Sign in', (){
-    //region 'SignIn: empty email and password, does not sign in'
-    testWidgets('SignIn: empty email and password, does not sign in', (WidgetTester tester) async {
-      //1. Create
-      MockAuthService mockAuthService = MockAuthService();
-      SignIn signInPage = SignIn();
+    group('Sign In with empty fields',(){
+      //region 'SignIn: empty email and password, does not sign in'
+      testWidgets('SignIn: empty email and password, does not sign in', (WidgetTester tester) async {
+        //1. Create
+        MockAuthService mockAuthService = MockAuthService();
+        SignIn signInPage = SignIn();
 
-      //2. Stub
-      //No stub needed.
+        //2. Stub
+        //No stub needed.
 
-      //3. Act
-      //Load page
-      await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
-      //Tap sign-in button
-      await tester.tap(find.byKey(Key('signIn')));
+        //3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
+        //Tap sign-in button
+        await tester.tap(find.byKey(Key('signIn')));
 
-      //4.Verify
-      //No attempt to sign in should be made
-      verifyNever(mockAuthService.signInWithEmailAndPassword(any, any));
-    });//testWidgets
-    //endregion
-    //region 'SignIn: empty email and non-empty password, does not sign in'
-    testWidgets('SignIn: empty email and non-empty password, does not sign in', (WidgetTester tester) async {
-      //1. Create
-      MockAuthService mockAuthService = MockAuthService();
-      SignIn signInPage = SignIn();
+        //4.Verify
+        //No attempt to sign in should be made
+        verifyNever(mockAuthService.signInWithEmailAndPassword(any, any));
+      });//testWidgets
+      //endregion
+      //region 'SignIn: empty email and non-empty password, does not sign in'
+      testWidgets('SignIn: empty email and non-empty password, does not sign in', (WidgetTester tester) async {
+        //1. Create
+        MockAuthService mockAuthService = MockAuthService();
+        SignIn signInPage = SignIn();
 
-      //2. Stub
-      //No stub needed.
+        //2. Stub
+        //No stub needed.
 
-      //3. Act
-      //Load page
-      await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
-      //Enter password
-      Finder passwordField = find.byKey(Key('password'));
+        //3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
+        //Enter password
+        final Finder passwordField = find.byKey(Key('password'));
 
-      String password = 'password';
+        String password = 'password';
 
-      await tester.enterText(passwordField, password);
-      //Tap sign-in button
-      await tester.tap(find.byKey(Key('signIn')));
+        await tester.enterText(passwordField, password);
+        //Tap sign-in button
+        await tester.tap(find.byKey(Key('signIn')));
 
-      //4.Verify
-      //No attempt to sign in should be made
-      verifyNever(mockAuthService.signInWithEmailAndPassword(any, password));
-    });//testWidgets
-    //endregion
-    //region 'SignIn: non-empty email and empty password, does not sign in'
-    testWidgets('SignIn: non-empty email and empty password, does not sign in', (WidgetTester tester) async {
-      //1. Create
-      MockAuthService mockAuthService = MockAuthService();
-      SignIn signInPage = SignIn();
+        //4.Verify
+        //No attempt to sign in should be made
+        verifyNever(mockAuthService.signInWithEmailAndPassword(any, password));
+      });//testWidgets
+      //endregion
+      //region 'SignIn: non-empty email and empty password, does not sign in'
+      testWidgets('SignIn: non-empty email and empty password, does not sign in', (WidgetTester tester) async {
+        //1. Create
+        MockAuthService mockAuthService = MockAuthService();
+        SignIn signInPage = SignIn();
 
-      //2. Stub
-      //No stub needed.
+        //2. Stub
+        //No stub needed.
 
-      //3. Act
-      //Load page
-      await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
-      //Enter email
-      Finder emailField = find.byKey(Key('email'));
+        //3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
+        //Enter email
+        final Finder emailField = find.byKey(Key('email'));
 
-      String email = 'email@email';
+        String email = 'email@email.com';
 
-      await tester.enterText(emailField, email);
-      //Tap sign-in button
-      await tester.tap(find.byKey(Key('signIn')));
+        await tester.enterText(emailField, email);
+        //Tap sign-in button
+        await tester.tap(find.byKey(Key('signIn')));
 
-      //4.Verify
-      //No attempt to sign in should be made
-      verifyNever(mockAuthService.signInWithEmailAndPassword(email, any));
-    });//testWidgets
-    //endregion
-    //region 'SignIn: non-empty email and password, invalid password length, does not sign in'
-    testWidgets('SignIn: non-empty email and password, invalid password length, does not sign in', (WidgetTester tester) async {
-      //1. Create Mocks
-      MockAuthService mockAuthService = MockAuthService();
-      SignIn signInPage = SignIn();
+        //4.Verify
+        //No attempt to sign in should be made
+        verifyNever(mockAuthService.signInWithEmailAndPassword(email, any));
+      });//testWidgets
+      //endregion
+    });//group
+    group('Sign In with non-empty fields',(){
+      //region 'SignIn: non-empty email and password, show text'
+      testWidgets('SignIn: non-empty email and password, show text', (WidgetTester tester) async {
+        //1. Create Mocks
+        MockAuthService mockAuthService = MockAuthService();
+        SignIn signInPage = SignIn();
 
-      //2. Stub
-      //No stub needed.
+        //2. Stub
+        //No stub needed.
 
-      //3. Act
-      //Load page
-      await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
+        //3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
 
-      //Enter email and password
-      Finder emailField = find.byKey(Key('email'));
-      Finder passwordField = find.byKey(Key('password'));
+        //3. Act
+        String email = 'email@email.com';
+        String password = 'password';
 
-      String email = 'email@email';
-      String password = 'passw';  //password of length <6
+        final Finder emailField = find.byKey(Key('email'));
+        final Finder passwordField = find.byKey(Key('password'));
 
-      await tester.enterText(emailField, email);
-      await tester.enterText(passwordField, password);
+        await tester.enterText(emailField, email);
+        await tester.enterText(passwordField, password);
 
-      //Tap sign-in button
-      await tester.tap(find.byKey(Key('signIn')));
+        //4. Verify
+        final emailFinder = find.text(email);
+        final passwordFinder = find.text(password);
 
-      //4. Verify
-      //No attempt to sign in should be made
-      verifyNever(mockAuthService.signInWithEmailAndPassword(any, password));
-    });//testWidgets
-    //endregion
-    //region 'SignIn: non-empty email and password, invalid user, does not sign in'
-    testWidgets('SignIn: non-empty email and password, invalid user, does not sign in', (WidgetTester tester) async {
-      //1. Create Mocks
-      MockAuthService mockAuthService = MockAuthService();
-      SignIn signInPage = SignIn();
+        //There should be text entered.
+        expect(emailFinder, findsWidgets);
+        expect(passwordFinder, findsWidgets);
+      });//testWidgets
+      //endregion
+      //region 'SignIn: non-empty email and password, invalid password length, does not sign in'
+      testWidgets('SignIn: non-empty email and password, invalid password length, does not sign in', (WidgetTester tester) async {
+        //1. Create Mocks
+        MockAuthService mockAuthService = MockAuthService();
+        SignIn signInPage = SignIn();
 
-      //2. Stub
-      //have the sign in method return an error code for invalid user.
-      when(mockAuthService.signInWithEmailAndPassword(any, any)).thenAnswer((_) => Future(() => 3));
+        //2. Stub
+        //No stub needed.
 
-      //3. Act
-      //Load page
-      await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
-      //Enter email and password
-      Finder emailField = find.byKey(Key('email'));
-      Finder passwordField = find.byKey(Key('password'));
+        //3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
 
-      String email = 'email@email';
-      String password = 'password';
+        //Enter email and password
+        final Finder emailField = find.byKey(Key('email'));
+        final Finder passwordField = find.byKey(Key('password'));
 
-      await tester.enterText(emailField, email);
-      await tester.enterText(passwordField, password);
+        String email = 'email@email.com';
+        String password = 'passw';  //password of length <6
 
-      //Tap sign-in button
-      await tester.tap(find.byKey(Key('signIn')));
+        await tester.enterText(emailField, email);
+        await tester.enterText(passwordField, password);
 
-      //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 3));
+        //Tap sign-in button
+        await tester.tap(find.byKey(Key('signIn')));
 
-      //4. Verify
-      final errorFinder = find.text('No user exists with entered email.');
+        //4. Verify
+        //No attempt to sign in should be made
+        verifyNever(mockAuthService.signInWithEmailAndPassword(any, password));
+      });//testWidgets
+      //endregion
+      //region 'SignIn: non-empty email and password, invalid user, does not sign in'
+      testWidgets('SignIn: non-empty email and password, invalid user, does not sign in', (WidgetTester tester) async {
+        //1. Create Mocks
+        MockAuthService mockAuthService = MockAuthService();
+        SignIn signInPage = SignIn();
 
-      //attempt to sign in should be made, but an error message should be given.
-      verify(mockAuthService.signInWithEmailAndPassword(email, password));
-      expect(errorFinder, findsOneWidget);
-    });//testWidgets
-    //endregion
-    //region 'SignIn: non-empty email and password, valid user, does sign in'
-    testWidgets('SignIn: non-empty email and password, valid user, does sign in', (WidgetTester tester) async {
-      //1. Create Mocks
-      MockAuthService mockAuthService = MockAuthService();
-      SignIn signInPage = SignIn();
+        //2. Stub
+        //have the sign in method return an error code for invalid user.
+        when(mockAuthService.signInWithEmailAndPassword(any, any)).thenAnswer((_) => Future(() => 3));
 
-      //2. Stub
-      //have the sign in method not return an error code for invalid user.
-      when(mockAuthService.signInWithEmailAndPassword(any, any)).thenAnswer((_) => Future(() =>  User()));   //return an user
+        //3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
+        //Enter email and password
+        final Finder emailField = find.byKey(Key('email'));
+        final Finder passwordField = find.byKey(Key('password'));
 
-      //3. Act
-      //Load page
-      await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
+        String email = 'email@email.com';
+        String password = 'password';
 
-      //Enter email and password
-      Finder emailField = find.byKey(Key('email'));
-      Finder passwordField = find.byKey(Key('password'));
+        await tester.enterText(emailField, email);
+        await tester.enterText(passwordField, password);
 
-      String email = 'email@email';
-      String password = 'password';
+        //Tap sign-in button
+        await tester.tap(find.byKey(Key('signIn')));
 
-      await tester.enterText(emailField, email);
-      await tester.enterText(passwordField, password);
+        //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 3));
 
-      //Tap sign-in button
-      await tester.tap(find.byKey(Key('signIn')));
+        //4. Verify
+        final errorFinder = find.text('No user exists with entered email.');
 
-      //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 3));
+        //attempt to sign in should be made, but an error message should be given.
+        verify(mockAuthService.signInWithEmailAndPassword(email, password));
+        expect(errorFinder, findsOneWidget);
+      });//testWidgets
+      //endregion
+      //region 'SignIn: non-empty email and password, valid user, does sign in'
+      testWidgets('SignIn: non-empty email and password, valid user, does sign in', (WidgetTester tester) async {
+        //1. Create Mocks
+        MockAuthService mockAuthService = MockAuthService();
+        SignIn signInPage = SignIn();
 
-      //4. Verify
-      final errorFinder = find.text('Password entered is incorrect.');
-      final errorFinder2 = find.text('The email address is badly formatted.');
-      final errorFinder3 = find.text('No user exists with entered email.');
+        //2. Stub
+        //have the sign in method not return an error code for invalid user.
+        when(mockAuthService.signInWithEmailAndPassword(any, any)).thenAnswer((_) => Future(() =>  User()));   //return an user
 
-      //attempt to sign in should be made, and no error message should be given.
-      verify(mockAuthService.signInWithEmailAndPassword(email, password));
-      expect(errorFinder, findsNothing);
-      expect(errorFinder2, findsNothing);
-      expect(errorFinder3, findsNothing);
-    });//testWidgets
-    //endregion
+        //3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: signInPage, authService:  mockAuthService));
+
+        //Enter email and password
+        final Finder emailField = find.byKey(Key('email'));
+        final Finder passwordField = find.byKey(Key('password'));
+
+        String email = 'email@email.com';
+        String password = 'password';
+
+        await tester.enterText(emailField, email);
+        await tester.enterText(passwordField, password);
+
+        //Tap sign-in button
+        await tester.tap(find.byKey(Key('signIn')));
+
+        //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 3));
+
+        //4. Verify
+        final errorFinder = find.text('Password entered is incorrect.');
+        final errorFinder2 = find.text('The email address is badly formatted.');
+        final errorFinder3 = find.text('No user exists with entered email.');
+
+        //attempt to sign in should be made, and no error message should be given.
+        verify(mockAuthService.signInWithEmailAndPassword(email, password));
+        expect(errorFinder, findsNothing);
+        expect(errorFinder2, findsNothing);
+        expect(errorFinder3, findsNothing);
+      });//testWidgets
+      //endregion
+    });//group
+
   });//group
 
  group('Unit Tests', (){

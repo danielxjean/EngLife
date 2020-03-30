@@ -40,10 +40,10 @@ void main() {
     //Load page
     await widgetTester.pumpWidget(makeTestableWidget(childHome: registerPage, authService: authService));
     //Enter name, email and passwords
-    Finder nameField = find.byKey(Key('name'));
-    Finder emailField = find.byKey(Key('email'));
-    Finder passwordField = find.byKey(Key('password'));
-    Finder password2Field = find.byKey(Key('password2'));
+    final Finder nameField = find.byKey(Key('name'));
+    final Finder emailField = find.byKey(Key('email'));
+    final Finder passwordField = find.byKey(Key('password'));
+    final Finder password2Field = find.byKey(Key('password2'));
 
     await widgetTester.enterText(nameField, name);
     await widgetTester.enterText(emailField, email);
@@ -69,7 +69,7 @@ void main() {
         //endregion
 
         //region 2. Stub
-        //no mock needed
+        //No stub needed
         //endregion
 
         //region 3. Act
@@ -93,12 +93,12 @@ void main() {
         //endregion
 
         //region 2. Stub
-        //no mock needed
+        //No stub needed
         //endregion
 
         //region 3. Act
         //String name = 'name';
-        String email = 'email@email';
+        String email = 'email@email.com';
         String password = 'password';
         await registrationTesterHelper(widgetTester: tester, registerPage: registerPage, authService: mockAuthService,
             //name: name,
@@ -121,12 +121,12 @@ void main() {
         //endregion
 
         //region 2. Stub
-        //no mock needed
+        //No stub needed
         //endregion
 
         //region 3. Act
         String name = 'name';
-        //String email = 'email@email';
+        //String email = 'email@email.com';
         String password = 'password';
         await registrationTesterHelper(widgetTester: tester, registerPage: registerPage, authService: mockAuthService,
             name: name,
@@ -150,12 +150,12 @@ void main() {
         //endregion
 
         //region 2. Stub
-        //no mock needed
+        //No stub needed
         //endregion
 
         //region 3. Act
         String name = 'name';
-        String email = 'email@email';
+        String email = 'email@email.com';
         String password2 = 'password';
         await registrationTesterHelper(widgetTester: tester, registerPage: registerPage, authService: mockAuthService,
             name: name,
@@ -179,12 +179,12 @@ void main() {
         //endregion
 
         //region 2. Stub
-        //no mock needed
+        //no stub needed
         //endregion
 
         //region 3. Act
         String name = 'name';
-        String email = 'email@email';
+        String email = 'email@email.com';
         String password = 'password';
         await registrationTesterHelper(widgetTester: tester, registerPage: registerPage, authService: mockAuthService,
             name: name,
@@ -203,6 +203,51 @@ void main() {
 
     });//group
     group('Register with non-empty fields', (){
+      testWidgets('Register: non-empty name, email, password and password2, show text', (WidgetTester tester) async {
+        //region Test for register
+        //region 1. Create Mocks
+        MockAuthService mockAuthService = MockAuthService();
+        Register registerPage = Register();
+        //endregion
+
+        //region 2. Stub
+        //No stub needed
+        //endregion
+
+        //region 3. Act
+        //Load page
+        await tester.pumpWidget(makeTestableWidget(childHome: registerPage, authService: mockAuthService));
+        //Enter name, email and passwords
+        String name = 'name';
+        String email = 'email@email.com';
+        String password = 'password';
+        String password2 = 'password2';
+
+        final Finder nameField = find.byKey(Key('name'));
+        final Finder emailField = find.byKey(Key('email'));
+        final Finder passwordField = find.byKey(Key('password'));
+        final Finder password2Field = find.byKey(Key('password2'));
+
+        await tester.enterText(nameField, name);
+        await tester.enterText(emailField, email);
+        await tester.enterText(passwordField, password);
+        await tester.enterText(password2Field, password2);
+        //endregion
+
+        //region 4. Verify
+        final nameFinder = find.text(name);
+        final emailFinder = find.text(email);
+        final passwordFinder = find.text(password);
+        final password2Finder = find.text(password2);
+
+        //There should be text entered.
+        expect(nameFinder, findsWidgets);
+        expect(emailFinder, findsWidgets);
+        expect(passwordFinder, findsWidgets);
+        expect(password2Finder, findsWidgets);
+        //endregion
+        //endregion
+      });//testWidgets
       testWidgets('Register: non-empty name, email, password and password2, non-matching passwords, does not register', (WidgetTester tester) async {
         //region Test for register
         //region 1. Create Mocks
@@ -217,7 +262,7 @@ void main() {
 
         //region 3. Act
         String name = 'name';
-        String email = 'email@email';
+        String email = 'email@email.com';
         String password = 'password';
         String password2 = 'password2';
         await registrationTesterHelper(widgetTester: tester, authService: mockAuthService, registerPage: registerPage,
@@ -248,7 +293,7 @@ void main() {
 
         //region 3. Act
         String name = 'name';
-        String email = 'email@email';
+        String email = 'email@email.com';
         String password = 'passw';    //password length less than 6
         await registrationTesterHelper(widgetTester: tester, authService: mockAuthService, registerPage: registerPage,
             name: name,
@@ -277,7 +322,7 @@ void main() {
 
         //region 3. Act
         String name = 'name';
-        String email = 'email@email';
+        String email = 'email@email.com';
         String password = 'password';
         await registrationTesterHelper(widgetTester: tester, authService: mockAuthService, registerPage: registerPage,
             name: name,
@@ -312,7 +357,7 @@ void main() {
 
         //region 3. Act
         String name = 'name';
-        String email = 'email@email';
+        String email = 'email@email.com';
         String password = 'password';
         await registrationTesterHelper(widgetTester: tester, registerPage: registerPage, authService: mockAuthService,
             name: name,
