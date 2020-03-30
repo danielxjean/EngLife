@@ -9,7 +9,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 
-
 class MockAuthService extends Mock implements AuthService{}
 
 void main() {
@@ -230,8 +229,72 @@ void main() {
         //endregion
 
         //region 4. Verify
-        //no attempt to register should be made, and no error message should be given.
+        //no attempt to register should be made.
         verifyNever(mockAuthService.registerWithEmailAndPassword(email, any, name));
+        //endregion
+        //endregion
+      });//testWidgets
+      testWidgets('Register: non-empty name, email, password and password2, invalid passwords, does not register', (WidgetTester tester) async {
+        //region Test for register
+        //region 1. Create Mocks
+        MockAuthService mockAuthService = MockAuthService();
+        Register registerPage = Register();
+        //endregion
+
+        //region 2. Stub
+        //have the sign in method not return an error code for invalid user.
+        //mock function already returns null by default.
+        //endregion
+
+        //region 3. Act
+        String name = 'name';
+        String email = 'email@email';
+        String password = 'passw';    //password length less than 6
+        await registrationTesterHelper(widgetTester: tester, authService: mockAuthService, registerPage: registerPage,
+            name: name,
+            email: email,
+            password: password,
+            password2: password
+        );
+        //endregion
+
+        //region 4. Verify
+        //no attempt to register should be made.
+        verifyNever(mockAuthService.registerWithEmailAndPassword(any, any, any));
+        //endregion
+        //endregion
+      });//testWidgets
+      testWidgets('Register: non-empty name, email, password and password2, invalid user, does not register', (WidgetTester tester) async {
+        //region Test for register
+        //region 1. Create Mocks
+        MockAuthService mockAuthService = MockAuthService();
+        Register registerPage = Register();
+        //endregion
+
+        //region 2. Stub
+        when(mockAuthService.registerWithEmailAndPassword(any, any, any)).thenAnswer((_) => Future(() => 2));   //return error code on registration attempt
+        //endregion
+
+        //region 3. Act
+        String name = 'name';
+        String email = 'email@email';
+        String password = 'password';
+        await registrationTesterHelper(widgetTester: tester, authService: mockAuthService, registerPage: registerPage,
+            name: name,
+            email: email,
+            password: password,
+            password2: password
+        );
+        //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 3));
+        //endregion
+
+        //region 4. Verify
+        final errorFinder = find.text('The email address is already in use by another account.');
+        //attempt to register should be made, and an error message should be given.
+        verify(mockAuthService.registerWithEmailAndPassword(email, any, name));
+        expect(errorFinder, findsOneWidget);
         //endregion
         //endregion
       });//testWidgets
@@ -244,7 +307,7 @@ void main() {
 
         //region 2. Stub
         //Have the sign in method not return an error code for invalid user.
-        //Mock function already returns null by default.
+        when(mockAuthService.registerWithEmailAndPassword(any, any, any)).thenAnswer((_) => Future(() =>  User()));   //return an user
         //endregion
 
         //region 3. Act
@@ -257,6 +320,9 @@ void main() {
             password: password,
             password2: password
         );
+        //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 3));
         //endregion
 
         //region 4. Verify
@@ -273,7 +339,9 @@ void main() {
         //endregion
       });//testWidgets
     });//group
-
   });//group
 
+  group('Unit Tests', (){
+    //TODO: add unit tests.
+  });//group
 }

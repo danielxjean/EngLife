@@ -155,7 +155,8 @@ void main() {
       await tester.tap(find.byKey(Key('signIn')));
 
       //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 3));
 
       //4. Verify
       final errorFinder = find.text('No user exists with entered email.');
@@ -173,7 +174,7 @@ void main() {
 
       //2. Stub
       //have the sign in method not return an error code for invalid user.
-      //mock function already returns null by default.
+      when(mockAuthService.signInWithEmailAndPassword(any, any)).thenAnswer((_) => Future(() =>  User()));   //return an user
 
       //3. Act
       //Load page
@@ -191,6 +192,10 @@ void main() {
 
       //Tap sign-in button
       await tester.tap(find.byKey(Key('signIn')));
+
+      //Wait to allow for futures to complete. Otherwise, flutter test will throw an error about a timer still pending after disposing the widget tree.
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 3));
 
       //4. Verify
       final errorFinder = find.text('Password entered is incorrect.');

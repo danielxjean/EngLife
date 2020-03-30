@@ -155,7 +155,12 @@ class _SignInState extends State<SignIn> {
                             setState(() {
                               loading = false;
                             });
-                          }
+                          }break;
+                          default:{
+                            setState(() {
+                              loading = false;
+                            });
+                          }break;
                         }
                       }
 

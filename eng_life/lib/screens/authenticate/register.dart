@@ -190,23 +190,31 @@ class _RegisterState extends State<Register> {
                         final AuthService _auth = AuthInfo.of(context).authService;
 
                         dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName);
-                        if (result == 1) {
-                          setState(() {
-                            error = "The email address is badly formatted.";
-                            loading = false;
-                          });
-                        }
-                        else if (result == 2) {
-                          setState(() {
-                            error = "The email address is already in use by another account.";
-                            loading = false;
-                          });
-                        }
-                        else {
-                          setState(() {
-                            error = "Something went wrong, incorrect email or password.";
-                            loading = false;
-                          });
+                        switch (result){
+                          case 1: {
+                            setState(() {
+                              error = "The email address is badly formatted.";
+                              loading = false;
+                            });
+
+                          }break;
+                          case 2: {
+                            setState(() {
+                              error = "The email address is already in use by another account.";
+                              loading = false;
+                            });
+                          }break;
+                          case -1: {
+                            setState(() {
+                              error = "Something went wrong, incorrect email or password.";
+                              loading = false;
+                            });
+                          }break;
+                          default:{
+                            setState(() {
+                              loading = false;
+                            });
+                          }break;
                         }
                       }
                     },
