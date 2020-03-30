@@ -35,6 +35,7 @@ class _RegisterState extends State<Register> {
         title: Text("Sign up to ENGLife"),
         actions: <Widget>[
           FlatButton.icon(
+            key: Key('toggle'),
             icon: Icon(
               Icons.person,
               color: Colors.white,

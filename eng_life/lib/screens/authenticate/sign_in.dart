@@ -33,6 +33,7 @@ class _SignInState extends State<SignIn> {
         title: Text("Sign in to ENGLife"),
         actions: <Widget>[
           FlatButton.icon(
+            key: Key('toggle'),
             icon: Icon(
               Icons.person,
               color: Colors.white,
