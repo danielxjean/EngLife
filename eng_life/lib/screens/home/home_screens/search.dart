@@ -29,7 +29,8 @@ class _SearchState extends State<Search> {
   }
 
   retrieveUsers() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
+    //final AuthService _auth = AuthInfo.of(context).authService; //use line below this one instead when called from initState().
+    final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     _currentUser = await _auth.getCurrentUser();
     setState(() {
       _future = _auth.retrieveUsers();
