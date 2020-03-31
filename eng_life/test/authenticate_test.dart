@@ -14,10 +14,11 @@ class MockAuthService extends Mock implements AuthService{}
 
 void main() {
   group('Authenticater', (){
+    //Since the user doesn't interact with this widget directly, and this widget is very straightforward, there aren't any negative tests.
     group('Positive Testing', (){
       testWidgets('Authenticate: loads SignIn, toggles back and forth with Register pages', (WidgetTester tester) async {
         //region Test for Authenticate
-        //region 1. Create Mocks
+        //region 1. Create Mocks and pages
         MockAuthService mockAuthService = MockAuthService();
         Authenticate authenticatePage = Authenticate();
         //endregion
@@ -61,7 +62,7 @@ void main() {
       });//testWidgets
       testWidgets('Authenticate: text fields should reset on toggles', (WidgetTester tester) async {
         //region Test for Authenticate
-        //region 1. Create Mocks
+        //region 1. Create Mocks and pages
         MockAuthService mockAuthService = MockAuthService();
         Authenticate authenticatePage = Authenticate();
         //endregion

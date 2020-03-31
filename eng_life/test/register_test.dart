@@ -17,7 +17,7 @@ void main() {
     assert(widgetTester != null);
     assert(authService != null);
     assert(registerPage != null);
-    //region 1. Create Mocks
+    //region 1. Create Mocks and pages
     //Handled outside of helper method. Since few mocks are needed, they will be passed as parameters.
     //endregion
 
@@ -53,7 +53,7 @@ void main() {
       group('Negative Testing', (){
         testWidgets('Register: empty name, email, password and password2; does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -77,7 +77,7 @@ void main() {
         });//testWidgets
         testWidgets('Register: empty name; does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -105,7 +105,7 @@ void main() {
         });//testWidgets
         testWidgets('Register: empty email; does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -134,7 +134,7 @@ void main() {
         });//testWidgets
         testWidgets('Register: empty password; does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -163,7 +163,7 @@ void main() {
         });//testWidgets
         testWidgets('Register: empty password2; does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -194,7 +194,7 @@ void main() {
       group('Positive Testing', (){
         testWidgets('Register: fields should instantiate as empty', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -227,7 +227,7 @@ void main() {
       group('Negative Testing', (){
         testWidgets('Register: non-empty name, email, password and password2, non-matching passwords, does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -258,7 +258,7 @@ void main() {
         });//testWidgets
         testWidgets('Register: non-empty name, email, password and password2, invalid passwords, does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -288,7 +288,7 @@ void main() {
         });//testWidgets
         testWidgets('Register: non-empty name, email, password and password2, invalid user, does not register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -324,7 +324,7 @@ void main() {
       group('Positive Testing', (){
         testWidgets('Register: non-empty name, email, password and password2, show text', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion
@@ -369,7 +369,7 @@ void main() {
         });//testWidgets
         testWidgets('Register: non-empty name, email, password and password2, valid user, does register', (WidgetTester tester) async {
           //region Test for register
-          //region 1. Create Mocks
+          //region 1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           Register registerPage = Register();
           //endregion

@@ -121,7 +121,7 @@ void main() {
       group('Negative Testing', (){
         //region 'SignIn: non-empty email and password, invalid password length, does not sign in'
         testWidgets('SignIn: non-empty email and password, invalid password length, does not sign in', (WidgetTester tester) async {
-          //1. Create Mocks
+          //1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           SignIn signInPage = SignIn();
 
@@ -152,7 +152,7 @@ void main() {
         //endregion
         //region 'SignIn: non-empty email and password, invalid user, does not sign in'
         testWidgets('SignIn: non-empty email and password, invalid user, does not sign in', (WidgetTester tester) async {
-          //1. Create Mocks
+          //1. Create Mocks and pages and pages
           MockAuthService mockAuthService = MockAuthService();
           SignIn signInPage = SignIn();
 
@@ -192,7 +192,7 @@ void main() {
       group('Positive Testing', (){
         //region 'SignIn: non-empty email and password, show text'
         testWidgets('SignIn: non-empty email and password, show text', (WidgetTester tester) async {
-          //1. Create Mocks
+          //1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           SignIn signInPage = SignIn();
 
@@ -224,7 +224,7 @@ void main() {
         //endregion
         //region 'SignIn: non-empty email and password, valid user, does sign in'
         testWidgets('SignIn: non-empty email and password, valid user, does sign in', (WidgetTester tester) async {
-          //1. Create Mocks
+          //1. Create Mocks and pages
           MockAuthService mockAuthService = MockAuthService();
           SignIn signInPage = SignIn();
 

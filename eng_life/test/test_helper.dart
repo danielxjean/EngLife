@@ -27,7 +27,7 @@ class TestHelper{
     assert(widgetTester != null);
     assert(authService != null);
     assert(registerPage != null);
-    //region 1. Create Mocks
+    //region 1. Create Mocks and pages
     //Handled outside of helper method. Since few mocks are needed, they will be passed as parameters.
     //endregion
 
