@@ -1,12 +1,11 @@
 import 'dart:io';
 
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/auth_info.dart';
 import 'package:flutter/material.dart';
 
 class EditNewPhoto extends StatefulWidget {
 
-  final File imageSelected;
+  File imageSelected;
 
   EditNewPhoto({this.imageSelected});
 
@@ -16,15 +15,15 @@ class EditNewPhoto extends StatefulWidget {
 
 class _EditNewPhotoState extends State<EditNewPhoto> {
 
+  final AuthService _auth = AuthService();
 
   String _caption;
 
   void uploadPicture() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
 
     await _auth.getCurrentUser().then((user) {
       _auth.uploadImageToStorage(widget.imageSelected).then((url) {
-        _auth.addPhostToDb(url, _caption == null ? "" : _caption, user);
+        _auth.addPhostToDb(url, _caption, user);
       });
     });
   }

@@ -6,7 +6,6 @@ import 'package:eng_life/screens/home/home_screens/comments_screen.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +22,7 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
 
+  final _auth = AuthService();
 
   bool _liked = false;
   bool _loading = true;
@@ -32,11 +32,10 @@ class _PostDetailState extends State<PostDetail> {
   @override
   void initState() {
     super.initState();
-    retrieveInformation();
+    retreiveInformation();
   }
 
-  retrieveInformation() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
+  retreiveInformation() async {
     _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
     _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
@@ -46,10 +45,35 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   refreshLikes() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
     setState(() {
       print("likes refreshed");
+    });
+  }
+
+  Future<bool> createConfirmationDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Confirm Post Delete"),
+            content: Text("Are you sure you want to delete this post?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Cancel"),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text("Delete"),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              )
+            ],
+          );
     });
   }
 
@@ -69,36 +93,57 @@ class _PostDetailState extends State<PostDetail> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(
-                      widget.documentSnapshot.data['userProfilePictureUrl']
-                    ),
-                    radius: 25.0,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(
+                          widget.documentSnapshot.data['userProfilePictureUrl']
+                        ),
+                        radius: 25.0,
+                      ),
+                      SizedBox(width: 5.0),
+                      GestureDetector(
+                        child: Text(
+                          widget.documentSnapshot.data['displayName'],
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                        ),
+                        onTap: () {
+                          if (widget.userId == widget.currentUserId) {
+                            Navigator.pop(context);
+                          }
+                          else {
+                            Navigator.push(context,
+                                MaterialPageRoute(
+                                    builder: (context) {
+                                      return UserProfile(userId: widget.userId);
+
+                                    }
+                                )
+                            );
+                          }
+                        },
+                      )
+                    ],
                   ),
-                  SizedBox(width: 5.0),
-                  GestureDetector(
-                    child: Text(
-                      widget.documentSnapshot.data['displayName'],
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-                    ),
-                    onTap: () {
-                      if (widget.userId == widget.currentUserId) {
-                        Navigator.pop(context);
+                  widget.userId == widget.currentUserId ? IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async {
+                      if (await createConfirmationDialog(context) == true) {
+                        print("Delete post");
+                        setState(() {
+                          _loading = true;
+                        });
+                        await _auth.deleteUserPost(widget.userId, widget.documentSnapshot.documentID);
+                        Navigator.of(context).pop();
                       }
                       else {
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) {
-                                  return UserProfile(userId: widget.userId);
-
-                                }
-                            )
-                        );
+                        //do nothing
                       }
                     },
-                  )
+                  ) : Container()
                 ],
               ),
             ),
@@ -124,7 +169,6 @@ class _PostDetailState extends State<PostDetail> {
                       size: 40.0,
                     ),
                     onTap: () {
-                      final AuthService _auth = AuthInfo.of(context).authService;
                       //Post.mapToPost(widget.documentSnapshot.data);
                       //widget.currentUserId
                       //widget.documentSnapshot.documentID
