@@ -13,7 +13,6 @@ class DatabaseService {
 
   //collection reference
   final CollectionReference userCollection = Firestore.instance.collection('users');
-  final _authService = AuthService();
 
   Future<void> addPhotoToDb(String imageUrl){
     CollectionReference _ref = userCollection.document(this.uid).collection("photos");

@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:eng_life/services/auth_info.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -14,7 +14,6 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
 
-  final _auth = AuthService();
   User _currentUser;
   Future<User> _currentUserFuture;
   Future<List<DocumentSnapshot>> _future;
@@ -24,14 +23,15 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    retreiveUserDetails();
+    retrieveUserDetails();
   }
 
-  retreiveUserDetails() async {
+  retrieveUserDetails() async {
+    final AuthService _auth = AuthInfo.of(context).authService;
     User currentUser = await _auth.getCurrentUser();
 
     setState(() {
-      _future = _auth.retreiveUserPosts(currentUser.uid);
+      _future = _auth.retrieveUserPosts(currentUser.uid);
       _currentUserFuture = _auth.getCurrentUser();
       _currentUser = currentUser;
     });
@@ -56,6 +56,7 @@ class _ProfileState extends State<Profile> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
+              final AuthService _auth = AuthInfo.of(context).authService;
               await _auth.signOut();
             },
           )

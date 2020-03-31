@@ -6,6 +6,7 @@ import 'package:eng_life/screens/home/home_screens/comments_screen.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
+import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,6 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
 
-  final _auth = AuthService();
 
   bool _liked = false;
   bool _loading = true;
@@ -32,10 +32,11 @@ class _PostDetailState extends State<PostDetail> {
   @override
   void initState() {
     super.initState();
-    retreiveInformation();
+    retrieveInformation();
   }
 
-  retreiveInformation() async {
+  retrieveInformation() async {
+    final AuthService _auth = AuthInfo.of(context).authService;
     _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
     _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
@@ -45,6 +46,7 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   refreshLikes() async {
+    final AuthService _auth = AuthInfo.of(context).authService;
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
     setState(() {
       print("likes refreshed");
@@ -122,6 +124,7 @@ class _PostDetailState extends State<PostDetail> {
                       size: 40.0,
                     ),
                     onTap: () {
+                      final AuthService _auth = AuthInfo.of(context).authService;
                       //Post.mapToPost(widget.documentSnapshot.data);
                       //widget.currentUserId
                       //widget.documentSnapshot.documentID
