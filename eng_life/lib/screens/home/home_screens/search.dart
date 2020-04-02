@@ -31,9 +31,11 @@ class _SearchState extends State<Search> {
   retrieveUsers() async {
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     _currentUser = await _auth.getCurrentUser();
-    setState(() {
-      _future = _auth.retrieveUsers();
-    });
+    if(mounted){
+      setState(() {
+        _future = _auth.retrieveUsers();
+      });
+    }
   }
 
   @override

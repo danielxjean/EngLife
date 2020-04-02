@@ -27,14 +27,16 @@ class _ProfileState extends State<Profile> {
   }
 
   retrieveUserDetails() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
+    final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     User currentUser = await _auth.getCurrentUser();
 
-    setState(() {
-      _future = _auth.retrieveUserPosts(currentUser.uid);
-      _currentUserFuture = _auth.getCurrentUser();
-      _currentUser = currentUser;
-    });
+    if(mounted){
+      setState(() {
+        _future = _auth.retrieveUserPosts(currentUser.uid);
+        _currentUserFuture = _auth.getCurrentUser();
+        _currentUser = currentUser;
+      });
+    }
   }
 
   @override

@@ -36,13 +36,15 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   retrieveInformation() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
+    final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
     _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
-    setState(() {
-      _loading = false;
-    });
+    if(mounted){
+      setState(() {
+        _loading = false;
+      });
+    }
   }
 
   refreshLikes() async {
