@@ -98,15 +98,9 @@ class _CommentsScreenState extends State<CommentsPage> {
               ),
               ),
             ),
-            onTap: () async{
-              if (_formKey.currentState.validate() && _enabledButton) {
-                setState(() {
-                  _enabledButton = false;
-                });
-                await commentPost();
-                setState(() {
-                  _enabledButton = true;
-                });
+            onTap: () {
+              if (_formKey.currentState.validate()) {
+                commentPost();
               }
             },
           )
@@ -115,7 +109,13 @@ class _CommentsScreenState extends State<CommentsPage> {
     );
   }
 
-  Future<void> commentPost() async{
+  commentPost() async{
+    if (!_enabledButton){
+      return;
+    }
+    setState(() {
+      _enabledButton = false;
+    });
     var inputComment = Comment(
       displayName: widget.user.displayName,
       profilePictureUrl: widget.user.profilePictureUrl,
@@ -129,6 +129,7 @@ class _CommentsScreenState extends State<CommentsPage> {
     });
     setState(() {
       print("refresh comments");
+      _enabledButton = true;
     });
 }
 
