@@ -8,6 +8,11 @@ class AuthInfo extends InheritedWidget{
   @override
   bool updateShouldNotify(AuthInfo oldWidget) => oldWidget.authService != authService;
 
+  /// Not to be called inside initState(). Use the following line instead:
+  ///
+  ///   final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
+  ///
+  /// See documentation on initState for more information.
   static AuthInfo of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<AuthInfo>();
 }
 
