@@ -148,21 +148,32 @@ class AuthService {
   }
 
   //upload image to storage
-  Future<String> uploadImageToStorage(File imageFile) async {
-    _storageReference = FirebaseStorage.instance.ref().child('${DateTime.now().millisecondsSinceEpoch}');
+  Future<Map<String, String>> uploadImageToStorage(File imageFile) async {
+    String _storageRef = '${DateTime.now().millisecondsSinceEpoch}';
+
+    print("DEBUG AuthService: $_storageRef");
+
+    _storageReference = FirebaseStorage.instance.ref().child(_storageRef);
     StorageUploadTask storageUploadTask = _storageReference.putFile(imageFile);
     var url = await (await storageUploadTask.onComplete).ref.getDownloadURL();
-    return url;
+
+    Map<String, String> _imageRef = {
+      'storageRef' : _storageRef,
+      'imageUrl' : url
+    };
+
+    return _imageRef;
   }
 
   //add photo to database for current user
-  Future<void> addPhostToDb(String imageUrl, String caption, User user) {
+  Future<void> addPhostToDb(Map<String, String> imageData, String caption, User user) {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
-    print("IMAGE URL: ${imageUrl}");
+    print("IMAGE URL: ${imageData['imageUrl']}");
 
     Post post = Post(
         userId: user.uid,
-        postPhotoUrl: imageUrl,
+        postPhotoUrl: imageData['imageUrl'],
+        postPhotoRef: imageData['storageRef'],
         caption: caption,
         displayName: user.displayName,
         userProfilePictureUrl:
@@ -312,6 +323,59 @@ class AuthService {
   Future<DocumentSnapshot> refreshSnapshotInfo(DocumentSnapshot documentSnapshot) async {
     DocumentSnapshot snapshot = await documentSnapshot.reference.get();
     return snapshot;
+  }
+
+  Future<void> updateUserProfileInformation(User user, Map<String, String> imageData, String newDisplayName, String newBio) {
+    user.displayName = newDisplayName;
+    user.bio = newBio;
+    if (imageData != null) {
+
+      //check if it's the first time changing profile pic
+      if (user.profilePictureRef == null) {
+        //first time changing profile picture, no need to delete any old ones
+        user.profilePictureUrl = imageData['imageUrl'];
+        user.profilePictureRef = imageData['storageRef'];
+      }
+      else {
+        //new profile pic, delete old one from storage
+        deleteImageFromStorage(user.profilePictureRef);
+        //set new information to user
+        user.profilePictureUrl = imageData['imageUrl'];
+        user.profilePictureRef = imageData['storageRef'];
+      }
+    }
+
+    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+  }
+
+  Future<void> deleteImageFromStorage(String imageRef) {
+    FirebaseStorage.instance.ref().child(imageRef).delete();
+  }
+
+
+  Future<void> deleteUserPost(String uid, String pid) async {
+    //get current user information
+    DocumentSnapshot documentSnapshot = await _firestore.collection("users").document(uid).get();
+    User user = User.mapToUser(documentSnapshot.data);
+
+    //get post information
+    documentSnapshot = await _firestore.collection("users").document(uid).collection("posts").document(pid).get();
+    Post post = Post.mapToPost(documentSnapshot.data);
+
+    //first delete post image reference in storage
+    deleteImageFromStorage(post.postPhotoRef);
+
+    //second delete document
+    CollectionReference _ref = _firestore.collection("users").document(uid).collection("posts");
+    _ref.document(pid).delete();
+
+    //update user post info
+    int numPosts = int.parse(user.numOfPosts);
+    numPosts--;
+    user.numOfPosts = "$numPosts";
+
+    //set data in database
+    return _firestore.collection("users").document(uid).setData(user.userToMap(user));
   }
 
 }
