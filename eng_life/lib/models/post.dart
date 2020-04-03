@@ -9,7 +9,7 @@ class Post {
   String displayName; //name of user posting
   String userProfilePictureUrl; //imageUrl of user's profile picture
   String numberOfLikes;
-  FieldValue timestamp;
+  Timestamp timestamp;
 
   Post({this.userId, this.postPhotoUrl, this.postPhotoRef, this.caption, this.displayName, this.userProfilePictureUrl, this.numberOfLikes, this.timestamp});
 

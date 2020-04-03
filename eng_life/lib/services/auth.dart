@@ -180,7 +180,7 @@ class AuthService {
         userProfilePictureUrl:
         user.profilePictureUrl,
         numberOfLikes: "0",
-        timestamp: FieldValue.serverTimestamp()
+        timestamp: Timestamp.now()
     );
 
     //add post to db and return the post document id
