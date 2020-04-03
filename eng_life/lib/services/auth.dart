@@ -7,6 +7,7 @@ import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -166,7 +167,7 @@ class AuthService {
   }
 
   //add photo to database for current user
-  Future<void> addPhostToDb(Map<String, String> imageData, String caption, User user) {
+  Future<void> addPhostToDb(Map<String, String> imageData, String caption, User user) async {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
     print("IMAGE URL: ${imageData['imageUrl']}");
 
@@ -178,10 +179,23 @@ class AuthService {
         displayName: user.displayName,
         userProfilePictureUrl:
         user.profilePictureUrl,
-        numberOfLikes: "0");
+        numberOfLikes: "0",
+        timestamp: FieldValue.serverTimestamp()
+    );
 
-    //add post to db
-    _collectionRef.add(post.toMap(post));
+    //add post to db and return the post document id
+    DocumentReference documentReference = await _collectionRef.add(post.toMap(post));
+    String postId = documentReference.documentID;
+
+    //add post id with relevant information to collections posts
+    _collectionRef = _firestore.collection("posts");
+    Map<String, dynamic> postRef = {
+      'uid' : user.uid,
+      'pid' : postId,
+      'timestamp' : post.timestamp,
+      //'isGroup' : user.isGroup ----> when this is available after Daniel's merge
+    };
+    _collectionRef.document(postId).setData(postRef);
 
     //increment number of posts in user
     int numOfPosts = int.parse(user.numOfPosts);
@@ -376,6 +390,77 @@ class AuthService {
 
     //set data in database
     return _firestore.collection("users").document(uid).setData(user.userToMap(user));
+  }
+
+  Future<List<DocumentSnapshot>> fetchFeed(String currentUserId) async {
+
+    QuerySnapshot _querySnapshot;
+
+    //1.0 create list of hold following userId
+    List<String> _userIdFollowing = List<String>();
+
+    //1.1 fetch list of every user being followed by currentUser
+    _querySnapshot = await _firestore.collection("users").document(currentUserId).collection("following").getDocuments();
+
+    //1.2 add the userIds to the userIdFollowing list
+    for (int i = 0; i < _querySnapshot.documents.length; i++) {
+      _userIdFollowing.add(_querySnapshot.documents[i].documentID);
+    }
+
+    print("FETCH FEED - # OF FOLLOWING IDS: ${_userIdFollowing.length}");
+
+    //2.0 create list to hold every post made by the users un _suerIdFollowing
+    List<DocumentSnapshot> _postList = List<DocumentSnapshot>();
+
+    //2.2 go through each user and fetch posts
+    for (int i = 0; i < _userIdFollowing.length; i++) {
+      print("FETCH FEED - FOLLOWING ID: ${_userIdFollowing[i]}");
+
+      _querySnapshot = await _firestore.collection("users").document(_userIdFollowing[i]).collection("posts").getDocuments();
+
+      print("FETCH FEED - # OF POSTS FOR ID: ${_querySnapshot.documents.length}");
+      //2.3 add every post to the list
+      for (int j = 0; j < _querySnapshot.documents.length; j++) {
+        _postList.add(_querySnapshot.documents[j]);
+      }
+
+    }
+
+    /*
+     *  By this stage the list _postList should contain every post the current user is supposed to see on his feed.
+     *  This will be modified to where depending on the toggle, it will include only the groups the current user is following,
+     *  or only the friends the current user is following.
+     *
+     *  From here we need to sort the list by order of timestamp, so that the last posts to be posted appear first.
+     */
+
+    print("-----POST LIST BEFORE SORT-----");
+    for (int i = 0; i < _postList.length; i++) {
+      print(_postList[i].data['timestamp']);
+    }
+
+    _postList.sort((a, b) {
+
+      //DateTime timestamp_a = a.data['timestamp'];
+      //DateTime timestamp_b = b.data['timestamp'];
+
+      //DateTime date_a = DateTime.fromMillisecondsSinceEpoch(a.data['timestamp']*1000);
+      //DateTime date_b = DateTime.fromMillisecondsSinceEpoch(b.data['timestamp']*1000);
+
+
+      Timestamp date_a = a.data['timestamp'];
+      Timestamp date_b = b.data['timestamp'];
+
+      return date_a.seconds.compareTo(date_b.seconds) * -1;
+    });
+
+    print("-----POST LIST AFTER SORT-----");
+    for (int i = 0; i < _postList.length; i++) {
+      print(_postList[i].data['timestamp']);
+    }
+
+    return _postList;
+
   }
 
 }
