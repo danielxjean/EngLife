@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 
 class PostDetail extends StatefulWidget {
 
-  DocumentSnapshot documentSnapshot;
-  String userId, currentUserId;
+  final DocumentSnapshot documentSnapshot;
+  final String userId, currentUserId;
 
   PostDetail({this.documentSnapshot, this.userId, this.currentUserId});
 
@@ -23,7 +23,7 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
 
-
+  bool _enabledButton = true;
   bool _liked = false;
   bool _loading = true;
   User _currentUser;
@@ -173,27 +173,8 @@ class _PostDetailState extends State<PostDetail> {
                         Icons.favorite_border,
                         size: 40.0,
                       ),
-                      onTap: () {
-                        final AuthService _auth = AuthInfo.of(context).authService;
-                        //Post.mapToPost(widget.documentSnapshot.data);
-                        //widget.currentUserId
-                        //widget.documentSnapshot.documentID
-                        if (_liked == true) {
-                          //unlike post
-                          _auth.deleteLikeFromPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID);
-                          setState(() {
-                            _liked = false;
-                            refreshLikes();
-                          });
-                        }
-                        else {
-                          //like post
-                          _auth.addLikeToPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID);
-                          setState(() {
-                            _liked = true;
-                            refreshLikes();
-                          });
-                        }
+                      onTap: ()   {
+                         likePost();
                       },
                     ),
                     SizedBox(width: 15),
@@ -233,5 +214,27 @@ class _PostDetailState extends State<PostDetail> {
           ),
         )
     );
+  }
+
+  void likePost () async{
+    if (!_enabledButton){
+      return;
+    }
+    //lock
+    setState(() {
+      _enabledButton = false;
+    });
+
+    final AuthService _auth = AuthInfo.of(context).authService;
+
+    await _auth.likeToPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID, !_liked);
+
+    setState(() {
+      _liked = !_liked;
+      refreshLikes();
+
+      //unlock
+      _enabledButton = true;
+    });
   }
 }

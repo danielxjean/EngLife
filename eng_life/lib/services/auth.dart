@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,7 @@ class AuthService {
   String _displayName = "Default";
 
   User _currentUser;
+  Future<void> _isLiking;
 
   //create user object based on firebase user
   User _userFromFirebaseUser(FirebaseUser user){
@@ -277,32 +279,54 @@ class AuthService {
 
 
 
+ Future<void> likeToPost(User curUser, Post likedPost, String postId, bool like) async{
+   if (_isLiking != null){
+     await _isLiking;
+     return likeToPost(curUser, likedPost, postId, like);
+   }
+   //lock
+   Completer completer = Completer<Null>();
+   _isLiking = completer.future;
 
 
-  Future<void> addLikeToPost(User curUser, Post likedPost, String postId){
+    if(like){
+      await addLikeToPost(curUser, likedPost ,postId);
+    }
+    else{
+      await deleteLikeFromPost(curUser, likedPost, postId);
+    }
+
+
+   //unlock
+   completer.complete();
+   _isLiking = null;
+ }
+
+  Future<void> addLikeToPost(User curUser, Post likedPost, String postId) async{
     CollectionReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId").collection("likes");
     //Will construct like.
     Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
     //convert Like to map.
     Map map = like.toMap();
-    _ref.document(curUser.uid).setData(map);
+    await _ref.document(curUser.uid).setData(map);
    
     //update post's number of likes.
-    int numLike = int.parse(likedPost.numberOfLikes);
+    int numLike = int.parse((await _ref.parent().get())['numberOfLikes']);
     numLike++;
     likedPost.numberOfLikes = "$numLike";
-    return _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
+    return await _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
   }
   
-  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
+  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId) async{
     CollectionReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId").collection("likes");
-    _ref.document(curUser.uid).delete();
+    //print('del: ${(await _ref.document(curUser.uid).get()).data}');
+    await _ref.document(curUser.uid).delete();
     
     //update post's number of likes.
-    int numLike = int.parse(likedPost.numberOfLikes);
+    int numLike = int.parse((await _ref.parent().get())['numberOfLikes']);
     numLike--;
     likedPost.numberOfLikes = "$numLike";
-    return _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
+    return await _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
   }
 
   Future<List<DocumentSnapshot>> retrieveUsers() async {

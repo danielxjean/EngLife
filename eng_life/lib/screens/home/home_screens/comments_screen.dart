@@ -18,6 +18,7 @@ class _CommentsScreenState extends State<CommentsPage> {
   String _commentText = "";
   var _formKey = GlobalKey<FormState>();
 
+  bool _enabledButton = true;
 
   /// This function disposes of the comment if called upon
   void dispose() {
@@ -97,9 +98,16 @@ class _CommentsScreenState extends State<CommentsPage> {
               ),
               ),
             ),
-            onTap: () {
-              if (_formKey.currentState.validate())
-                commentPost();
+            onTap: () async{
+              if (_formKey.currentState.validate() && _enabledButton) {
+                setState(() {
+                  _enabledButton = false;
+                });
+                await commentPost();
+                setState(() {
+                  _enabledButton = true;
+                });
+              }
             },
           )
         ],
@@ -107,8 +115,7 @@ class _CommentsScreenState extends State<CommentsPage> {
     );
   }
 
-
-  commentPost() {
+  Future<void> commentPost() async{
     var inputComment = Comment(
       displayName: widget.user.displayName,
       profilePictureUrl: widget.user.profilePictureUrl,
@@ -117,7 +124,7 @@ class _CommentsScreenState extends State<CommentsPage> {
       timeStamp: FieldValue.serverTimestamp(),
     );
     print(inputComment.toMap(inputComment).toString());
-    widget.documentReference.collection("comments").add(inputComment.toMap(inputComment)).whenComplete(() {
+    await widget.documentReference.collection("comments").add(inputComment.toMap(inputComment)).whenComplete(() {
       _comment.text = "";
     });
     setState(() {
