@@ -227,7 +227,7 @@ class _PostDetailState extends State<PostDetail> {
 
     final AuthService _auth = AuthInfo.of(context).authService;
 
-    await _auth.likeToPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID, !_liked);
+    await _auth.likePost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID, !_liked);
 
     setState(() {
       _liked = !_liked;
