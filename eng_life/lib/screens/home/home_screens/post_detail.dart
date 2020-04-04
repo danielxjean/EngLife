@@ -173,7 +173,7 @@ class _PostDetailState extends State<PostDetail> {
                         size: 40.0,
                       ),
                       onTap: ()   {
-                         likePost();
+                        likePost();
                       },
                     ),
                     SizedBox(width: 15),
@@ -222,16 +222,15 @@ class _PostDetailState extends State<PostDetail> {
     //lock
     setState(() {
       _enabledButton = false;
+      _liked = !_liked;
     });
 
     final AuthService _auth = AuthInfo.of(context).authService;
 
-    await _auth.likePost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID, !_liked);
+    await _auth.likePost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID, _liked).then((_) =>
+        refreshLikes());
 
     setState(() {
-      _liked = !_liked;
-      refreshLikes();
-
       //unlock
       _enabledButton = true;
     });

@@ -329,7 +329,9 @@ class AuthService {
   //endregion
   //endregion
 
- Future<void> likePost(User curUser, Post likedPost, String postId, bool like) async{
+  //region Like/Dislike Post
+  //Visible Like/Dislike Method + Handle Synchronization
+  Future<void> likePost(User curUser, Post likedPost, String postId, bool like) async{
    //Wait
    if (_isLiking[postId] != null){
      await _isLiking[postId];
@@ -340,40 +342,37 @@ class AuthService {
    _isLiking[postId] = completer.future;
 
    //Critical Section
-    like ? await addLikeToPost(curUser, likedPost ,postId)
-        : await deleteLikeFromPost(curUser, likedPost, postId);
+    like ? await _addLikeToPost(curUser, likedPost ,postId)
+        : await _deleteLikeFromPost(curUser, likedPost, postId);
 
    //Unlock
    completer.complete();
    _isLiking[postId] = null;
- }
+  }
 
-  Future<void> addLikeToPost(User curUser, Post likedPost, String postId) async{
-    CollectionReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId").collection("likes");
+  //region Like Dislike Methods
+  Future<void> _addLikeToPost(User curUser, Post likedPost, String postId) async{
+    DocumentReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId");
     //Will construct like.
     Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
     //convert Like to map.
     Map map = like.toMap();
-    await _ref.document(curUser.uid).setData(map);
+    await _ref.collection("likes").document(curUser.uid).setData(map);
    
     //update post's number of likes.
-    int numLike = int.parse((await _ref.parent().get())['numberOfLikes']);
-    numLike++;
-    likedPost.numberOfLikes = "$numLike";
-    return await _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
+    return _changeDocumentFieldValue(_ref, Field.numberOfLikes.name, true);
   }
   
-  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId) async{
-    CollectionReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId").collection("likes");
+  Future<void> _deleteLikeFromPost(User curUser, Post likedPost, String postId) async{
+    DocumentReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId");
     //print('del: ${(await _ref.document(curUser.uid).get()).data}');
-    await _ref.document(curUser.uid).delete();
+    await _ref.collection("likes").document(curUser.uid).delete();
     
     //update post's number of likes.
-    int numLike = int.parse((await _ref.parent().get())['numberOfLikes']);
-    numLike--;
-    likedPost.numberOfLikes = "$numLike";
-    return await _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
+    return _changeDocumentFieldValue(_ref, Field.numberOfLikes.name, false);
   }
+  //endregion
+  //endregion
 
   Future<List<DocumentSnapshot>> retrieveUsers() async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
