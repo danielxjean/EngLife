@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
 
-  PageController pageController;
+  final PageController pageController;
 
   Search({this.pageController});
 

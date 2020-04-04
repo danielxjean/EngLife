@@ -180,7 +180,6 @@ class _UserProfileState extends State<UserProfile> {
                             fit: BoxFit.cover,
                           ),
                           onTap: () {
-                            var currentUser;
                             Navigator.push(context,
                                 MaterialPageRoute(
                                     builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: widget.userId, currentUserId: _currentUser.uid,)

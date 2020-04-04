@@ -1,6 +1,5 @@
 import 'package:eng_life/screens/home/home_screens/add_photo.dart';
 import 'package:eng_life/screens/home/home_screens/feed.dart';
-import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/search.dart';
 import 'package:flutter/material.dart';
