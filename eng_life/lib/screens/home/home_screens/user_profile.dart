@@ -136,15 +136,15 @@ class _UserProfileState extends State<UserProfile> {
                       final AuthService _auth = AuthInfo.of(context).authService;
 
                       if (_isFollowing == true) {
-                        _auth.removeUserFollow(_currentUser, _user);
-                        refreshUserDetails();
+                        _auth.removeUserFollow(_currentUser, _user)
+                            .then((_) => refreshUserDetails());
                         setState(() {
                           _isFollowing = false;
                         });
                       }
                       else {
-                        _auth.addUserFollow(_currentUser, _user);
-                        refreshUserDetails();
+                        _auth.addUserFollow(_currentUser, _user)
+                            .then((_) => refreshUserDetails());
                         setState(() {
                           _isFollowing = true;
                         });

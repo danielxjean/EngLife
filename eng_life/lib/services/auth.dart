@@ -9,6 +9,27 @@ import 'package:eng_life/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+enum Field {
+  numberOfLikes, numberOfFollowers, numberOfFollowings, numberOfPosts
+}
+extension FieldExtension on Field{
+
+  String get name {
+    switch(this){
+      case Field.numberOfFollowers:
+        return 'numOfFollowers';
+      case Field.numberOfFollowings:
+        return 'numOfFollowing';
+      case Field.numberOfLikes:
+        return 'numberOfLikes';
+      case Field.numberOfPosts:
+        return 'numOfPosts';
+      default:
+        throw Exception('Invalid Field compiled');
+    }
+  }
+}
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
@@ -19,6 +40,7 @@ class AuthService {
   final Map<String, Future<void>> _isLiking = Map();
   final Map<String, Future<void>> _isFollowing = Map();
   final Map<String, Future<void>> _isFollowed = Map();
+
 
   //create user object based on firebase user
   User _userFromFirebaseUser(FirebaseUser user){
@@ -198,14 +220,32 @@ class AuthService {
   }
 
 
-//TODO synchronize inner follow methods with _isFollowing
-  //curUser will follow user2.
-  addUserFollow(User curUser, User user2){
-    _userAsFollowerOf(curUser.uid, user2, true);
-    _addUserAsFollowing(curUser, user2.uid);
+  //Increments or decrements a field in the document reference.
+  Future<void> _changeDocumentFieldValue(DocumentReference documentReference, String field, bool add) async{
+    int newValue = int.parse((await documentReference.get())[field]);
+    add ? newValue++ : newValue--;
+    return await documentReference.updateData({field: '$newValue'});
   }
 
+  //region Follower/Following
+  //region Visible Follower/Following Methods
+  //curUser will follow user2.
+  Future<void> addUserFollow(User curUser, User user2) async{
+    await Future.wait([
+    _userAsFollowerOf(curUser.uid, user2, true),
+    _userAsFollowing(curUser, user2.uid, true)
+    ]);
+  }
+  //curUser will unfollow user2.
+  Future<void> removeUserFollow(User curUser, User user2) async {
+    await Future.wait([
+      _userAsFollowerOf(curUser.uid, user2, false),
+      _userAsFollowing(curUser, user2.uid, false)
+    ]);
+  }
+  //endregion
 
+  //region Handle synchronization
   Future<void> _userAsFollowerOf(String curUserId, User user2, bool addFollow) async{
     String uid2 = user2.uid;
     //Wait
@@ -218,90 +258,76 @@ class AuthService {
     _isFollowed[uid2] = completer.future;
 
     //Critical Section
-    if(addFollow){
-      await _addUserAsFollowerOf(curUserId, user2);
-    }
-    else{
-      await _removeUserAsFollowerOf(curUserId, user2);
-    }
+    addFollow ? await _addUserAsFollowerOf(curUserId, user2)
+        : await _removeUserAsFollowerOf(curUserId, user2);
 
     //Unlock
     completer.complete();
     _isFollowed[uid2] = null;
   }
+  Future<void> _userAsFollowing(User curUser, String uid2, bool addFollow) async{
+    String curUserId = curUser.uid;
+    //Wait
+    if (_isFollowing[curUserId] != null){
+      await _isFollowing[curUserId];
+      return _userAsFollowing(curUser, uid2, addFollow);
+    }
+    //Lock
+    Completer completer = Completer<Null>();
+    _isFollowing[curUserId] = completer.future;
 
+    //Critical Section
+    addFollow ? await _addUserAsFollowing(curUser, uid2)
+        : await _removeUserAsFollowing(curUser, uid2);
+
+    //Unlock
+    completer.complete();
+    _isFollowing[curUserId] = null;
+  }
+  //endregion
+
+  //region Follow/Following Methods
   Future<void> _addUserAsFollowerOf(String curUserId, User user2) async{
-	String uid2 = user2.uid;
-    CollectionReference _ref = _firestore.collection("users").document(uid2).collection("followers");
+    String uid2 = user2.uid;
+    DocumentReference _ref = _firestore.collection("users").document(uid2);
     Map<String, dynamic> map = {'userid': curUserId};
-    _ref.document(curUserId).setData(map);
+    _ref.collection("followers").document(curUserId).setData(map);
     
-	//update number of followers
-    int numFollowers = int.parse(user2.numOfFollowers);
-    numFollowers++;
-    user2.numOfFollowers = "$numFollowers";
-    return _firestore.collection("users").document(uid2).setData(user2.userToMap(user2));
+	  //update number of followers
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowers.name, true);
   }
   
-  Future<void> _addUserAsFollowing(User curUser, String uid2){
-	String curUserid = curUser.uid;
-    CollectionReference _ref = _firestore.collection("users").document(curUserid).collection("following");
+  Future<void> _addUserAsFollowing(User curUser, String uid2) async{
+    String curUserId = curUser.uid;
+    DocumentReference _ref = _firestore.collection("users").document(curUserId);
     Map<String, dynamic> map = {'userid': uid2};
-    _ref.document(uid2).setData(map);
-
-    int numFollowing = int.parse(curUser.numOfFollowing);
-    numFollowing++;
-    curUser.numOfFollowing = "$numFollowing";
-    return _firestore.collection("users").document(curUserid).setData(curUser.userToMap(curUser));
-  }
-
-
-
-
-
-
-  //curUser will unfollow user2.
-  removeUserFollow(User curUser, User user2){
-    _userAsFollowerOf(curUser.uid, user2, false);
-    _removeUserAsFollowing(curUser, user2.uid);
-  }
-
-
-
-
-  Future<void> _removeUserAsFollowerOf(String curUserId, User user2){
-    //removes the curUserId document from the followers collection of user2
-
-    String uid2 = user2.uid;
-    CollectionReference _ref = _firestore.collection("users").document(uid2).collection("followers");
-    _ref.document(curUserId).delete();
+    _ref.collection("following").document(uid2).setData(map);
 
     //update number of followers
-    int numFollowers = int.parse(user2.numOfFollowers);
-    numFollowers--;
-    user2.numOfFollowers = "$numFollowers";
-    return _firestore.collection("users").document(uid2).setData(user2.userToMap(user2));
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowings.name, true);
   }
 
+  Future<void> _removeUserAsFollowerOf(String curUserId, User user2) async{
+    //removes the curUserId document from the followers collection of user2
+    String uid2 = user2.uid;
+    DocumentReference _ref = _firestore.collection("users").document(uid2);
+    _ref.collection("followers").document(curUserId).delete();
 
+    //update number of followers
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowers.name, false);
+  }
 
-
-  Future<void> _removeUserAsFollowing(User curUser, String uid2){
+  Future<void> _removeUserAsFollowing(User curUser, String uid2) async{
     //removes the uid2 document from the following collection of curUser
-
-    String curUserid = curUser.uid;
-    CollectionReference _ref = _firestore.collection("users").document(curUserid).collection("following");
-    _ref.document(uid2).delete();
+    String curUserId = curUser.uid;
+    DocumentReference _ref = _firestore.collection("users").document(curUserId);
+    _ref.collection("following").document(uid2).delete();
 
     //update number of following
-    int numFollowing = int.parse(curUser.numOfFollowing);
-    numFollowing--;
-    curUser.numOfFollowing = "$numFollowing";
-    return _firestore.collection("users").document(curUserid).setData(curUser.userToMap(curUser));
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowings.name, false);
   }
-
-
-
+  //endregion
+  //endregion
 
  Future<void> likePost(User curUser, Post likedPost, String postId, bool like) async{
    //Wait
@@ -314,13 +340,8 @@ class AuthService {
    _isLiking[postId] = completer.future;
 
    //Critical Section
-    if(like){
-      await addLikeToPost(curUser, likedPost ,postId);
-    }
-    else{
-      await deleteLikeFromPost(curUser, likedPost, postId);
-    }
-
+    like ? await addLikeToPost(curUser, likedPost ,postId)
+        : await deleteLikeFromPost(curUser, likedPost, postId);
 
    //Unlock
    completer.complete();
