@@ -187,7 +187,7 @@ class AuthService {
   }
 
   //add photo to database for current user
-  Future<void> addPhostToDb(Map<String, String> imageData, String caption, User user) {
+  Future<void> addPostToDb(Map<String, String> imageData, String caption, User user) {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
     print("IMAGE URL: ${imageData['imageUrl']}");
 
@@ -197,20 +197,14 @@ class AuthService {
         postPhotoRef: imageData['storageRef'],
         caption: caption,
         displayName: user.displayName,
-        userProfilePictureUrl:
-        user.profilePictureUrl,
+        userProfilePictureUrl: user.profilePictureUrl,
         numberOfLikes: "0");
 
     //add post to db
     _collectionRef.add(post.toMap(post));
 
     //increment number of posts in user
-    int numOfPosts = int.parse(user.numOfPosts);
-    numOfPosts++;
-    user.numOfPosts = "$numOfPosts";
-
-    //update user information in db
-    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+    return _changeDocumentFieldValue(_collectionRef.parent(), Field.numberOfPosts.name, true);
   }
 
   //retrieve photo for current user
@@ -228,16 +222,25 @@ class AuthService {
   }
 
   //region Follower/Following
-  //region Visible Follower/Following Methods
+  //region Visible Follower/Following Method
+  Future<void> userFollow(User curUser, User user2, bool add) async{
+    await (add
+        ? _addUserFollow(curUser, user2)
+        : _removeUserFollow(curUser, user2)
+    );
+  }
+  //endregion
+
+  //region Split follow/unfollow routines
   //curUser will follow user2.
-  Future<void> addUserFollow(User curUser, User user2) async{
+  Future<void> _addUserFollow(User curUser, User user2) async{
     await Future.wait([
     _userAsFollowerOf(curUser.uid, user2, true),
     _userAsFollowing(curUser, user2.uid, true)
     ]);
   }
   //curUser will unfollow user2.
-  Future<void> removeUserFollow(User curUser, User user2) async {
+  Future<void> _removeUserFollow(User curUser, User user2) async {
     await Future.wait([
       _userAsFollowerOf(curUser.uid, user2, false),
       _userAsFollowing(curUser, user2.uid, false)
@@ -329,6 +332,7 @@ class AuthService {
   //endregion
   //endregion
 
+
   //region Like/Dislike Post
   //Visible Like/Dislike Method + Handle Synchronization
   Future<void> likePost(User curUser, Post likedPost, String postId, bool like) async{
@@ -417,34 +421,28 @@ class AuthService {
     return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
   }
 
-  deleteImageFromStorage(String imageRef) {
-    FirebaseStorage.instance.ref().child(imageRef).delete();
+  Future<void> deleteImageFromStorage(String imageRef) {
+    return FirebaseStorage.instance.ref().child(imageRef).delete();
   }
 
 
   Future<void> deleteUserPost(String uid, String pid) async {
+    DocumentReference _ref = _firestore.collection("users").document(uid);
     //get current user information
-    DocumentSnapshot documentSnapshot = await _firestore.collection("users").document(uid).get();
-    User user = User.mapToUser(documentSnapshot.data);
+    DocumentSnapshot documentSnapshot = await _ref.get();
 
     //get post information
-    documentSnapshot = await _firestore.collection("users").document(uid).collection("posts").document(pid).get();
+    documentSnapshot = await _ref.collection("posts").document(pid).get();
     Post post = Post.mapToPost(documentSnapshot.data);
 
     //first delete post image reference in storage
     deleteImageFromStorage(post.postPhotoRef);
 
     //second delete document
-    CollectionReference _ref = _firestore.collection("users").document(uid).collection("posts");
-    _ref.document(pid).delete();
+    await _ref.collection("posts").document(pid).delete();
 
     //update user post info
-    int numPosts = int.parse(user.numOfPosts);
-    numPosts--;
-    user.numOfPosts = "$numPosts";
-
-    //set data in database
-    return _firestore.collection("users").document(uid).setData(user.userToMap(user));
+    return _changeDocumentFieldValue(_ref, Field.numberOfPosts.name, false);
   }
 
 }

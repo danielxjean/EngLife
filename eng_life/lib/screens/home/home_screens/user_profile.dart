@@ -25,6 +25,7 @@ class _UserProfileState extends State<UserProfile> {
 
   bool _loading = true;
   bool _isFollowing = false;
+  bool _enabledButton = true;
 
   @override
   void initState() {
@@ -48,9 +49,10 @@ class _UserProfileState extends State<UserProfile> {
   refreshUserDetails() async {
     final AuthService _auth = AuthInfo.of(context).authService;
     _user = await _auth.getUser(widget.userId);
-    setState(() {
+    //since there's a set state after this method is called, this one is redundant.
+    //setState(() {
       print("user refreshed");
-    });
+    //});
   }
 
   @override
@@ -133,24 +135,7 @@ class _UserProfileState extends State<UserProfile> {
                     color: Colors.grey[200],
                     child: _isFollowing == true ? Text("Unfollow") : Text("Follow"),
                     onPressed: () {
-                      final AuthService _auth = AuthInfo.of(context).authService;
-
-                      if (_isFollowing == true) {
-                        _auth.removeUserFollow(_currentUser, _user)
-                            .then((_) => refreshUserDetails());
-                        setState(() {
-                          _isFollowing = false;
-                        });
-                      }
-                      else {
-                        _auth.addUserFollow(_currentUser, _user)
-                            .then((_) => refreshUserDetails());
-                        setState(() {
-                          _isFollowing = true;
-                        });
-                      }
-
-
+                      followUser();
                     }
                 )
               ],
@@ -182,7 +167,7 @@ class _UserProfileState extends State<UserProfile> {
                           onTap: () {
                             Navigator.push(context,
                                 MaterialPageRoute(
-                                    builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: widget.userId, currentUserId: _currentUser.uid,)
+                                    builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: widget.userId, currentUserId: _currentUser.uid)
                                 )
                             );
                           },
@@ -201,5 +186,26 @@ class _UserProfileState extends State<UserProfile> {
         ],
       ),
     );
+  }
+
+  void followUser () async{
+    if (!_enabledButton){
+      return;
+    }
+    setState(() {
+      //lock
+      _enabledButton = false;
+      _isFollowing = !_isFollowing;
+    });
+
+    final AuthService _auth = AuthInfo.of(context).authService;
+
+    //set to negation beforehand to synchronize better. Not as necessary since the button is being disabled (otherwise it would be).
+    await _auth.userFollow(_currentUser, _user, _isFollowing).then((_) => refreshUserDetails());
+
+    setState(() {
+      //unlock
+      _enabledButton = true;
+    });
   }
 }
