@@ -409,7 +409,7 @@ class AuthService {
 
     print("FETCH FEED - # OF FOLLOWING IDS: ${_userIdFollowing.length}");
 
-    //2.0 create list to hold every post made by the users un _suerIdFollowing
+    //2.0 create list to hold every post made by the users in _userIdFollowing
     List<DocumentSnapshot> _postList = List<DocumentSnapshot>();
 
     //2.2 go through each user and fetch posts
