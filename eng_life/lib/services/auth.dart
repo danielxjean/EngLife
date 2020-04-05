@@ -37,9 +37,10 @@ class AuthService {
 
   String _displayName = "Default";
 
-  final Map<String, Future<void>> _isLiking = Map();
-  final Map<String, Future<void>> _isFollowing = Map();
-  final Map<String, Future<void>> _isFollowed = Map();
+  //locks
+  static final Map<String, Future<void>> _isLiking = Map();
+  static final Map<String, Future<void>> _isFollowing = Map();
+  static final Map<String, Future<void>> _isFollowed = Map();
 
 
   //create user object based on firebase user

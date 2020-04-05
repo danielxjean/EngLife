@@ -51,6 +51,7 @@ class _CommentsScreenState extends State<CommentsPage> {
   }
 
   Widget inputCommentWidget() {
+    ThemeData theme = Theme.of(context);
     return Container(
       height: 45.0,
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -69,7 +70,7 @@ class _CommentsScreenState extends State<CommentsPage> {
           Flexible(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: TextFormField(
+              child: _enabledButton ? TextFormField(
                 validator: (String commentInput) {
                   if (commentInput.isEmpty)
                     return "Please enter a comment";
@@ -86,6 +87,18 @@ class _CommentsScreenState extends State<CommentsPage> {
                 onChanged: (value) {
                   _commentText = value;
                 },
+              ):
+              FocusScope(
+                node: new FocusScopeNode(),
+                child: new TextFormField(
+                  controller: _comment,
+                  style: theme.textTheme.subhead.copyWith(
+                    color: theme.disabledColor,
+                  ),
+                  decoration: new InputDecoration(
+                    hintText: 'Sending comment...',
+                  ),
+                ),
               ),
             ),
           ),

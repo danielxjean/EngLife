@@ -25,6 +25,7 @@ class _UserProfileState extends State<UserProfile> {
 
   bool _loading = true;
   bool _isFollowing = false;
+  bool _displayFollowing = false;
   bool _enabledButton = true;
 
   @override
@@ -37,7 +38,7 @@ class _UserProfileState extends State<UserProfile> {
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     _user = await _auth.getUser(widget.userId);
     _currentUser = await _auth.getCurrentUser();
-    _isFollowing = await _auth.checkIfCurrentUserIsFollowing(widget.userId, _currentUser.uid);
+    _displayFollowing = _isFollowing = await _auth.checkIfCurrentUserIsFollowing(widget.userId, _currentUser.uid);
     if(mounted){
       setState(() {
         _future = _auth.retrieveUserPosts(widget.userId);
@@ -133,7 +134,7 @@ class _UserProfileState extends State<UserProfile> {
                 SizedBox(height: 10.0),
                 RaisedButton(
                     color: Colors.grey[200],
-                    child: _isFollowing == true ? Text("Unfollow") : Text("Follow"),
+                    child: _displayFollowing == true ? Text("Unfollow") : Text("Follow"),
                     onPressed: () {
                       followUser();
                     }
@@ -206,6 +207,7 @@ class _UserProfileState extends State<UserProfile> {
     setState(() {
       //unlock
       _enabledButton = true;
+      _displayFollowing = _isFollowing;
     });
   }
 }

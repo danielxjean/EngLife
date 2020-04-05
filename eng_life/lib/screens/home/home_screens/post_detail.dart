@@ -24,6 +24,7 @@ class _PostDetailState extends State<PostDetail> {
 
   bool _enabledButton = true;
   bool _liked = false;
+  bool _displayLiked = false;
   bool _loading = true;
   User _currentUser;
   DocumentSnapshot _documentSnapshot;
@@ -36,7 +37,7 @@ class _PostDetailState extends State<PostDetail> {
 
   retrieveInformation() async {
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
-    _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
+    _displayLiked = _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
     _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
     if(mounted){
@@ -162,7 +163,7 @@ class _PostDetailState extends State<PostDetail> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     GestureDetector(
-                      child: _liked
+                      child: _displayLiked
                           ? Icon(
                         Icons.favorite,
                         color: Colors.red[900],
@@ -233,6 +234,7 @@ class _PostDetailState extends State<PostDetail> {
     setState(() {
       //unlock
       _enabledButton = true;
+      _displayLiked = _liked;
     });
   }
 }
