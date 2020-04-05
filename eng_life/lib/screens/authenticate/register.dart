@@ -1,5 +1,5 @@
-import 'package:eng_life/models/user.dart';
 import 'package:eng_life/services/auth.dart';
+import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:eng_life/screens/authenticate/registerPage.dart';
@@ -15,7 +15,6 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
 
-  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   //text field state
@@ -98,6 +97,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 70.0),
                   //display name input
                   TextFormField(
+                    key: Key('name'),
 
                     /*
                     TextFormField for user display name
@@ -125,6 +125,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //email input
                   TextFormField(
+                    key: Key('email'),
 
                     /*
                     TextFormField for user email
@@ -152,6 +153,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //password input
                   TextFormField(
+                    key: Key('password'),
 
                     /*
                     TextFormField for user password
@@ -179,6 +181,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //confirm password input
                   TextFormField(
+                    key: Key('password2'),
 
                     /*
                     TextFormField for user confirmed password
@@ -217,9 +220,13 @@ class _RegisterState extends State<Register> {
                         onPressed: () async {
                           //sign in, may take some time therefore async function
                           if (_formKey.currentState.validate()) {
+                            
                             setState(() {
                               loading = true;
                             });
+                            
+                            final AuthService _auth = AuthInfo.of(context).authService;
+                            
                             isGroup = false;
                             dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName, isGroup, firstLogin);
                             if (result == 1) {

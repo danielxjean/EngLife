@@ -13,7 +13,6 @@ class AddPhoto extends StatefulWidget {
 
 class _AddPhotoState extends State<AddPhoto> {
 
-  final _auth = AuthService();
 
   File _imageSelected;
 

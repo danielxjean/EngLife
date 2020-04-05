@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:eng_life/services/auth_info.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
@@ -18,7 +18,6 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
 
-  final _auth = AuthService();
   User _currentUser;
 
   Future<List<DocumentSnapshot>> _future;
@@ -30,10 +29,15 @@ class _SearchState extends State<Search> {
   }
 
   retrieveUsers() async {
+
+    final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     _currentUser = await _auth.getCurrentUser();
-    setState(() {
-      _future = _auth.retrieveUsers();
-    });
+    if(mounted){
+      setState(() {
+        _future = _auth.retrieveUsers();
+      });
+    }
+
   }
 
   @override
