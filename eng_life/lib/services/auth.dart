@@ -451,7 +451,7 @@ class AuthService {
       Timestamp date_a = a.data['timestamp'];
       Timestamp date_b = b.data['timestamp'];
 
-      return date_a.seconds.compareTo(date_b.seconds) * -1;
+      return date_b.seconds.compareTo(date_a.seconds);
     });
 
     print("-----POST LIST AFTER SORT-----");
