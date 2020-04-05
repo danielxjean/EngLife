@@ -16,6 +16,7 @@ class AuthService {
 
   String _displayName = "Default";
   bool _isGroup = false;
+  bool _firstLogin = true;
 
   User _currentUser;
 
@@ -39,7 +40,8 @@ class AuthService {
           //added here
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
           username: "Default",//username input needs to be added to register form, must be unique
-          isGroup: _isGroup);
+          isGroup: _isGroup,
+          firstLogin: _firstLogin);
     }
   }
 
@@ -110,7 +112,7 @@ class AuthService {
   }
 
   //register email & password
-  Future registerWithEmailAndPassword(String email, String password, String displayName, bool isGroup) async {
+  Future registerWithEmailAndPassword(String email, String password, String displayName, bool isGroup, bool firstLogin) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = result.user;
@@ -119,6 +121,7 @@ class AuthService {
 
       this._displayName = displayName;
       this._isGroup = isGroup;
+      this._firstLogin = firstLogin;
 
       createNewUserInDatabase(_userFromFirebaseUser(firebaseUser));
       return _userFromFirebaseUser(firebaseUser);
@@ -165,7 +168,7 @@ class AuthService {
   //add photo to database for current user
   Future<void> addPhostToDb(String imageUrl, String caption, User user) {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
-    print("IMAGE URL: ${imageUrl}");
+    print("IMAGE URL: $imageUrl");
 
     Post post = Post(
         userId: user.uid,
@@ -182,14 +185,14 @@ class AuthService {
     //increment number of posts in user
     int numOfPosts = int.parse(user.numOfPosts);
     numOfPosts++;
-    user.numOfPosts = "${numOfPosts}";
+    user.numOfPosts = "$numOfPosts";
 
     //update user information in db
     return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
   }
 
   //retrieve photo for current user
-  Future<List<DocumentSnapshot>> retreiveUserPosts(String userId) async {
+  Future<List<DocumentSnapshot>> retrieveUserPosts(String userId) async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("posts").getDocuments();
     return querySnapshot.documents;
   }
@@ -301,7 +304,7 @@ class AuthService {
     return _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
   }
 
-  Future<List<DocumentSnapshot>> retreiveUsers() async {
+  Future<List<DocumentSnapshot>> retrieveUsers() async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
     return querySnapshot.documents;
   }
@@ -320,5 +323,13 @@ class AuthService {
     DocumentSnapshot snapshot = await documentSnapshot.reference.get();
     return snapshot;
   }
+  Future<void> updateUserFirstLogin(User user, bool firstLogin) {
+    user.firstLogin = firstLogin;
+    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+  }
 
+  Future<List<DocumentSnapshot>> retrieveGroups() async {
+    QuerySnapshot querySnapshot = await _firestore.collection("users").where("isGroup", isEqualTo: true).getDocuments();
+    return querySnapshot.documents;
+  }
 }

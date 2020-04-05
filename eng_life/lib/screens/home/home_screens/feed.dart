@@ -12,7 +12,8 @@ class _FeedState extends State<Feed> {
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("ENGLife"),
-        elevation: 0.0,
+        centerTitle: true,
+        elevation: 1.0,
       ),
     );
   }

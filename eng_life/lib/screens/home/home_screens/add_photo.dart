@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:eng_life/screens/home/home_screens/edit_new_photo.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 

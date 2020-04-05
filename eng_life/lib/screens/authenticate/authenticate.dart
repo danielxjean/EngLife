@@ -20,9 +20,8 @@ class _AuthenticateState extends State<Authenticate> {
 
   @override
   Widget build(BuildContext context) {
-    if (page == 0) {
+    if (page == 0)
       return SignIn(toggleView: toggleView);
-    }
     else if (page == 1)
       return Register(toggleView: toggleView);
     else if (page == 2)
@@ -31,4 +30,3 @@ class _AuthenticateState extends State<Authenticate> {
       print('ERROR: It did not toggle as expected');
   }
   }
-//}

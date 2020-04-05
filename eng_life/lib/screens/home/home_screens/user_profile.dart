@@ -4,7 +4,6 @@ import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/shared/loading.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
@@ -30,15 +29,15 @@ class _UserProfileState extends State<UserProfile> {
   @override
   void initState() {
     super.initState();
-    retreiveUserDetails();
+    retrieveUserDetails();
   }
 
-  retreiveUserDetails() async {
+  retrieveUserDetails() async {
     _user = await _auth.getUser(widget.userId);
     _currentUser = await _auth.getCurrentUser();
     _isFollowing = await _auth.checkIfCurrentUserIsFollowing(widget.userId, _currentUser.uid);
     setState(() {
-      _future = _auth.retreiveUserPosts(widget.userId);
+      _future = _auth.retrieveUserPosts(widget.userId);
       _loading = false;
     });
   }
@@ -145,8 +144,6 @@ class _UserProfileState extends State<UserProfile> {
                           _isFollowing = true;
                         });
                       }
-
-
                     }
                 )
               ],

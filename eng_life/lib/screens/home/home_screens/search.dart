@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
 
-  PageController pageController;
+  final PageController pageController;
 
   Search({this.pageController});
 
@@ -26,13 +26,13 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-    retreiveUsers();
+    retrieveUsers();
   }
 
-  retreiveUsers() async {
+  retrieveUsers() async {
     _currentUser = await _auth.getCurrentUser();
     setState(() {
-      _future = _auth.retreiveUsers();
+      _future = _auth.retrieveUsers();
     });
   }
 
@@ -42,6 +42,7 @@ class _SearchState extends State<Search> {
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Search Users"),
+        centerTitle: true,
       ),
       body: Container(
         child: FutureBuilder(

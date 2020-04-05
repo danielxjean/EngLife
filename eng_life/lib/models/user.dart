@@ -11,8 +11,9 @@ class User {
   String bio;
   String educationMajor;
   bool isGroup;
+  bool firstLogin;
 
-  User({this.uid, this.email, this.profilePictureUrl, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor, this.username, this.isGroup});
+  User({this.uid, this.email, this.profilePictureUrl, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor, this.username, this.isGroup, this.firstLogin});
 
   Map<String, dynamic> userToMap(User user) {
     var map = Map<String, dynamic>();
@@ -27,6 +28,7 @@ class User {
     map['educationMajor'] = user.educationMajor;
     map['username'] = user.username;
     map['isGroup'] = user.isGroup;
+    map['firstLogin'] = user.firstLogin;
     return map;
   }
 
@@ -42,8 +44,14 @@ class User {
     this.educationMajor = map['educationMajor'];
     this.username = map['username'];
     this.isGroup = map['isGroup'];
+    this.firstLogin = map['firstLogin'];
   }
 
+  @override
+  String toString() {
+    print("${this.firstLogin} ${this.isGroup}");
+    return super.toString();
+  }
 
 
 }

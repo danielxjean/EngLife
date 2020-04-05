@@ -24,14 +24,14 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    retreiveUserDetails();
+    retrieveUserDetails();
   }
 
-  retreiveUserDetails() async {
+  retrieveUserDetails() async {
     User currentUser = await _auth.getCurrentUser();
 
     setState(() {
-      _future = _auth.retreiveUserPosts(currentUser.uid);
+      _future = _auth.retrieveUserPosts(currentUser.uid);
       _currentUserFuture = _auth.getCurrentUser();
       _currentUser = currentUser;
     });
