@@ -193,7 +193,7 @@ class AuthService {
 
   //add photo to database for current user
 
-  Future<void> addPhostToDb(Map<String, String> imageData, String caption, User user) async {
+  Future<void> addPostToDb(Map<String, String> imageData, String caption, User user) async {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
     print("IMAGE URL: ${imageData['imageUrl']}");
 

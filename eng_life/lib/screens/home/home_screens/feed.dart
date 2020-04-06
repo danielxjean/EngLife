@@ -144,14 +144,14 @@ class _FeedState extends State<Feed> {
                   //widget.documentSnapshot.documentID
                   if (_liked == true) {
                     //unlike post
-                    _auth.deleteLikeFromPost(_currentUser, Post.mapToPost(list[index].data), list[index].documentID);
+                    _auth.likePost(_currentUser, Post.mapToPost(list[index].data), list[index].documentID, false);
                     setState(() {
                       _liked = false;
                     });
                   }
                   else {
                     //like post
-                    _auth.addLikeToPost(_currentUser, Post.mapToPost(list[index].data), list[index].documentID);
+                    _auth.likePost(_currentUser, Post.mapToPost(list[index].data), list[index].documentID, true);
                     setState(() {
                       _liked = true;
                     });
