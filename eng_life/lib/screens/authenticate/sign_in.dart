@@ -1,6 +1,4 @@
-import 'package:eng_life/models/user.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +13,7 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
 
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
 
@@ -75,7 +74,6 @@ class _SignInState extends State<SignIn> {
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
-                    key: Key('email'),
 
                     /*
                     TextFormField for user email
@@ -102,7 +100,6 @@ class _SignInState extends State<SignIn> {
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
-                    key: Key('password'),
 
                     /*
                     TextFormField for user password
@@ -129,7 +126,6 @@ class _SignInState extends State<SignIn> {
                   ),
                   SizedBox(height: 20.0),
                   RaisedButton(
-                    key: Key('signIn'),
                     color: Colors.red[900],
                     child: Text(
                       "Sign In",
@@ -142,8 +138,6 @@ class _SignInState extends State<SignIn> {
                         setState(() {
                           loading = true;
                         });
-
-                        final AuthService _auth = AuthInfo.of(context).authService;
 
                         dynamic result = await _auth.signInWithEmailAndPassword(email, password);
                         switch (result) {
@@ -173,13 +167,6 @@ class _SignInState extends State<SignIn> {
                             setState(() {
                               loading = false;
                             });
-                          }break;
-                          default: {
-                            //Good case
-                            setState(() {
-                              loading = false;
-                            });
-                          }break;
                         }
                       }
 

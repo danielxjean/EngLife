@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +18,7 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
 
+  AuthService _auth = AuthService();
   User _currentUser;
   User _user;
   Future<List<DocumentSnapshot>> _future;
@@ -33,22 +33,16 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   retrieveUserDetails() async {
-
-    final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     _user = await _auth.getUser(widget.userId);
     _currentUser = await _auth.getCurrentUser();
     _isFollowing = await _auth.checkIfCurrentUserIsFollowing(widget.userId, _currentUser.uid);
-    if(mounted){
-      setState(() {
-        _future = _auth.retrieveUserPosts(widget.userId);
-        _loading = false;
-      });
-    }
-
+    setState(() {
+      _future = _auth.retrieveUserPosts(widget.userId);
+      _loading = false;
+    });
   }
 
   refreshUserDetails() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
     _user = await _auth.getUser(widget.userId);
     setState(() {
       print("user refreshed");
@@ -135,7 +129,6 @@ class _UserProfileState extends State<UserProfile> {
                     color: Colors.grey[200],
                     child: _isFollowing ? Text("Unfollow") : Text("Follow"),
                     onPressed: () {
-                      final AuthService _auth = AuthInfo.of(context).authService;
 
                       if (_isFollowing) {
                         _auth.removeUserFollow(_currentUser, _user);

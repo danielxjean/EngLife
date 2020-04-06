@@ -3,6 +3,8 @@ import 'package:eng_life/screens/home/home_screens/feed.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/search.dart';
+import 'package:eng_life/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -13,6 +15,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
+  static final AuthService _auth = AuthService();
 
   int _page= 0;
   PageController pageController;
