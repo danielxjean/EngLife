@@ -3,11 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/post_detail.dart';
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/auth_info.dart';
-import 'package:eng_life/shared/loading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'edit_profile.dart';
 
 class Profile extends StatefulWidget {
 
@@ -17,10 +14,10 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
 
+  final _auth = AuthService();
   User _currentUser;
   Future<User> _currentUserFuture;
   Future<List<DocumentSnapshot>> _future;
-  bool _loading = true;
 
   List<Widget> photos = [];
 
@@ -31,24 +28,18 @@ class _ProfileState extends State<Profile> {
   }
 
   retrieveUserDetails() async {
-
-    final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     User currentUser = await _auth.getCurrentUser();
 
-    if(mounted){
-      setState(() {
-        _future = _auth.retrieveUserPosts(currentUser.uid);
-        _currentUserFuture = _auth.getCurrentUser();
-        _currentUser = currentUser;
-        _loading = false;
-      });
-    }
-
+    setState(() {
+      _future = _auth.retrieveUserPosts(currentUser.uid);
+      _currentUserFuture = _auth.getCurrentUser();
+      _currentUser = currentUser;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Profile"),
@@ -65,7 +56,6 @@ class _ProfileState extends State<Profile> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              final AuthService _auth = AuthInfo.of(context).authService;
               await _auth.signOut();
             },
           )
@@ -138,27 +128,11 @@ class _ProfileState extends State<Profile> {
                           style: TextStyle(color: Colors.grey[100], fontSize: 18.0),
                         ),
                         SizedBox(height: 10.0),
-                        Center(
-                          child: Text(
-                            user.data.bio,
-                            style: TextStyle(color: Colors.grey[100], fontSize: 15),
-                          ),
-                        ),
-                        SizedBox(height: 10.0),
                         RaisedButton(
                             color: Colors.grey[200],
                             child: Text("Edit profile"),
-                            onPressed: () async {
-                              await Navigator.push(context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EditProfile()
-                                  )
-                              );
-                              setState(() {
-                                //refresh page
-                                _loading = true;
-                                retrieveUserDetails();
-                              });
+                            onPressed: () {
+                              print("You pressed me");
                             }
                         )
                       ],

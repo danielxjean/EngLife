@@ -36,7 +36,6 @@ class AuthService {
           numOfPosts: '0',
           numOfFollowers: '0',
           numOfFollowing: '0',
-          //added here
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
           username: "Default",//username input needs to be added to register form, must be unique
           isGroup: _isGroup,
@@ -136,8 +135,6 @@ class AuthService {
     }
   }
 
-  //registerGroupWithEmailAndPassword
-
   //sign out
   Future signOut() async {
     try {
@@ -177,9 +174,7 @@ class AuthService {
   //add photo to database for current user
   Future<void> addPhostToDb(Map<String, String> imageData, String caption, User user) {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
-
     print("IMAGE URL: ${imageData['imageUrl']}");
-
 
     Post post = Post(
         userId: user.uid,
@@ -197,7 +192,7 @@ class AuthService {
     //increment number of posts in user
     int numOfPosts = int.parse(user.numOfPosts);
     numOfPosts++;
-    user.numOfPosts = "$numOfPosts";
+    user.numOfPosts = "${numOfPosts}";
 
     //update user information in db
     return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
@@ -335,16 +330,6 @@ class AuthService {
     DocumentSnapshot snapshot = await documentSnapshot.reference.get();
     return snapshot;
   }
-  Future<void> updateUserFirstLogin(User user, bool firstLogin) {
-    user.firstLogin = firstLogin;
-    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
-  }
-
-
-  Future<List<DocumentSnapshot>> retrieveGroups() async {
-    QuerySnapshot querySnapshot = await _firestore.collection("users").where("isGroup", isEqualTo: true).getDocuments();
-    return querySnapshot.documents;
-  }
 
   Future<void> updateUserProfileInformation(User user, Map<String, String> imageData, String newDisplayName, String newBio) {
     user.displayName = newDisplayName;
@@ -398,6 +383,5 @@ class AuthService {
     //set data in database
     return _firestore.collection("users").document(uid).setData(user.userToMap(user));
   }
-
 
 }

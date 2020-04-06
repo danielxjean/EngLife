@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
     return AuthInfo(
       authService: authService,
       child: StreamProvider<User>.value(
-        value: authService.user,
+      value: authService.user,
         child: MaterialApp(
-          home: Wrapper(),
-        ),
+        home: Wrapper(),
       ),
+        ),
     );
   }
 }
