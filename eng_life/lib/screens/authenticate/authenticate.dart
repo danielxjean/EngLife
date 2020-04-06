@@ -1,6 +1,5 @@
 import 'package:eng_life/screens/authenticate/register.dart';
 import 'package:eng_life/screens/authenticate/sign_in.dart';
-import 'package:eng_life/screens/authenticate/registerPage.dart';
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
@@ -10,23 +9,20 @@ class Authenticate extends StatefulWidget {
 
 class _AuthenticateState extends State<Authenticate> {
 
-  int page = 0;
+  bool showSignIn = true;
 
-  void toggleView(int number){
+  void toggleView(){
     setState(() {
-      page = number;
+      showSignIn = !showSignIn;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (page == 0)
+    if (showSignIn) {
       return SignIn(toggleView: toggleView);
-    else if (page == 1)
-      return Register(toggleView: toggleView);
-    else if (page == 2)
-      return RegisterPage(toggleView: toggleView);
+    }
     else
-      print('ERROR: It did not toggle as expected');
+      return Register(toggleView: toggleView);
   }
-  }
+}

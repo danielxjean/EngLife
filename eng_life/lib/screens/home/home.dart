@@ -87,7 +87,7 @@ class _HomeState extends State<Home> {
                 //color: Colors.grey[400],
               ),
               title: Text(
-                "Add picture",
+                "Add Photo",
                 //style: TextStyle(color: Colors.grey[900]),
               )
           ),
