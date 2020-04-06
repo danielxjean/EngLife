@@ -33,7 +33,6 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   retrieveUserDetails() async {
-
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     _user = await _auth.getUser(widget.userId);
     _currentUser = await _auth.getCurrentUser();
@@ -44,7 +43,6 @@ class _UserProfileState extends State<UserProfile> {
         _loading = false;
       });
     }
-
   }
 
   refreshUserDetails() async {
@@ -151,6 +149,8 @@ class _UserProfileState extends State<UserProfile> {
                           _isFollowing = true;
                         });
                       }
+
+
                     }
                 )
               ],

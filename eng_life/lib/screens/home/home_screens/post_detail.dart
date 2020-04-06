@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/comments_screen.dart';
+import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
@@ -11,8 +12,8 @@ import 'package:flutter/material.dart';
 
 class PostDetail extends StatefulWidget {
 
-  final DocumentSnapshot documentSnapshot;
-  final String userId, currentUserId;
+  DocumentSnapshot documentSnapshot;
+  String userId, currentUserId;
 
   PostDetail({this.documentSnapshot, this.userId, this.currentUserId});
 
@@ -35,9 +36,7 @@ class _PostDetailState extends State<PostDetail> {
   }
 
   retrieveInformation() async {
-
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
-
     _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
     _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
