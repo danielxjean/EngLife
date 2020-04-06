@@ -24,7 +24,7 @@ class _EditNewPhotoState extends State<EditNewPhoto> {
 
     _auth.getCurrentUser()
         .then((user) {_auth.uploadImageToStorage(widget.imageSelected)
-        .then((url) {_auth.addPostToDb(url, _caption, user);
+        .then((url) {_auth.addPostToDb(url, _caption ?? "", user);
         });
         });
   }

@@ -55,7 +55,7 @@ class _PostDetailState extends State<PostDetail> {
     });
   }
 
-  Future<bool> createConfirmationDialog(BuildContext context) {
+  Future<bool> createDeleteConfirmationDialog(BuildContext context) {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -83,7 +83,7 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return _loading ? Loading() : Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red[900],
           title: Text("Post"),
@@ -136,7 +136,7 @@ class _PostDetailState extends State<PostDetail> {
                       icon: Icon(Icons.delete),
                       onPressed: () async {
                         final AuthService _auth = AuthInfo.of(context).authService;
-                        if (await createConfirmationDialog(context) == true) {
+                        if (await createDeleteConfirmationDialog(context)) {
                           print("Delete post");
                           setState(() {
                             _loading = true;

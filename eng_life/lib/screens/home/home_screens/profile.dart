@@ -31,6 +31,7 @@ class _ProfileState extends State<Profile> {
   }
 
   retrieveUserDetails() async {
+
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     User currentUser = await _auth.getCurrentUser();
 
@@ -42,11 +43,12 @@ class _ProfileState extends State<Profile> {
         _loading = false;
       });
     }
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return _loading ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Profile"),
