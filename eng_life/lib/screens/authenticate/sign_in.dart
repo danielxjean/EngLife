@@ -171,6 +171,7 @@ class _SignInState extends State<SignIn> {
                       }
 
                     },
+                    }
                   ),
                   SizedBox(height: 20.0,),
                   Text(
