@@ -31,7 +31,6 @@ class _ProfileState extends State<Profile> {
   }
 
   retrieveUserDetails() async {
-
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
     User currentUser = await _auth.getCurrentUser();
 
@@ -43,7 +42,6 @@ class _ProfileState extends State<Profile> {
         _loading = false;
       });
     }
-
   }
 
   @override

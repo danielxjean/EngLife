@@ -29,7 +29,7 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         elevation: 0.0,
-//        title: Text("Sign in to ENGLife"),
+        title: Text("Sign in to ENGLife"),
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(
@@ -41,20 +41,7 @@ class _SignInState extends State<SignIn> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              widget.toggleView(1);
-            },
-          ),
-          FlatButton.icon(
-            icon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            label: Text(
-              "Register group",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              widget.toggleView(2);
+              widget.toggleView();
             },
           )
         ],
@@ -68,10 +55,6 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                      "Sign in to EngLife",
-                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[900], fontSize: 30),
-                  ),
                   SizedBox(height: 20.0),
                   TextFormField(
                     key: Key('email'),

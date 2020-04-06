@@ -57,7 +57,6 @@ class AuthService {
           numOfPosts: '0',
           numOfFollowers: '0',
           numOfFollowing: '0',
-          //added here
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
           username: "Default",//username input needs to be added to register form, must be unique
           isGroup: false,
@@ -194,7 +193,6 @@ class AuthService {
   //add photo to database for current user
   Future<void> addPostToDb(Map<String, String> imageData, String caption, User user) {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
-
     print("IMAGE URL: ${imageData['imageUrl']}");
 
     Post post = Post(
@@ -298,7 +296,7 @@ class AuthService {
 	  //update number of followers
     return _changeDocumentFieldValue(_ref, Field.numberOfFollowers.name, true);
   }
-  
+
   Future<void> _addUserAsFollowing(User curUser, String uid2) async{
     String curUserId = curUser.uid;
     DocumentReference _ref = _firestore.collection("users").document(curUserId);

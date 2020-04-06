@@ -196,3 +196,5 @@ class _CommentsScreenState extends State<CommentsPage> {
     );
   }
 }
+
+// should we add this Comments class in home.dart

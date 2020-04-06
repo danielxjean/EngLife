@@ -2,7 +2,6 @@ import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:eng_life/screens/authenticate/registerPage.dart';
 
 class Register extends StatefulWidget {
 
@@ -23,9 +22,8 @@ class _RegisterState extends State<Register> {
   String password = '';
   String confirmPassword = '';
   String error = '';
-  bool isGroup = false;
+
   bool loading = false;
-  bool firstLogin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +32,7 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         elevation: 0.0,
-//        title: Text("Sign up to ENGLife"),
+        title: Text("Sign up to ENGLife"),
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(
@@ -42,29 +40,13 @@ class _RegisterState extends State<Register> {
               color: Colors.white,
             ),
             label: Text(
-            "Sign in",
-            style: TextStyle(color: Colors.white),
-          ),
-            onPressed: () {
-              widget.toggleView(0);
-            },
-          ),
-
-          FlatButton.icon(
-            icon: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-            label: Text(
-              "Register as group",
+              "Sign in",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              widget.toggleView(2);
+              widget.toggleView();
             },
           )
-
-
         ],
       ),
       body: Center(
@@ -76,25 +58,7 @@ class _RegisterState extends State<Register> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-//                  RaisedButton(
-//                    color: Colors.red[900],
-//                    child: Text(
-//                      "Register as page",
-//                      style:TextStyle(color: Colors.white),
-//                    ),
-//                    onPressed: (){
-//                      print("register as page button pressed");
-//                      Navigator.push(context,
-//                          MaterialPageRoute(
-//                              builder: (context) => RegisterPage()
-//                          )
-//                      );
-//                    },
-//                  ),
-                  Text("Sign up to ENGLife",
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[900], fontSize: 30),
-                  ),
-                  SizedBox(height: 70.0),
+                  SizedBox(height: 20.0),
                   //display name input
                   TextFormField(
                     key: Key('name'),
@@ -116,7 +80,7 @@ class _RegisterState extends State<Register> {
                         labelText: "display name"
                     ),
                     onChanged: (val) {
-                      //runs every time the value of the form field is changed
+                      //runs every time the value of the formfield is changed
                       setState(() {
                         displayName = val;
                       });
@@ -208,50 +172,52 @@ class _RegisterState extends State<Register> {
                     },
                   ),
                   SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      RaisedButton(
-                        color: Colors.red[900],
-                        child: Text(
-                          "Register",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () async {
-                          //sign in, may take some time therefore async function
-                          if (_formKey.currentState.validate()) {
-                            
+                  RaisedButton(
+                    key: Key('register'),
+                    color: Colors.red[900],
+                    child: Text(
+                      "Register",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () async {
+                      //sign in, may take some time therefore async function
+                      if (_formKey.currentState.validate()) {
+
+                        setState(() {
+                          loading = true;
+                        });
+
+                        final AuthService _auth = AuthInfo.of(context).authService;
+
+                        dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName);
+                        switch (result){
+                          case 1: {
                             setState(() {
-                              loading = true;
+                              error = "The email address is badly formatted.";
+                              loading = false;
                             });
-                            
-                            final AuthService _auth = AuthInfo.of(context).authService;
-                            
-                            isGroup = false;
-                            dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName, isGroup, firstLogin);
-                            if (result == 1) {
-                              setState(() {
-                                error = "The email address is badly formatted.";
-                                loading = false;
-                              });
-                            }
-                            else if (result == 2) {
-                              setState(() {
-                                error = "The email address is already in use by another account.";
-                                loading = false;
-                              });
-                            }
-                            else {
-                              setState(() {
-                                error = "Something went wrong, incorrect email or password.";
-                                loading = false;
-                              });
-                            }
-                          }
-                        },
-                      ),
-                      SizedBox(width: 20.0),
-                    ],
+
+                          }break;
+                          case 2: {
+                            setState(() {
+                              error = "The email address is already in use by another account.";
+                              loading = false;
+                            });
+                          }break;
+                          case -1: {
+                            setState(() {
+                              error = "Something went wrong, incorrect email or password.";
+                              loading = false;
+                            });
+                          }break;
+                          default:{
+                            setState(() {
+                              loading = false;
+                            });
+                          }break;
+                        }
+                      }
+                    },
                   ),
                   SizedBox(height: 20.0),
                   Text(
@@ -267,5 +233,3 @@ class _RegisterState extends State<Register> {
     );
   }
 }
-
-
