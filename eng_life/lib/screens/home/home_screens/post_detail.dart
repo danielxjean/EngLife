@@ -56,7 +56,7 @@ class _PostDetailState extends State<PostDetail> {
     });
   }
 
-  Future<bool> createConfirmationDialog(BuildContext context) {
+  Future<bool> createDeleteConfirmationDialog(BuildContext context) {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -137,7 +137,7 @@ class _PostDetailState extends State<PostDetail> {
                       icon: Icon(Icons.delete),
                       onPressed: () async {
                         final AuthService _auth = AuthInfo.of(context).authService;
-                        if (await createConfirmationDialog(context)) {
+                        if (await createDeleteConfirmationDialog(context)) {
                           print("Delete post");
                           setState(() {
                             _loading = true;

@@ -350,18 +350,13 @@ class AuthService {
     if (imageData != null) {
 
       //check if it's the first time changing profile pic
-      if (user.profilePictureRef == null) {
-        //first time changing profile picture, no need to delete any old ones
-        user.profilePictureUrl = imageData['imageUrl'];
-        user.profilePictureRef = imageData['storageRef'];
-      }
-      else {
+      if (user.profilePictureRef != null) {
         //new profile pic, delete old one from storage
         deleteImageFromStorage(user.profilePictureRef);
-        //set new information to user
-        user.profilePictureUrl = imageData['imageUrl'];
-        user.profilePictureRef = imageData['storageRef'];
       }
+      //set new information to user
+      user.profilePictureUrl = imageData['imageUrl'];
+      user.profilePictureRef = imageData['storageRef'];
     }
 
     return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
