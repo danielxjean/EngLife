@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eng_life/services/auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 
@@ -12,6 +13,7 @@ class DatabaseService {
 
   //collection reference
   final CollectionReference userCollection = Firestore.instance.collection('users');
+  final _authService = AuthService();
 
   Future<void> addPhotoToDb(String imageUrl){
     CollectionReference _ref = userCollection.document(this.uid).collection("photos");
@@ -29,5 +31,5 @@ class DatabaseService {
   void setUid(String uid){
     this.uid = uid;
   }
-
+  
 }
