@@ -330,4 +330,52 @@ class AuthService {
     QuerySnapshot querySnapshot = await _firestore.collection("users").where("isGroup", isEqualTo: true).getDocuments();
     return querySnapshot.documents;
   }
+  
+  Future<void> updateUserProfileInformation(User user, Map<String, String> imageData, String newDisplayName, String newBio) {
+    user.displayName = newDisplayName;
+    user.bio = newBio;
+    if (imageData != null) {
+
+      //check if it's the first time changing profile pic
+      if (user.profilePictureRef != null) {
+        //new profile pic, delete old one from storage
+        deleteImageFromStorage(user.profilePictureRef);
+      }
+      //set new information to user
+      user.profilePictureUrl = imageData['imageUrl'];
+      user.profilePictureRef = imageData['storageRef'];
+    }
+
+    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+  }
+
+  Future<void> deleteImageFromStorage(String imageRef) {
+    FirebaseStorage.instance.ref().child(imageRef).delete();
+  }
+
+
+  Future<void> deleteUserPost(String uid, String pid) async {
+    //get current user information
+    DocumentSnapshot documentSnapshot = await _firestore.collection("users").document(uid).get();
+    User user = User.mapToUser(documentSnapshot.data);
+
+    //get post information
+    documentSnapshot = await _firestore.collection("users").document(uid).collection("posts").document(pid).get();
+    Post post = Post.mapToPost(documentSnapshot.data);
+
+    //first delete post image reference in storage
+    deleteImageFromStorage(post.postPhotoRef);
+
+    //second delete document
+    CollectionReference _ref = _firestore.collection("users").document(uid).collection("posts");
+    _ref.document(pid).delete();
+
+    //update user post info
+    int numPosts = int.parse(user.numOfPosts);
+    numPosts--;
+    user.numOfPosts = "$numPosts";
+
+    //set data in database
+    return _firestore.collection("users").document(uid).setData(user.userToMap(user));
+  }
 }
