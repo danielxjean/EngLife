@@ -1,4 +1,3 @@
-import 'package:eng_life/models/user.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
@@ -152,11 +151,13 @@ class _SignInState extends State<SignIn> {
                             });
                           }break;
                           case -1: {
+                            //Uncategorized error
                             setState(() {
                               loading = false;
                             });
                           }break;
-                          default:{
+                          default: {
+                            //Good case
                             setState(() {
                               loading = false;
                             });

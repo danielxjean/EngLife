@@ -1,4 +1,4 @@
-
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,14 +8,37 @@ import 'package:eng_life/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+enum Field {
+  numberOfLikes, numberOfFollowers, numberOfFollowings, numberOfPosts
+}
+extension FieldExtension on Field{
+
+  String get name {
+    switch(this){
+      case Field.numberOfFollowers:
+        return 'numOfFollowers';
+      case Field.numberOfFollowings:
+        return 'numOfFollowing';
+      case Field.numberOfLikes:
+        return 'numberOfLikes';
+      case Field.numberOfPosts:
+        return 'numOfPosts';
+      default:
+        throw Exception('Invalid Field compiled');
+    }
+  }
+}
+
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
   StorageReference _storageReference;
 
-  String _displayName = "Default";
+  //locks
+  static final Map<String, Future<void>> _isLiking = Map();
+  static final Map<String, Future<void>> _isFollowing = Map();
+  static final Map<String, Future<void>> _isFollowed = Map();
 
-  User _currentUser;
 
   //create user object based on firebase user
   User _userFromFirebaseUser(FirebaseUser user){
@@ -29,13 +52,15 @@ class AuthService {
           bio: "",
           uid: user.uid,
           email: user.email,
-          displayName: _displayName,
+          displayName: 'Default',
           educationMajor: 'Default',
           numOfPosts: '0',
           numOfFollowers: '0',
           numOfFollowing: '0',
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
-          username: "Default"); //username input needs to be added to register form, must be unique
+          username: "Default",//username input needs to be added to register form, must be unique
+          isGroup: false,
+          firstLogin: true);
     }
   }
 
@@ -58,8 +83,6 @@ class AuthService {
     //create new user from user info
     User _currentUser = User.mapToUser(_userInfo.data);
 
-    this._currentUser = _currentUser;
-
     return _currentUser;
   }
 
@@ -69,8 +92,6 @@ class AuthService {
     DocumentSnapshot _userInfo = await _firestore.collection("users").document(userId).get();
     //create new user from user info
     User _currentUser = User.mapToUser(_userInfo.data);
-
-    this._currentUser = _currentUser;
 
     return _currentUser;
   }
@@ -106,17 +127,21 @@ class AuthService {
   }
 
   //register email & password
-  Future registerWithEmailAndPassword(String email, String password, String displayName) async {
+  Future registerWithEmailAndPassword(String email, String password, [String displayName = 'Default', bool isGroup = false, bool firstLogin = true]) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = result.user;
 
       print("PRINTING FROM REGISTER****: " + firebaseUser.toString());
 
-      this._displayName = displayName;
+      User createdUser = _userFromFirebaseUser(firebaseUser);
 
-      createNewUserInDatabase(_userFromFirebaseUser(firebaseUser));
-      return _userFromFirebaseUser(firebaseUser);
+      createdUser.displayName = displayName;
+      createdUser.isGroup = isGroup;
+      createdUser.firstLogin = firstLogin;
+
+      createNewUserInDatabase(createdUser);
+      return createdUser;
     } catch(e) {
       print(e.message);
       switch(e.message) {
@@ -166,7 +191,7 @@ class AuthService {
   }
 
   //add photo to database for current user
-  Future<void> addPhostToDb(Map<String, String> imageData, String caption, User user) {
+  Future<void> addPostToDb(Map<String, String> imageData, String caption, User user) {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
     print("IMAGE URL: ${imageData['imageUrl']}");
 
@@ -176,20 +201,14 @@ class AuthService {
         postPhotoRef: imageData['storageRef'],
         caption: caption,
         displayName: user.displayName,
-        userProfilePictureUrl:
-        user.profilePictureUrl,
+        userProfilePictureUrl: user.profilePictureUrl,
         numberOfLikes: "0");
 
     //add post to db
     _collectionRef.add(post.toMap(post));
 
     //increment number of posts in user
-    int numOfPosts = int.parse(user.numOfPosts);
-    numOfPosts++;
-    user.numOfPosts = "${numOfPosts}";
-
-    //update user information in db
-    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+    return _changeDocumentFieldValue(_collectionRef.parent(), Field.numberOfPosts.name, true);
   }
 
   //retrieve photo for current user
@@ -197,113 +216,163 @@ class AuthService {
     QuerySnapshot querySnapshot = await _firestore.collection("users").document(userId).collection("posts").getDocuments();
     return querySnapshot.documents;
   }
-  
+
+  //Increments or decrements a field in the document reference.
+  Future<void> _changeDocumentFieldValue(DocumentReference documentReference, String field, bool add) async{
+    int newValue = int.parse((await documentReference.get())[field]);
+    add ? newValue++ : newValue--;
+    return await documentReference.updateData({field: '$newValue'});
+  }
+
+  //region Follower/Following
+  //region Visible Follower/Following Method
   //curUser will follow user2.
-  Future<void> addUserFollow(User curUser, User user2){
-    _addUserAsFollowerOf(curUser.uid, user2);
-    _addUserAsFollowing(curUser, user2.uid);
+  Future<void> addUserFollow(User curUser, User user2) async{
+    await Future.wait([
+      _userAsFollowerOf(curUser.uid, user2, true),
+      _userAsFollowing(curUser, user2.uid, true)
+    ]);
   }
-  
-  Future<void> _addUserAsFollowerOf(String curUserid, User user2){
-	String uid2 = user2.uid;
-    CollectionReference _ref = _firestore.collection("users").document(uid2).collection("followers");
-    Map<String, dynamic> map = {'userid': curUserid};
-    _ref.document(curUserid).setData(map);
-    
-	//update number of followers
-    int numFollowers = int.parse(user2.numOfFollowers);
-    numFollowers++;
-    user2.numOfFollowers = "$numFollowers";
-    return _firestore.collection("users").document(uid2).setData(user2.userToMap(user2));
-  }
-  
-  Future<void> _addUserAsFollowing(User curUser, String uid2){
-	String curUserid = curUser.uid;
-    CollectionReference _ref = _firestore.collection("users").document(curUserid).collection("following");
-    Map<String, dynamic> map = {'userid': uid2};
-    _ref.document(uid2).setData(map);
-
-    int numFollowing = int.parse(curUser.numOfFollowing);
-    numFollowing++;
-    curUser.numOfFollowing = "$numFollowing";
-    return _firestore.collection("users").document(curUserid).setData(curUser.userToMap(curUser));
-  }
-
-
-
-
-
-
   //curUser will unfollow user2.
-  Future<void> removeUserFollow(User curUser, User user2){
-    _removeUserAsFollowerOf(curUser.uid, user2);
-    _removeUserAsFollowing(curUser, user2.uid);
+  Future<void> removeUserFollow(User curUser, User user2) async {
+    await Future.wait([
+      _userAsFollowerOf(curUser.uid, user2, false),
+      _userAsFollowing(curUser, user2.uid, false)
+    ]);
+  }
+  //endregion
+
+  //region Split follow/unfollow routines
+  //endregion
+
+  //region Handle synchronization
+  Future<void> _userAsFollowerOf(String curUserId, User user2, bool addFollow) async{
+    String uid2 = user2.uid;
+    //Wait
+    if (_isFollowed[uid2] != null){
+      await _isFollowed[uid2];
+      return _userAsFollowerOf(curUserId, user2, addFollow);
+    }
+    //Lock
+    Completer completer = Completer<Null>();
+    _isFollowed[uid2] = completer.future;
+
+    //Critical Section
+    addFollow ? await _addUserAsFollowerOf(curUserId, user2)
+        : await _removeUserAsFollowerOf(curUserId, user2);
+
+    //Unlock
+    completer.complete();
+    _isFollowed[uid2] = null;
+  }
+  Future<void> _userAsFollowing(User curUser, String uid2, bool addFollow) async{
+    String curUserId = curUser.uid;
+    //Wait
+    if (_isFollowing[curUserId] != null){
+      await _isFollowing[curUserId];
+      return _userAsFollowing(curUser, uid2, addFollow);
+    }
+    //Lock
+    Completer completer = Completer<Null>();
+    _isFollowing[curUserId] = completer.future;
+
+    //Critical Section
+    addFollow ? await _addUserAsFollowing(curUser, uid2)
+        : await _removeUserAsFollowing(curUser, uid2);
+
+    //Unlock
+    completer.complete();
+    _isFollowing[curUserId] = null;
+  }
+  //endregion
+
+  //region Follow/Following Methods
+  Future<void> _addUserAsFollowerOf(String curUserId, User user2) async{
+    String uid2 = user2.uid;
+    DocumentReference _ref = _firestore.collection("users").document(uid2);
+    Map<String, dynamic> map = {'userid': curUserId};
+    _ref.collection("followers").document(curUserId).setData(map);
+
+	  //update number of followers
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowers.name, true);
   }
 
-
-
-
-  Future<void> _removeUserAsFollowerOf(String curUserid, User user2){
-    //removes the curUserId document from the followers collection of user2
-
-    String uid2 = user2.uid;
-    CollectionReference _ref = _firestore.collection("users").document(uid2).collection("followers");
-    _ref.document(curUserid).delete();
+  Future<void> _addUserAsFollowing(User curUser, String uid2) async{
+    String curUserId = curUser.uid;
+    DocumentReference _ref = _firestore.collection("users").document(curUserId);
+    Map<String, dynamic> map = {'userid': uid2};
+    _ref.collection("following").document(uid2).setData(map);
 
     //update number of followers
-    int numFollowers = int.parse(user2.numOfFollowers);
-    numFollowers--;
-    user2.numOfFollowers = "$numFollowers";
-    return _firestore.collection("users").document(uid2).setData(user2.userToMap(user2));
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowings.name, true);
   }
 
+  Future<void> _removeUserAsFollowerOf(String curUserId, User user2) async{
+    //removes the curUserId document from the followers collection of user2
+    String uid2 = user2.uid;
+    DocumentReference _ref = _firestore.collection("users").document(uid2);
+    _ref.collection("followers").document(curUserId).delete();
 
+    //update number of followers
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowers.name, false);
+  }
 
-
-  Future<void> _removeUserAsFollowing(User curUser, String uid2){
+  Future<void> _removeUserAsFollowing(User curUser, String uid2) async{
     //removes the uid2 document from the following collection of curUser
-
-    String curUserid = curUser.uid;
-    CollectionReference _ref = _firestore.collection("users").document(curUserid).collection("following");
-    _ref.document(uid2).delete();
+    String curUserId = curUser.uid;
+    DocumentReference _ref = _firestore.collection("users").document(curUserId);
+    _ref.collection("following").document(uid2).delete();
 
     //update number of following
-    int numFollowing = int.parse(curUser.numOfFollowing);
-    numFollowing--;
-    curUser.numOfFollowing = "$numFollowing";
-    return _firestore.collection("users").document(curUserid).setData(curUser.userToMap(curUser));
+    return _changeDocumentFieldValue(_ref, Field.numberOfFollowings.name, false);
+  }
+  //endregion
+  //endregion
+
+  //region Like/Dislike Post
+  //Visible Like/Dislike Method + Handle Synchronization
+  Future<void> likePost(User curUser, Post likedPost, String postId, bool like) async{
+   //Wait
+   if (_isLiking[postId] != null){
+     await _isLiking[postId];
+     return likePost(curUser, likedPost, postId, like);
+   }
+   //Lock
+   Completer completer = Completer<Null>();
+   _isLiking[postId] = completer.future;
+
+   //Critical Section
+    like ? await _addLikeToPost(curUser, likedPost ,postId)
+        : await _deleteLikeFromPost(curUser, likedPost, postId);
+
+   //Unlock
+   completer.complete();
+   _isLiking[postId] = null;
   }
 
-
-
-
-
-
-  Future<void> addLikeToPost(User curUser, Post likedPost, String postId){
-    CollectionReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId").collection("likes");
+  //region Like/Dislike Methods
+  Future<void> _addLikeToPost(User curUser, Post likedPost, String postId) async{
+    DocumentReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId");
     //Will construct like.
     Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
     //convert Like to map.
     Map map = like.toMap();
-    _ref.document(curUser.uid).setData(map);
-   
+    await _ref.collection("likes").document(curUser.uid).setData(map);
+
     //update post's number of likes.
-    int numLike = int.parse(likedPost.numberOfLikes);
-    numLike++;
-    likedPost.numberOfLikes = "$numLike";
-    return _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
+    return _changeDocumentFieldValue(_ref, Field.numberOfLikes.name, true);
   }
-  
-  Future<void> deleteLikeFromPost(User curUser, Post likedPost, String postId){
-    CollectionReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId").collection("likes");
-    _ref.document(curUser.uid).delete();
-    
+
+  Future<void> _deleteLikeFromPost(User curUser, Post likedPost, String postId) async{
+    DocumentReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId");
+    //print('del: ${(await _ref.document(curUser.uid).get()).data}');
+    await _ref.collection("likes").document(curUser.uid).delete();
+
     //update post's number of likes.
-    int numLike = int.parse(likedPost.numberOfLikes);
-    numLike--;
-    likedPost.numberOfLikes = "$numLike";
-    return _firestore.collection("users").document(likedPost.userId).collection("posts").document(postId).setData(likedPost.toMap(likedPost));
+    return _changeDocumentFieldValue(_ref, Field.numberOfLikes.name, false);
   }
+  //endregion
+  //endregion
 
   Future<List<DocumentSnapshot>> retrieveUsers() async {
     QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
@@ -325,57 +394,52 @@ class AuthService {
     return snapshot;
   }
 
+  Future<void> updateUserFirstLogin(User user, bool firstLogin) {
+    user.firstLogin = firstLogin;
+    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+  }
+
+  Future<List<DocumentSnapshot>> retrieveGroups() async {
+    QuerySnapshot querySnapshot = await _firestore.collection("users").where("isGroup", isEqualTo: true).getDocuments();
+    return querySnapshot.documents;
+  }
+
   Future<void> updateUserProfileInformation(User user, Map<String, String> imageData, String newDisplayName, String newBio) {
     user.displayName = newDisplayName;
     user.bio = newBio;
     if (imageData != null) {
-
       //check if it's the first time changing profile pic
-      if (user.profilePictureRef == null) {
-        //first time changing profile picture, no need to delete any old ones
-        user.profilePictureUrl = imageData['imageUrl'];
-        user.profilePictureRef = imageData['storageRef'];
-      }
-      else {
+      if (user.profilePictureRef != null) {
         //new profile pic, delete old one from storage
         deleteImageFromStorage(user.profilePictureRef);
-        //set new information to user
-        user.profilePictureUrl = imageData['imageUrl'];
-        user.profilePictureRef = imageData['storageRef'];
       }
+      //set new information to user
+      user.profilePictureUrl = imageData['imageUrl'];
+      user.profilePictureRef = imageData['storageRef'];
     }
-
     return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
   }
 
   Future<void> deleteImageFromStorage(String imageRef) {
-    FirebaseStorage.instance.ref().child(imageRef).delete();
+    return FirebaseStorage.instance.ref().child(imageRef).delete();
   }
 
-
   Future<void> deleteUserPost(String uid, String pid) async {
+    DocumentReference _ref = _firestore.collection("users").document(uid);
     //get current user information
-    DocumentSnapshot documentSnapshot = await _firestore.collection("users").document(uid).get();
-    User user = User.mapToUser(documentSnapshot.data);
+    DocumentSnapshot documentSnapshot = await _ref.get();
 
     //get post information
-    documentSnapshot = await _firestore.collection("users").document(uid).collection("posts").document(pid).get();
+    documentSnapshot = await _ref.collection("posts").document(pid).get();
     Post post = Post.mapToPost(documentSnapshot.data);
 
     //first delete post image reference in storage
     deleteImageFromStorage(post.postPhotoRef);
 
     //second delete document
-    CollectionReference _ref = _firestore.collection("users").document(uid).collection("posts");
-    _ref.document(pid).delete();
+    await _ref.collection("posts").document(pid).delete();
 
     //update user post info
-    int numPosts = int.parse(user.numOfPosts);
-    numPosts--;
-    user.numOfPosts = "$numPosts";
-
-    //set data in database
-    return _firestore.collection("users").document(uid).setData(user.userToMap(user));
+    return _changeDocumentFieldValue(_ref, Field.numberOfPosts.name, false);
   }
-
 }
