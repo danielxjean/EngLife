@@ -57,7 +57,7 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return _loading ? Loading() : Scaffold(
       appBar: AppBar(
         title: Text(_user.username),
         backgroundColor: Colors.red[900],
@@ -133,11 +133,11 @@ class _UserProfileState extends State<UserProfile> {
                 SizedBox(height: 10.0),
                 RaisedButton(
                     color: Colors.grey[200],
-                    child: _isFollowing == true ? Text("Unfollow") : Text("Follow"),
+                    child: _isFollowing ? Text("Unfollow") : Text("Follow"),
                     onPressed: () {
                       final AuthService _auth = AuthInfo.of(context).authService;
 
-                      if (_isFollowing == true) {
+                      if (_isFollowing) {
                         _auth.removeUserFollow(_currentUser, _user);
                         refreshUserDetails();
                         setState(() {

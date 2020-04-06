@@ -16,6 +16,7 @@ class _WrapperState extends State<Wrapper> {
 
   final AuthService _auth = AuthService();
   User currentUser;
+  bool _firstVisit = true;
 
   void toggleView() {
     setState(() {
@@ -23,11 +24,8 @@ class _WrapperState extends State<Wrapper> {
       print("Refreshing the wrapper");
     });
   }
-  retrieveUser() async {
-    currentUser = await _auth.getCurrentUser();
-    setState(() {
-
-    });
+  Future<void> retrieveUser() async {
+    return currentUser = await _auth.getCurrentUser();
   }
   @override
   Widget build(BuildContext context) {
@@ -41,16 +39,29 @@ class _WrapperState extends State<Wrapper> {
       return Authenticate();  // have to insert a page after the user so they can follow some pages
     }
     else {
-      currentUser??=user;
-      print(currentUser.toString());
-      if (currentUser.firstLogin == true && currentUser.isGroup == false) {
-        print("hit the clubs page: firstLogin is " + currentUser.firstLogin.toString() + " and isGroup is " + currentUser.isGroup.toString());
-        return ClubsPage(userId: currentUser.uid, user: currentUser, toggleView: toggleView);
-      }
-      else if (currentUser.firstLogin == false && currentUser.isGroup == false) {
-        print("Hit the home page: firstLogin is " + currentUser.firstLogin.toString() + " and isGroup is " + currentUser.isGroup.toString());
-        return Home();
-      }
+      return FutureBuilder<void>(
+          future: retrieveUser().whenComplete(() => currentUser.firstLogin = _firstVisit),
+          builder: (context, AsyncSnapshot<void> snapshot) {
+            if (snapshot.hasData) {
+              //currentUser ??= user;
+              _firstVisit = false;
+              print(currentUser.toString());
+              if (currentUser.firstLogin && !currentUser.isGroup) {
+                print("Hit the clubs page: firstLogin is " + currentUser.firstLogin.toString() + " and isGroup is " + currentUser.isGroup.toString());
+                return ClubsPage(userId: currentUser.uid, user: currentUser, toggleView: toggleView);
+              }
+              else if (!currentUser.firstLogin && !currentUser.isGroup) {
+                print("Hit the home page: firstLogin is " + currentUser.firstLogin.toString() + " and isGroup is " + currentUser.isGroup.toString());
+                return Home();
+              }
+              else{
+                return Text('Error: Invalid state in wrapper. Please restart and try again.');
+              }
+            } else {
+              return Loading();
+            }
+          }
+      );
     }
     return Loading(); // Just added this
   }

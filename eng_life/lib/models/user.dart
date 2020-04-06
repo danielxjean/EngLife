@@ -53,7 +53,7 @@ class User {
 
   @override
   String toString() {
-    print("${this.firstLogin} ${this.isGroup}");
+    print("${this.firstLogin} ${this.isGroup} $displayName");
     return super.toString();
   }
 

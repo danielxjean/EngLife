@@ -84,7 +84,7 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return _loading ? Loading() : Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red[900],
           title: Text("Post"),
@@ -137,7 +137,7 @@ class _PostDetailState extends State<PostDetail> {
                       icon: Icon(Icons.delete),
                       onPressed: () async {
                         final AuthService _auth = AuthInfo.of(context).authService;
-                        if (await createConfirmationDialog(context) == true) {
+                        if (await createConfirmationDialog(context)) {
                           print("Delete post");
                           setState(() {
                             _loading = true;
@@ -179,7 +179,7 @@ class _PostDetailState extends State<PostDetail> {
                         //Post.mapToPost(widget.documentSnapshot.data);
                         //widget.currentUserId
                         //widget.documentSnapshot.documentID
-                        if (_liked == true) {
+                        if (_liked) {
                           //unlike post
                           _auth.deleteLikeFromPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID);
                           setState(() {

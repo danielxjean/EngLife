@@ -169,11 +169,13 @@ class _SignInState extends State<SignIn> {
                             });
                           }break;
                           case -1: {
+                            //Uncategorized error
                             setState(() {
                               loading = false;
                             });
                           }break;
-                          default:{
+                          default: {
+                            //Good case
                             setState(() {
                               loading = false;
                             });

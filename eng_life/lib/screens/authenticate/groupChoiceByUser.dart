@@ -16,26 +16,21 @@ class ClubsPage extends StatefulWidget {
 }
 
 class _ClubsPage extends State<ClubsPage> {
+  List<bool> _isFollowing;
 
-  // maybe you can make a count or a method in_auth later
-
-  var _isFollowing = [false, false, false, false, false, false, false, false, false, false, false, false, false];
   AuthService _auth = AuthService();
   User _user;
   User _currentUser;
-//  bool _isFollowing;
   bool firstLogin = true;
   bool _loading = false;
-  Future<List<DocumentSnapshot>> _future;
+  Future<List<DocumentSnapshot>> _futureGroupDocuments;
+  Future<void> _futureGroupsFollowed;
+  Future<User> _futureUser;
 
   @override
   void initState() {
     super.initState();
-    refreshUserDetails();
-    setState(() {
-      retrieveUserDetails();
-//      _isFollowing = false;
-    });
+    retrieveUserDetails();
   }
 
   refreshUserDetails() async {
@@ -45,18 +40,26 @@ class _ClubsPage extends State<ClubsPage> {
     });
   }
 
+  Future<void> iterateCheckGroupFollowed(List<DocumentSnapshot> list) async {
+    for(int i = 0; i < list.length; i++){
+      _isFollowing[i] = (await _auth.checkIfCurrentUserIsFollowing(list[i].documentID, _currentUser.uid));
+    }
+  }
+
   retrieveUserDetails() async {
-    _user = await _auth.getUser(widget.userId);
-//    _currentUser = await _auth.getCurrentUser(); // maybe if we comment this out
-    setState(() {
-      _future = _auth.retrieveGroups();
-      _loading = false;
-    });
+
+    _futureUser = _auth.getCurrentUser();
+    _futureGroupDocuments = _futureUser.then((_) => _auth.retrieveGroups());
+    _futureGroupsFollowed = _futureGroupDocuments.then((future) async{_isFollowing = List(future.length); return await iterateCheckGroupFollowed(future);});
+    //_future2 = _future.then((future) {_isFollowing = List(); future.forEach((document) async{_isFollowing.add(await _auth.checkIfCurrentUserIsFollowing(document.documentID, _currentUser.uid));});});
+    //_user = await _auth.getUser(widget.userId); //  <--widget.userId was passed as the current user's id.
+    _currentUser = await _futureUser;
+   _loading = false;
   }
 
     @override
     Widget build(BuildContext context) {
-      return _loading == true ? Loading() : Scaffold(
+      return _loading ? Loading() : Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red[900],
           title: Text("ENGLife"),
@@ -91,12 +94,13 @@ class _ClubsPage extends State<ClubsPage> {
       return Flexible(
         child: Container(
           child: FutureBuilder(
-            future: _future,
+            future: _futureGroupsFollowed.then((_)=> _futureGroupDocuments),
             builder: ((context, AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
               if (!snapshot.hasData) {
                 print("NO DATA FOR THE LIST OF CLUBS");
                 return (Center(child: CircularProgressIndicator()));
               } else {
+                print(_isFollowing);
                 return
                   Container(
                     child:
@@ -114,7 +118,6 @@ class _ClubsPage extends State<ClubsPage> {
     }
 
     Widget listGroups(DocumentSnapshot documentSnapshot, int index) {
-//    _isFollowing = documentSnapshot.
       return Padding(
         padding: const EdgeInsets.all(10.0),
         child: Row(
@@ -141,22 +144,21 @@ class _ClubsPage extends State<ClubsPage> {
                 textColor: Colors.grey[100],
                 padding: EdgeInsets.all(8.0),
                 splashColor: Colors.red[900],
-                child: _isFollowing[index] == true ? Text("Unfollow", style: TextStyle(fontSize: 20.0),) : Text("Follow", style: TextStyle(fontSize: 20.0), textAlign: TextAlign.right,),
+                child: _isFollowing[index] ? Text("Unfollow", style: TextStyle(fontSize: 20.0),) : Text("Follow", style: TextStyle(fontSize: 20.0), textAlign: TextAlign.right,),
                 onPressed: () async {
-
-                  if (_isFollowing[index] == true) {
-                    _auth.removeUserFollow(_user, _currentUser ??= await _auth.getUser(documentSnapshot.data["uid"]),);
+                  print('pressed ${_isFollowing[index]} $index $_isFollowing');
+                  User group = await _auth.getUser(documentSnapshot.documentID);
+                  if (_isFollowing[index]) {
                     refreshUserDetails();
-                    _isFollowing[index] = false;
+                    _auth.removeUserFollow(_currentUser, group);
                     setState(() {
-
+                      _isFollowing[index] = false;
                     });
                   } else {
-                    _auth.addUserFollow(_user, await _auth.getUser(documentSnapshot.data["uid"]),);
                     refreshUserDetails();
-                    _isFollowing[index] = true;
+                    _auth.addUserFollow(_currentUser, group);
                     setState(() {
-
+                      _isFollowing[index] = true;
                     });
                   }
                 }

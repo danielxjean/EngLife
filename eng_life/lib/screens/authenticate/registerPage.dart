@@ -219,23 +219,34 @@ class _RegisterPageState extends State<RegisterPage> {
                             });
 
                             dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName, isGroup, firstLogin);
-                            if (result == 1) {
-                              setState(() {
-                                error = "The email address is badly formatted.";
-                                loading = false;
-                              });
-                            }
-                            else if (result == 2) {
-                              setState(() {
-                                error = "The email address is already in use by another account.";
-                                loading = false;
-                              });
-                            }
-                            else {
-                              setState(() {
-                                error = "Something went wrong, incorrect email or password.";
-                                loading = false;
-                              });
+                            switch (result) {
+                              case 1: {
+                                //badly formatted email
+                                setState(() {
+                                  error = "The email address is badly formatted.";
+                                  loading = false;
+                                });
+                              }break;
+                              case 2: {
+                                //Existing account
+                                setState(() {
+                                  error = "The email address is already in use by another account.";
+                                  loading = false;
+                                });
+                              }break;
+                              case -1: {
+                                //Uncategorized error
+                                setState(() {
+                                  error = "Something went wrong, incorrect email or password.";
+                                  loading = false;
+                                });
+                              }break;
+                              default: {
+                                //Good case
+                                setState(() {
+                                  loading = false;
+                                });
+                              }break;
                             }
                           }
                         },

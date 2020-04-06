@@ -43,7 +43,7 @@ class _EditProfileState extends State<EditProfile> {
     //Save bio (whether changed or not)
     Map<String, String> imageURL;
 
-    if (_newProfilePic == true) {
+    if (_newProfilePic) {
       imageURL = await _auth.uploadImageToStorage(_imageSelected);
     }
 
@@ -72,7 +72,7 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return _loading ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Edit Profile"),
@@ -97,7 +97,7 @@ class _EditProfileState extends State<EditProfile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           CircleAvatar(
-                            backgroundImage: _newProfilePic == false ? CachedNetworkImageProvider(
+                            backgroundImage: !_newProfilePic ? CachedNetworkImageProvider(
                                 user.data.profilePictureUrl
                             ) : FileImage(_imageSelected),
                             radius: 75.0,

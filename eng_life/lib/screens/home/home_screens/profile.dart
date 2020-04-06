@@ -48,7 +48,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return _loading ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Profile"),

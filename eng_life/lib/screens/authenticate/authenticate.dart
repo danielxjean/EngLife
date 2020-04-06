@@ -20,13 +20,11 @@ class _AuthenticateState extends State<Authenticate> {
 
   @override
   Widget build(BuildContext context) {
-    if (page == 0)
-      return SignIn(toggleView: toggleView);
-    else if (page == 1)
-      return Register(toggleView: toggleView);
-    else if (page == 2)
-      return RegisterPage(toggleView: toggleView);
-    else
-      print('ERROR: It did not toggle as expected');
+    return
+      (page == 0) ? SignIn(toggleView: toggleView) :
+      (page == 1) ? Register(toggleView: toggleView):
+      (page == 2) ? RegisterPage(toggleView: toggleView) :
+      Text('Error: This is an invalid state while authenticating. Please restart and try again.');
   }
-  }
+
+}

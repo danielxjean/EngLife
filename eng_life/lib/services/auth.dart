@@ -13,10 +13,6 @@ class AuthService {
   final Firestore _firestore = Firestore.instance;
   StorageReference _storageReference;
 
-  String _displayName = "Default";
-  bool _isGroup = false;
-  bool _firstLogin = true;
-
   User _currentUser;
 
   //create user object based on firebase user
@@ -31,7 +27,7 @@ class AuthService {
           bio: "",
           uid: user.uid,
           email: user.email,
-          displayName: _displayName,
+          displayName: 'Default',
           educationMajor: 'Default',
           numOfPosts: '0',
           numOfFollowers: '0',
@@ -39,8 +35,8 @@ class AuthService {
           //added here
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
           username: "Default",//username input needs to be added to register form, must be unique
-          isGroup: _isGroup,
-          firstLogin: _firstLogin);
+          isGroup: false,
+          firstLogin: true);
     }
   }
 
@@ -111,19 +107,21 @@ class AuthService {
   }
 
   //register email & password
-  Future registerWithEmailAndPassword(String email, String password, String displayName, bool isGroup, bool firstLogin) async {
+  Future registerWithEmailAndPassword(String email, String password, [String displayName = 'Default', bool isGroup = false, bool firstLogin = true]) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = result.user;
 
       print("PRINTING FROM REGISTER****: " + firebaseUser.toString());
 
-      this._displayName = displayName;
-      this._isGroup = isGroup;
-      this._firstLogin = firstLogin;
+      User createdUser = _userFromFirebaseUser(firebaseUser);
 
-      createNewUserInDatabase(_userFromFirebaseUser(firebaseUser));
-      return _userFromFirebaseUser(firebaseUser);
+      createdUser.displayName = displayName;
+      createdUser.isGroup = isGroup;
+      createdUser.firstLogin = firstLogin;
+
+      createNewUserInDatabase(createdUser);
+      return createdUser;
     } catch(e) {
       print(e.message);
       switch(e.message) {
