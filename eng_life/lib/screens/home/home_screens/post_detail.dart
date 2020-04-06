@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/comments_screen.dart';
-import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/user_profile.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
@@ -12,8 +11,8 @@ import 'package:flutter/material.dart';
 
 class PostDetail extends StatefulWidget {
 
-  DocumentSnapshot documentSnapshot;
-  String userId, currentUserId;
+  final DocumentSnapshot documentSnapshot;
+  final String userId, currentUserId;
 
   PostDetail({this.documentSnapshot, this.userId, this.currentUserId});
 
@@ -23,8 +22,9 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
 
-
+  bool _enabledButton = true;
   bool _liked = false;
+  bool _displayLiked = false;
   bool _loading = true;
   User _currentUser;
   DocumentSnapshot _documentSnapshot;
@@ -37,7 +37,7 @@ class _PostDetailState extends State<PostDetail> {
 
   retrieveInformation() async {
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
-    _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
+    _displayLiked = _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
     _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
     if(mounted){
@@ -55,7 +55,7 @@ class _PostDetailState extends State<PostDetail> {
     });
   }
 
-  Future<bool> createConfirmationDialog(BuildContext context) {
+  Future<bool> createDeleteConfirmationDialog(BuildContext context) {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -83,7 +83,7 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return _loading == true ? Loading() : Scaffold(
+    return _loading ? Loading() : Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red[900],
           title: Text("Post"),
@@ -136,7 +136,7 @@ class _PostDetailState extends State<PostDetail> {
                       icon: Icon(Icons.delete),
                       onPressed: () async {
                         final AuthService _auth = AuthInfo.of(context).authService;
-                        if (await createConfirmationDialog(context) == true) {
+                        if (await createDeleteConfirmationDialog(context)) {
                           print("Delete post");
                           setState(() {
                             _loading = true;
@@ -163,7 +163,7 @@ class _PostDetailState extends State<PostDetail> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     GestureDetector(
-                      child: _liked
+                      child: _displayLiked
                           ? Icon(
                         Icons.favorite,
                         color: Colors.red[900],
@@ -173,27 +173,8 @@ class _PostDetailState extends State<PostDetail> {
                         Icons.favorite_border,
                         size: 40.0,
                       ),
-                      onTap: () {
-                        final AuthService _auth = AuthInfo.of(context).authService;
-                        //Post.mapToPost(widget.documentSnapshot.data);
-                        //widget.currentUserId
-                        //widget.documentSnapshot.documentID
-                        if (_liked == true) {
-                          //unlike post
-                          _auth.deleteLikeFromPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID);
-                          setState(() {
-                            _liked = false;
-                            refreshLikes();
-                          });
-                        }
-                        else {
-                          //like post
-                          _auth.addLikeToPost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID);
-                          setState(() {
-                            _liked = true;
-                            refreshLikes();
-                          });
-                        }
+                      onTap: ()   {
+                        likePost();
                       },
                     ),
                     SizedBox(width: 15),
@@ -233,5 +214,27 @@ class _PostDetailState extends State<PostDetail> {
           ),
         )
     );
+  }
+
+  void likePost () async{
+    if (!_enabledButton){
+      return;
+    }
+    //lock
+    setState(() {
+      _enabledButton = false;
+      _liked = !_liked;
+    });
+
+    final AuthService _auth = AuthInfo.of(context).authService;
+
+    await _auth.likePost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID, _liked).then((_) =>
+        refreshLikes());
+
+    setState(() {
+      //unlock
+      _enabledButton = true;
+      _displayLiked = _liked;
+    });
   }
 }

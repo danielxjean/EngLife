@@ -19,14 +19,14 @@ class _EditNewPhotoState extends State<EditNewPhoto> {
 
   String _caption;
 
-  void uploadPicture() async {
+  void uploadPicture() {
     final AuthService _auth = AuthInfo.of(context).authService;
 
-    await _auth.getCurrentUser().then((user) {
-      _auth.uploadImageToStorage(widget.imageSelected).then((url) {
-        _auth.addPhostToDb(url, _caption, user);
-      });
-    });
+    _auth.getCurrentUser()
+        .then((user) {_auth.uploadImageToStorage(widget.imageSelected)
+        .then((url) {_auth.addPostToDb(url, _caption ?? "", user);
+        });
+        });
   }
 
   @override
