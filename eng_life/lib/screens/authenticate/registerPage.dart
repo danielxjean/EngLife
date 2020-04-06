@@ -1,20 +1,19 @@
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:eng_life/screens/authenticate/registerPage.dart';
 
-class Register extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
 
   final Function toggleView;
-  Register({this.toggleView});
+  RegisterPage({this.toggleView});
 
   @override
-  _RegisterState createState() => _RegisterState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterPageState extends State<RegisterPage> {
 
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   //text field state
@@ -23,7 +22,8 @@ class _RegisterState extends State<Register> {
   String password = '';
   String confirmPassword = '';
   String error = '';
-  bool isGroup = false;
+  String groupCode = '';
+  bool isGroup = true;
   bool loading = false;
   bool firstLogin = true;
 
@@ -34,7 +34,7 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         elevation: 0.0,
-//        title: Text("Sign up to ENGLife"),
+//        title: Text("Sign up group to ENGLife"),
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(
@@ -42,29 +42,26 @@ class _RegisterState extends State<Register> {
               color: Colors.white,
             ),
             label: Text(
-            "Sign in",
-            style: TextStyle(color: Colors.white),
-          ),
+              "Sign in",
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
               widget.toggleView(0);
             },
           ),
-
           FlatButton.icon(
             icon: Icon(
               Icons.person,
               color: Colors.white,
             ),
             label: Text(
-              "Register as group",
+              "Register",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              widget.toggleView(2);
+              widget.toggleView(1);
             },
           )
-
-
         ],
       ),
       body: Center(
@@ -76,28 +73,12 @@ class _RegisterState extends State<Register> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-//                  RaisedButton(
-//                    color: Colors.red[900],
-//                    child: Text(
-//                      "Register as page",
-//                      style:TextStyle(color: Colors.white),
-//                    ),
-//                    onPressed: (){
-//                      print("register as page button pressed");
-//                      Navigator.push(context,
-//                          MaterialPageRoute(
-//                              builder: (context) => RegisterPage()
-//                          )
-//                      );
-//                    },
-//                  ),
-                  Text("Sign up to ENGLife",
+                  Text("Sign up to ENGLife as a group",
                     style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[900], fontSize: 30),
                   ),
-                  SizedBox(height: 70.0),
+                  SizedBox(height: 20.0),
                   //display name input
                   TextFormField(
-                    key: Key('name'),
 
                     /*
                     TextFormField for user display name
@@ -105,7 +86,7 @@ class _RegisterState extends State<Register> {
 
                     validator: (val) {
                       if (val.isEmpty) {
-                        return "Enter your display name.";
+                        return "Enter your group's display name.";
                       }
                       else {
                         return null;
@@ -116,7 +97,7 @@ class _RegisterState extends State<Register> {
                         labelText: "display name"
                     ),
                     onChanged: (val) {
-                      //runs every time the value of the form field is changed
+                      //runs every time the value of the formfield is changed
                       setState(() {
                         displayName = val;
                       });
@@ -125,7 +106,6 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //email input
                   TextFormField(
-                    key: Key('email'),
 
                     /*
                     TextFormField for user email
@@ -153,7 +133,6 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //password input
                   TextFormField(
-                    key: Key('password'),
 
                     /*
                     TextFormField for user password
@@ -181,7 +160,6 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //confirm password input
                   TextFormField(
-                    key: Key('password2'),
 
                     /*
                     TextFormField for user confirmed password
@@ -208,6 +186,22 @@ class _RegisterState extends State<Register> {
                     },
                   ),
                   SizedBox(height: 20.0),
+                  TextFormField(
+                    validator: (val){
+                      if(val != "123"){
+                        return "invalide ECA password.";
+                      }
+                      else{
+                        return null;
+                      }
+                    },
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.lock),
+                        labelText: "ECA password"
+                    ),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 20.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -220,14 +214,10 @@ class _RegisterState extends State<Register> {
                         onPressed: () async {
                           //sign in, may take some time therefore async function
                           if (_formKey.currentState.validate()) {
-                            
                             setState(() {
                               loading = true;
                             });
-                            
-                            final AuthService _auth = AuthInfo.of(context).authService;
-                            
-                            isGroup = false;
+
                             dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName, isGroup, firstLogin);
                             if (result == 1) {
                               setState(() {
@@ -250,7 +240,7 @@ class _RegisterState extends State<Register> {
                           }
                         },
                       ),
-                      SizedBox(width: 20.0),
+                      SizedBox(width: 20.0)
                     ],
                   ),
                   SizedBox(height: 20.0),
@@ -267,5 +257,3 @@ class _RegisterState extends State<Register> {
     );
   }
 }
-
-

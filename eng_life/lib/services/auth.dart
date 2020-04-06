@@ -36,6 +36,8 @@ class AuthService {
   StorageReference _storageReference;
 
   String _displayName = "Default";
+  bool _isGroup = false;
+  bool _firstLogin = true;
 
   //locks
   static final Map<String, Future<void>> _isLiking = Map();
@@ -60,8 +62,11 @@ class AuthService {
           numOfPosts: '0',
           numOfFollowers: '0',
           numOfFollowing: '0',
+          //added here
           profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
-          username: "Default"); //username input needs to be added to register form, must be unique
+          username: "Default",//username input needs to be added to register form, must be unique
+          isGroup: _isGroup,
+          firstLogin: _firstLogin);
     }
   }
 
@@ -128,7 +133,7 @@ class AuthService {
   }
 
   //register email & password
-  Future registerWithEmailAndPassword(String email, String password, String displayName) async {
+  Future registerWithEmailAndPassword(String email, String password, String displayName, bool isGroup, bool firstLogin) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser firebaseUser = result.user;
@@ -136,6 +141,8 @@ class AuthService {
       print("PRINTING FROM REGISTER****: " + firebaseUser.toString());
 
       this._displayName = displayName;
+      this._isGroup = isGroup;
+      this._firstLogin = firstLogin;
 
       createNewUserInDatabase(_userFromFirebaseUser(firebaseUser));
       return _userFromFirebaseUser(firebaseUser);
@@ -150,6 +157,8 @@ class AuthService {
       //The email address is already in use by another account. (2)
     }
   }
+
+  //registerGroupWithEmailAndPassword
 
   //sign out
   Future signOut() async {
@@ -190,7 +199,9 @@ class AuthService {
   //add photo to database for current user
   Future<void> addPostToDb(Map<String, String> imageData, String caption, User user) {
     CollectionReference _collectionRef = _firestore.collection("users").document("${user.uid}").collection("posts");
+
     print("IMAGE URL: ${imageData['imageUrl']}");
+
 
     Post post = Post(
         userId: user.uid,
@@ -205,7 +216,9 @@ class AuthService {
     _collectionRef.add(post.toMap(post));
 
     //increment number of posts in user
+
     return _changeDocumentFieldValue(_collectionRef.parent(), Field.numberOfPosts.name, true);
+
   }
 
   //retrieve photo for current user
@@ -214,14 +227,13 @@ class AuthService {
     return querySnapshot.documents;
   }
 
-
   //Increments or decrements a field in the document reference.
   Future<void> _changeDocumentFieldValue(DocumentReference documentReference, String field, bool add) async{
     int newValue = int.parse((await documentReference.get())[field]);
     add ? newValue++ : newValue--;
     return await documentReference.updateData({field: '$newValue'});
   }
-
+  
   //region Follower/Following
   //region Visible Follower/Following Method
   Future<void> userFollow(User curUser, User user2, bool add) async{
@@ -362,20 +374,23 @@ class AuthService {
     Like like = Like(displayName: curUser.displayName, profilePictureUrl: curUser.profilePictureUrl, uid: curUser.uid);
     //convert Like to map.
     Map map = like.toMap();
+
     await _ref.collection("likes").document(curUser.uid).setData(map);
-   
+
     //update post's number of likes.
     return _changeDocumentFieldValue(_ref, Field.numberOfLikes.name, true);
-  }
+
   
   Future<void> _deleteLikeFromPost(User curUser, Post likedPost, String postId) async{
     DocumentReference _ref = _firestore.collection("users").document(likedPost.userId).collection("posts").document("$postId");
     //print('del: ${(await _ref.document(curUser.uid).get()).data}');
     await _ref.collection("likes").document(curUser.uid).delete();
     
+
     //update post's number of likes.
     return _changeDocumentFieldValue(_ref, Field.numberOfLikes.name, false);
   }
+  
   //endregion
   //endregion
 
@@ -397,6 +412,16 @@ class AuthService {
   Future<DocumentSnapshot> refreshSnapshotInfo(DocumentSnapshot documentSnapshot) async {
     DocumentSnapshot snapshot = await documentSnapshot.reference.get();
     return snapshot;
+  }
+  Future<void> updateUserFirstLogin(User user, bool firstLogin) {
+    user.firstLogin = firstLogin;
+    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+  }
+
+
+  Future<List<DocumentSnapshot>> retrieveGroups() async {
+    QuerySnapshot querySnapshot = await _firestore.collection("users").where("isGroup", isEqualTo: true).getDocuments();
+    return querySnapshot.documents;
   }
 
   Future<void> updateUserProfileInformation(User user, Map<String, String> imageData, String newDisplayName, String newBio) {
@@ -445,5 +470,6 @@ class AuthService {
     //update user post info
     return _changeDocumentFieldValue(_ref, Field.numberOfPosts.name, false);
   }
+
 
 }
