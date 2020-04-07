@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eng_life/models/customPost.dart';
 import 'package:eng_life/models/post.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/screens/home/home_screens/comments_screen.dart';
@@ -90,128 +91,7 @@ class _PostDetailState extends State<PostDetail> {
           centerTitle: true,
         ),
         body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                              widget.documentSnapshot.data['userProfilePictureUrl']
-                          ),
-                          radius: 25.0,
-                        ),
-                        SizedBox(width: 5.0),
-                        GestureDetector(
-                          child: Text(
-                            widget.documentSnapshot.data['displayName'],
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-                          ),
-                          onTap: () {
-                            if (widget.userId == widget.currentUserId) {
-                              Navigator.pop(context);
-                            }
-                            else {
-                              Navigator.push(context,
-                                  MaterialPageRoute(
-                                      builder: (context) {
-                                        return UserProfile(userId: widget.userId);
-
-                                      }
-                                  )
-                              );
-                            }
-                          },
-                        )
-                      ],
-                    ),
-                    widget.userId == widget.currentUserId ? IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () async {
-                        final AuthService _auth = AuthInfo.of(context).authService;
-                        if (await createDeleteConfirmationDialog(context)) {
-                          print("Delete post");
-                          setState(() {
-                            _loading = true;
-                          });
-                          await _auth.deleteUserPost(widget.userId, widget.documentSnapshot.documentID);
-                          Navigator.of(context).pop();
-                        }
-                        else {
-                          //do nothing
-                        }
-                      },
-                    ) : Container()
-                  ],
-                ),
-              ),
-              CachedNetworkImage(
-                imageUrl: widget.documentSnapshot.data['postPhotoUrl'],
-                height: 400.0,
-                fit: BoxFit.cover,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    GestureDetector(
-                      child: _displayLiked
-                          ? Icon(
-                        Icons.favorite,
-                        color: Colors.red[900],
-                        size: 40.0,
-                      )
-                          : Icon(
-                        Icons.favorite_border,
-                        size: 40.0,
-                      ),
-                      onTap: ()   {
-                        likePost();
-                      },
-                    ),
-                    SizedBox(width: 15),
-                    GestureDetector(
-                      child: Icon(
-                        Icons.comment,
-                        size: 40.0,
-                      ),
-                      onTap: () {
-
-                        Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (context) => CommentsPage(user: _currentUser, documentReference: widget.documentSnapshot.reference)
-                            )
-                        );
-
-                      },
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  _documentSnapshot.data['numberOfLikes'] + " likes",
-                  style: TextStyle(fontSize: 15.0),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  _documentSnapshot.data['caption'],
-                  style: TextStyle(fontSize: 20.0),
-                ),
-              )
-            ],
-          ),
+          child: CustomPost(displayedOnFeed: false, documentSnapshot: _documentSnapshot, currentUser: _currentUser, createDeleteConfirmationDialog: createDeleteConfirmationDialog)
         )
     );
   }

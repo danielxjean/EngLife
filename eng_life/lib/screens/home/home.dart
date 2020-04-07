@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
 
+  int initialPage;
+
+  Home({@required this.initialPage});
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -30,6 +34,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     pageController = PageController();
+    _page = widget.initialPage;
   }
 
   @override
