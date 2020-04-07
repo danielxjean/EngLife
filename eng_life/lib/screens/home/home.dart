@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Container(
             color: Colors.grey[100],
-            child: Feed(onStateChanged: onPageChanged),
+            child: Feed(changeHomePage: onNavigationItemTapped),
           ),
           Container(
             color: Colors.grey[100],
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
           ),
           Container(
             color: Colors.grey[100],
-            child: Profile(),
+            child: Profile(changeHomePage: onPageChanged),
           )
         ],
         controller: pageController,

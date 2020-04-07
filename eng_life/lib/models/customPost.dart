@@ -15,11 +15,10 @@ class CustomPost extends StatefulWidget {
   final DocumentSnapshot documentSnapshot;
   final User currentUser;
   final Function createDeleteConfirmationDialog;
-  final Function onStateChanged;
-  final Function returnFromDeletedPost;
+  final Function changeHomePage;
   final bool displayedOnFeed;
 
-  CustomPost({this.documentSnapshot, this.currentUser, this.createDeleteConfirmationDialog, this.displayedOnFeed, this.onStateChanged, this.returnFromDeletedPost});
+  CustomPost({this.documentSnapshot, this.currentUser, this.createDeleteConfirmationDialog, this.displayedOnFeed, this.changeHomePage});
 
   @override
   _CustomPostState createState() => _CustomPostState();
@@ -114,7 +113,7 @@ class _CustomPostState extends State<CustomPost> {
                             Navigator.of(context).pop();
                           }
                           else if (_documentSnapshot.data['userId'] == widget.currentUser.uid && widget.displayedOnFeed == true) {
-                            widget.onStateChanged(3);
+                            widget.changeHomePage(3);
                           }
                           else {
                             Navigator.push(context,
@@ -138,7 +137,7 @@ class _CustomPostState extends State<CustomPost> {
                           _loading = true;
                         });
                         await _auth.deleteUserPost(widget.currentUser.uid, _documentSnapshot.documentID);
-                        widget.returnFromDeletedPost();
+                        widget.changeHomePage();
                         Navigator.of(context).pop();
                       }
                     },

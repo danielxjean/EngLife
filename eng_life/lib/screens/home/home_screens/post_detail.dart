@@ -14,8 +14,9 @@ class PostDetail extends StatefulWidget {
 
   final DocumentSnapshot documentSnapshot;
   final String userId, currentUserId;
+  final Function changeHomePage;
 
-  PostDetail({this.documentSnapshot, this.userId, this.currentUserId});
+  PostDetail({this.documentSnapshot, this.userId, this.currentUserId, this.changeHomePage});
 
   @override
   _PostDetailState createState() => _PostDetailState();
@@ -42,15 +43,6 @@ class _PostDetailState extends State<PostDetail> {
         _loading = false;
       });
     }
-  }
-
-  refreshPage() async {
-    final AuthService _auth = AuthInfo.of(context).authService;
-    _currentUser = await _auth.getCurrentUser();
-    _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
-    setState(() {
-      _loading = false;
-    });
   }
 
   Future<bool> createDeleteConfirmationDialog(BuildContext context) {
@@ -87,7 +79,7 @@ class _PostDetailState extends State<PostDetail> {
           title: Text("Post"),
           centerTitle: true,
         ),
-        body: CustomPost(displayedOnFeed: false, documentSnapshot: _documentSnapshot, currentUser: _currentUser, createDeleteConfirmationDialog: createDeleteConfirmationDialog, returnFromDeletedPost: refreshPage)
+        body: CustomPost(displayedOnFeed: false, documentSnapshot: _documentSnapshot, currentUser: _currentUser, createDeleteConfirmationDialog: createDeleteConfirmationDialog, changeHomePage: widget.changeHomePage)
     );
   }
 }

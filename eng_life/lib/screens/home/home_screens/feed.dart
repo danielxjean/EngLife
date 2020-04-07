@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 
 class Feed extends StatefulWidget {
 
-  final Function onStateChanged;
+  final Function changeHomePage;
 
-  Feed({@required this.onStateChanged});
+  Feed({@required this.changeHomePage});
 
   @override
   _FeedState createState() => _FeedState();
@@ -70,7 +70,7 @@ class _FeedState extends State<Feed> {
           if (snapshot.connectionState == ConnectionState.done) {
             return ListView.builder(
               itemCount: snapshot.data.length,
-              itemBuilder: ((context, index) => CustomPost(displayedOnFeed: true, documentSnapshot: snapshot.data[index], currentUser: _currentUser, onStateChanged: widget.onStateChanged)),
+              itemBuilder: ((context, index) => CustomPost(displayedOnFeed: true, documentSnapshot: snapshot.data[index], currentUser: _currentUser, changeHomePage: widget.changeHomePage)),
             );
           }
           else
