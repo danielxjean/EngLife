@@ -23,9 +23,6 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
 
-  bool _enabledButton = true;
-  bool _liked = false;
-  bool _displayLiked = false;
   bool _loading = true;
   User _currentUser;
   DocumentSnapshot _documentSnapshot;
@@ -38,7 +35,6 @@ class _PostDetailState extends State<PostDetail> {
 
   retrieveInformation() async {
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
-    _displayLiked = _liked = await _auth.checkIfCurrentUserLiked(widget.currentUserId, widget.documentSnapshot.reference);
     _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
     if(mounted){
@@ -48,11 +44,12 @@ class _PostDetailState extends State<PostDetail> {
     }
   }
 
-  refreshLikes() async {
+  refreshPage() async {
     final AuthService _auth = AuthInfo.of(context).authService;
+    _currentUser = await _auth.getCurrentUser();
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
     setState(() {
-      print("likes refreshed");
+      _loading = false;
     });
   }
 
@@ -90,31 +87,7 @@ class _PostDetailState extends State<PostDetail> {
           title: Text("Post"),
           centerTitle: true,
         ),
-        body: SingleChildScrollView(
-          child: CustomPost(displayedOnFeed: false, documentSnapshot: _documentSnapshot, currentUser: _currentUser, createDeleteConfirmationDialog: createDeleteConfirmationDialog)
-        )
+        body: CustomPost(displayedOnFeed: false, documentSnapshot: _documentSnapshot, currentUser: _currentUser, createDeleteConfirmationDialog: createDeleteConfirmationDialog, returnFromDeletedPost: refreshPage)
     );
-  }
-
-  void likePost () async{
-    if (!_enabledButton){
-      return;
-    }
-    //lock
-    setState(() {
-      _enabledButton = false;
-      _liked = !_liked;
-    });
-
-    final AuthService _auth = AuthInfo.of(context).authService;
-
-    await _auth.likePost(_currentUser, Post.mapToPost(_documentSnapshot.data), widget.documentSnapshot.documentID, _liked).then((_) =>
-        refreshLikes());
-
-    setState(() {
-      //unlock
-      _enabledButton = true;
-      _displayLiked = _liked;
-    });
   }
 }
