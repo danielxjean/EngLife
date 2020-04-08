@@ -100,7 +100,7 @@ class _EditProfileState extends State<EditProfile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           CircleAvatar(
-                            backgroundImage: !_newProfilePic ? CachedNetworkImageProvider(
+                            backgroundImage: !(_newProfilePic && _imageSelected != null) ? CachedNetworkImageProvider(
                                 user.data.profilePictureUrl
                             ) : FileImage(_imageSelected),
                             radius: 75.0,
