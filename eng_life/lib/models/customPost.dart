@@ -28,6 +28,7 @@ class _CustomPostState extends State<CustomPost> {
 
   bool _enabledButton = true;
   bool _liked = false;
+  bool _displayLiked = false;
   bool _loading = false;
   DocumentSnapshot _documentSnapshot;
 
@@ -42,7 +43,7 @@ class _CustomPostState extends State<CustomPost> {
   isPostLiked() async {
     _documentSnapshot = widget.documentSnapshot;
     final AuthService _auth = context.findAncestorWidgetOfExactType<AuthInfo>().authService;
-    _liked = await _auth.checkIfCurrentUserLiked(widget.currentUser.uid, widget.documentSnapshot.reference);
+    _displayLiked = _liked = await _auth.checkIfCurrentUserLiked(widget.currentUser.uid, widget.documentSnapshot.reference);
     _documentSnapshot = await _auth.refreshSnapshotInfo(widget.documentSnapshot);
     if (mounted) {
       setState(() {
@@ -77,6 +78,7 @@ class _CustomPostState extends State<CustomPost> {
     setState(() {
       //unlock
       _enabledButton = true;
+      _displayLiked = _liked;
     });
   }
 
@@ -145,10 +147,15 @@ class _CustomPostState extends State<CustomPost> {
                 ],
               ),
             ),
-            CachedNetworkImage(
-              imageUrl: _documentSnapshot.data['postPhotoUrl'],
-              height: 400.0,
-              fit: BoxFit.cover,
+            GestureDetector(
+              child: CachedNetworkImage(
+                imageUrl: _documentSnapshot.data['postPhotoUrl'],
+                height: 400.0,
+                fit: BoxFit.cover,
+              ),
+              onDoubleTap: (){
+                likePost();
+              },
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -156,7 +163,7 @@ class _CustomPostState extends State<CustomPost> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   GestureDetector(
-                    child: _liked
+                    child: _displayLiked
                         ? Icon(
                       Icons.favorite,
                       color: Colors.red[900],
