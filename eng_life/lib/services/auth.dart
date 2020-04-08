@@ -473,7 +473,8 @@ class AuthService {
       }
     }
 
-    _userIdFollowing.add(currentUserId);
+    if (viewingGroupFeed == false)
+      _userIdFollowing.add(currentUserId);
 
     print("FETCH FEED - # OF FOLLOWING IDS: ${_userIdFollowing.length}");
 
