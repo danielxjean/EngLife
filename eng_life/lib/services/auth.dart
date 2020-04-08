@@ -473,6 +473,8 @@ class AuthService {
       }
     }
 
+    _userIdFollowing.add(currentUserId);
+
     print("FETCH FEED - # OF FOLLOWING IDS: ${_userIdFollowing.length}");
 
     //2.0 create list to hold every post made by the users in _userIdFollowing
