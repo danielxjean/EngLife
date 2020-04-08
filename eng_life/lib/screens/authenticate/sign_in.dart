@@ -1,4 +1,3 @@
-import 'package:eng_life/models/user.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
@@ -43,7 +42,20 @@ class _SignInState extends State<SignIn> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              widget.toggleView();
+              widget.toggleView(1);
+            },
+          ),
+          FlatButton.icon(
+            icon: Icon(
+              Icons.group,
+              color: Colors.white,
+            ),
+            label: Text(
+              "Society",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              widget.toggleView(2);
             },
           )
         ],
@@ -153,11 +165,13 @@ class _SignInState extends State<SignIn> {
                             });
                           }break;
                           case -1: {
+                            //Uncategorized error
                             setState(() {
                               loading = false;
                             });
                           }break;
-                          default:{
+                          default: {
+                            //Good case
                             setState(() {
                               loading = false;
                             });

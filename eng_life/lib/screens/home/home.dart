@@ -1,11 +1,14 @@
 import 'package:eng_life/screens/home/home_screens/add_photo.dart';
-import 'package:eng_life/screens/home/home_screens/feed.dart';
-import 'package:eng_life/screens/home/home_screens/post_detail.dart';
+import 'package:eng_life/screens/home/home_screens/feed_users.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/search.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
+
+  int initialPage;
+
+  Home({@required this.initialPage});
 
   @override
   _HomeState createState() => _HomeState();
@@ -31,6 +34,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     pageController = PageController();
+    _page = widget.initialPage;
   }
 
   @override
@@ -47,7 +51,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Container(
             color: Colors.grey[100],
-            child: Feed(),
+            child: FeedUsers(changeHomePage: onNavigationItemTapped),
           ),
           Container(
             color: Colors.grey[100],
@@ -59,7 +63,7 @@ class _HomeState extends State<Home> {
           ),
           Container(
             color: Colors.grey[100],
-            child: Profile(),
+            child: Profile(changeHomePage: onPageChanged),
           )
         ],
         controller: pageController,

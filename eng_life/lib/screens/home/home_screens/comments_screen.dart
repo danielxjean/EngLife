@@ -18,6 +18,7 @@ class _CommentsScreenState extends State<CommentsPage> {
   String _commentText = "";
   var _formKey = GlobalKey<FormState>();
 
+  bool _enabledButton = true;
 
   /// This function disposes of the comment if called upon
   void dispose() {
@@ -50,6 +51,7 @@ class _CommentsScreenState extends State<CommentsPage> {
   }
 
   Widget inputCommentWidget() {
+    ThemeData theme = Theme.of(context);
     return Container(
       height: 45.0,
       margin: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -68,7 +70,7 @@ class _CommentsScreenState extends State<CommentsPage> {
           Flexible(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: TextFormField(
+              child: _enabledButton ? TextFormField(
                 validator: (String commentInput) {
                   if (commentInput.isEmpty)
                     return "Please enter a comment";
@@ -85,6 +87,18 @@ class _CommentsScreenState extends State<CommentsPage> {
                 onChanged: (value) {
                   _commentText = value;
                 },
+              ):
+              FocusScope(
+                node: new FocusScopeNode(),
+                child: new TextFormField(
+                  controller: _comment,
+                  style: theme.textTheme.subhead.copyWith(
+                    color: theme.disabledColor,
+                  ),
+                  decoration: new InputDecoration(
+                    hintText: 'Sending comment...',
+                  ),
+                ),
               ),
             ),
           ),
@@ -98,8 +112,9 @@ class _CommentsScreenState extends State<CommentsPage> {
               ),
             ),
             onTap: () {
-              if (_formKey.currentState.validate())
+              if (_formKey.currentState.validate()) {
                 commentPost();
+              }
             },
           )
         ],
@@ -107,8 +122,13 @@ class _CommentsScreenState extends State<CommentsPage> {
     );
   }
 
-
-  commentPost() {
+  commentPost() async{
+    if (!_enabledButton){
+      return;
+    }
+    setState(() {
+      _enabledButton = false;
+    });
     var inputComment = Comment(
       displayName: widget.user.displayName,
       profilePictureUrl: widget.user.profilePictureUrl,
@@ -117,11 +137,12 @@ class _CommentsScreenState extends State<CommentsPage> {
       timeStamp: FieldValue.serverTimestamp(),
     );
     print(inputComment.toMap(inputComment).toString());
-    widget.documentReference.collection("comments").add(inputComment.toMap(inputComment)).whenComplete(() {
+    await widget.documentReference.collection("comments").add(inputComment.toMap(inputComment)).whenComplete(() {
       _comment.text = "";
     });
     setState(() {
       print("refresh comments");
+      _enabledButton = true;
     });
 }
 

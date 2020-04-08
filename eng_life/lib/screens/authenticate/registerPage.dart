@@ -1,19 +1,19 @@
 import 'package:eng_life/services/auth.dart';
-import 'package:eng_life/services/auth_info.dart';
 import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
-class Register extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
 
   final Function toggleView;
-  Register({this.toggleView});
+  RegisterPage({this.toggleView});
 
   @override
-  _RegisterState createState() => _RegisterState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterPageState extends State<RegisterPage> {
 
+  final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
 
   //text field state
@@ -22,8 +22,10 @@ class _RegisterState extends State<Register> {
   String password = '';
   String confirmPassword = '';
   String error = '';
-
+  String groupCode = '';
+  bool isGroup = true;
   bool loading = false;
+  bool firstLogin = true;
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +34,9 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         elevation: 0.0,
-        title: Text("Sign up to ENGLife"),
+//        title: Text("Sign up group to ENGLife"),
         actions: <Widget>[
           FlatButton.icon(
-            key: Key('toggle'),
             icon: Icon(
               Icons.person,
               color: Colors.white,
@@ -50,15 +51,15 @@ class _RegisterState extends State<Register> {
           ),
           FlatButton.icon(
             icon: Icon(
-              Icons.group,
+              Icons.person,
               color: Colors.white,
             ),
             label: Text(
-              "Society",
+              "Register",
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              widget.toggleView(2);
+              widget.toggleView(1);
             },
           )
         ],
@@ -72,10 +73,12 @@ class _RegisterState extends State<Register> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Text("Sign up to ENGLife as a group",
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[900], fontSize: 30),
+                  ),
                   SizedBox(height: 20.0),
                   //display name input
                   TextFormField(
-                    key: Key('name'),
 
                     /*
                     TextFormField for user display name
@@ -83,7 +86,7 @@ class _RegisterState extends State<Register> {
 
                     validator: (val) {
                       if (val.isEmpty) {
-                        return "Enter your display name.";
+                        return "Enter your group's display name.";
                       }
                       else {
                         return null;
@@ -103,7 +106,6 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //email input
                   TextFormField(
-                    key: Key('email'),
 
                     /*
                     TextFormField for user email
@@ -131,7 +133,6 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //password input
                   TextFormField(
-                    key: Key('password'),
 
                     /*
                     TextFormField for user password
@@ -159,7 +160,6 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 20.0),
                   //confirm password input
                   TextFormField(
-                    key: Key('password2'),
 
                     /*
                     TextFormField for user confirmed password
@@ -186,52 +186,73 @@ class _RegisterState extends State<Register> {
                     },
                   ),
                   SizedBox(height: 20.0),
-                  RaisedButton(
-                    key: Key('register'),
-                    color: Colors.red[900],
-                    child: Text(
-                      "Register",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      //sign in, may take some time therefore async function
-                      if (_formKey.currentState.validate()) {
-
-                        setState(() {
-                          loading = true;
-                        });
-
-                        final AuthService _auth = AuthInfo.of(context).authService;
-
-                        dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName);
-                        switch (result){
-                          case 1: {
-                            setState(() {
-                              error = "The email address is badly formatted.";
-                              loading = false;
-                            });
-
-                          }break;
-                          case 2: {
-                            setState(() {
-                              error = "The email address is already in use by another account.";
-                              loading = false;
-                            });
-                          }break;
-                          case -1: {
-                            setState(() {
-                              error = "Something went wrong, incorrect email or password.";
-                              loading = false;
-                            });
-                          }break;
-                          default:{
-                            setState(() {
-                              loading = false;
-                            });
-                          }break;
-                        }
+                  TextFormField(
+                    validator: (val){
+                      if(val != "123"){
+                        return "invalide ECA password.";
+                      }
+                      else{
+                        return null;
                       }
                     },
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.lock),
+                        labelText: "ECA password"
+                    ),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 20.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      RaisedButton(
+                        color: Colors.red[900],
+                        child: Text(
+                          "Register",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () async {
+                          //sign in, may take some time therefore async function
+                          if (_formKey.currentState.validate()) {
+                            setState(() {
+                              loading = true;
+                            });
+
+                            dynamic result = await _auth.registerWithEmailAndPassword(email, password, displayName, isGroup, firstLogin);
+                            switch (result) {
+                              case 1: {
+                                //badly formatted email
+                                setState(() {
+                                  error = "The email address is badly formatted.";
+                                  loading = false;
+                                });
+                              }break;
+                              case 2: {
+                                //Existing account
+                                setState(() {
+                                  error = "The email address is already in use by another account.";
+                                  loading = false;
+                                });
+                              }break;
+                              case -1: {
+                                //Uncategorized error
+                                setState(() {
+                                  error = "Something went wrong, incorrect email or password.";
+                                  loading = false;
+                                });
+                              }break;
+                              default: {
+                                //Good case
+                                setState(() {
+                                  loading = false;
+                                });
+                              }break;
+                            }
+                          }
+                        },
+                      ),
+                      SizedBox(width: 20.0)
+                    ],
                   ),
                   SizedBox(height: 20.0),
                   Text(
