@@ -48,6 +48,7 @@ class User {
     this.educationMajor = map['educationMajor'];
     this.username = map['username'];
     this.isGroup = map['isGroup'];
+    this.isGroup = map['isGroup'];
     this.firstLogin = map['firstLogin'];
   }
 

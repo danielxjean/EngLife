@@ -379,9 +379,8 @@ class AuthService {
   //endregion
   //endregion
 
-  Future<List<DocumentSnapshot>> retrieveUsers() async {
-    QuerySnapshot querySnapshot = await _firestore.collection("users").getDocuments();
-    return querySnapshot.documents;
+  Future<QuerySnapshot> retrieveUsers() async {
+    return _firestore.collection("users").getDocuments();
   }
 
   Future<bool> checkIfCurrentUserLiked(String userId, DocumentReference documentReference) async {
@@ -528,5 +527,9 @@ class AuthService {
 
     return _postList;
 
+  }
+
+  Future<QuerySnapshot> searchByName(String searchValue) {
+    return _firestore.collection("users").where('searchKey', isEqualTo: searchValue.substring(0, 1).toUpperCase()).getDocuments();
   }
 }
