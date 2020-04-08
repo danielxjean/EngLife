@@ -30,11 +30,12 @@ class _EditProfileState extends State<EditProfile> {
 
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      _imageSelected = image;
-      _newProfilePic = true;
-    });
-
+    if(mounted){
+      setState(() {
+        _imageSelected = image;
+        _newProfilePic = true;
+      });
+    }
   }
 
   uploadNewInfo() async {
@@ -43,7 +44,7 @@ class _EditProfileState extends State<EditProfile> {
     //Save bio (whether changed or not)
     Map<String, String> imageURL;
 
-    if (_newProfilePic) {
+    if (_newProfilePic && _imageSelected != null) {
       imageURL = await _auth.uploadImageToStorage(_imageSelected);
     }
 
@@ -60,14 +61,16 @@ class _EditProfileState extends State<EditProfile> {
   retreiveUserDetails() async {
     User currentUser = await _auth.getCurrentUser();
 
-    setState(() {
-      _currentUserFuture = _auth.getCurrentUser();
-      _currentUser = currentUser;
-      _loading = false;
+    if(mounted) {
+      setState(() {
+        _currentUserFuture = _auth.getCurrentUser();
+        _currentUser = currentUser;
+        _loading = false;
 
-      _displayNameController.text = currentUser.displayName;
-      _bioController.text = currentUser.bio;
-    });
+        _displayNameController.text = currentUser.displayName;
+        _bioController.text = currentUser.bio;
+      });
+    }
   }
 
   @override
@@ -97,7 +100,7 @@ class _EditProfileState extends State<EditProfile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           CircleAvatar(
-                            backgroundImage: !_newProfilePic ? CachedNetworkImageProvider(
+                            backgroundImage: !(_newProfilePic && _imageSelected != null) ? CachedNetworkImageProvider(
                                 user.data.profilePictureUrl
                             ) : FileImage(_imageSelected),
                             radius: 75.0,
