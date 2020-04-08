@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
+import 'package:eng_life/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class EditNewPhoto extends StatefulWidget {
@@ -18,20 +19,27 @@ class _EditNewPhotoState extends State<EditNewPhoto> {
 
 
   String _caption;
+  bool _loading = false;
 
-  void uploadPicture() {
+  void uploadPicture() async {
     final AuthService _auth = AuthInfo.of(context).authService;
 
-    _auth.getCurrentUser()
-        .then((user) {_auth.uploadImageToStorage(widget.imageSelected)
-        .then((url) {_auth.addPostToDb(url, _caption ?? "", user);
-        });
-        });
+    if (
+    await _auth.getCurrentUser().then((user) {
+      return _auth.uploadImageToStorage(widget.imageSelected).then((url) {
+        _auth.addPostToDb(url, _caption ?? "", user);
+        return true;
+      });
+    })
+    ) {
+      Navigator.pop(context);
+    }
+
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _loading ? Loading() : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red[900],
         title: Text("Edit Photo"),
@@ -72,11 +80,13 @@ class _EditNewPhotoState extends State<EditNewPhoto> {
                     "Upload Photo",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     print(_caption);
 
+                    setState(() {
+                      _loading = true;
+                    });
                     uploadPicture();
-                    Navigator.pop(context);
                   },
                 )
               ],

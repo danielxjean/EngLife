@@ -212,17 +212,6 @@ class AuthService {
     DocumentReference documentReference = await _collectionRef.add(post.toMap(post));
     String postId = documentReference.documentID;
 
-    //add post id with relevant information to collections posts
-    _collectionRef = _firestore.collection("posts");
-    Map<String, dynamic> postRef = {
-      'uid' : user.uid,
-      'pid' : postId,
-      'timestamp' : post.timestamp,
-      //'isGroup' : user.isGroup ----> when this is available after Daniel's merge
-    };
-    _collectionRef.document(postId).setData(postRef);
-
-
     //increment number of posts in user
     return _changeDocumentFieldValue(_collectionRef.parent(), Field.numberOfPosts.name, true);
   }

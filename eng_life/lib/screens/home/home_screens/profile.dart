@@ -11,6 +11,10 @@ import 'edit_profile.dart';
 
 class Profile extends StatefulWidget {
 
+  final Function changeHomePage;
+
+  Profile({this.changeHomePage});
+
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -28,6 +32,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     retrieveUserDetails();
+    print("PROFILE: initState");
   }
 
   retrieveUserDetails() async {
@@ -42,6 +47,19 @@ class _ProfileState extends State<Profile> {
         _loading = false;
       });
     }
+  }
+
+  refreshPage() async {
+    final AuthService _auth = AuthInfo.of(context).authService;
+    User currentUser = await _auth.getCurrentUser();
+
+    setState(() {
+      print("PROFILE: refreshing page");
+      _future = _auth.retrieveUserPosts(currentUser.uid);
+      _currentUserFuture = _auth.getCurrentUser();
+      _currentUser = currentUser;
+      _loading = false;
+    });
   }
 
   @override
@@ -198,7 +216,7 @@ class _ProfileState extends State<Profile> {
                          onTap: () {
                            Navigator.push(context,
                                MaterialPageRoute(
-                                   builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: _currentUser.uid, currentUserId: _currentUser.uid,)
+                                   builder: (context) => PostDetail(documentSnapshot: snapshot.data[index], userId: _currentUser.uid, currentUserId: _currentUser.uid, changeHomePage: refreshPage)
                                )
                            );
                          },

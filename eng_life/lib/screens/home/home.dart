@@ -6,6 +6,10 @@ import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
 
+  int initialPage;
+
+  Home({@required this.initialPage});
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -30,6 +34,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     pageController = PageController();
+    _page = widget.initialPage;
   }
 
   @override
@@ -46,7 +51,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Container(
             color: Colors.grey[100],
-            child: Feed(),
+            child: Feed(changeHomePage: onNavigationItemTapped),
           ),
           Container(
             color: Colors.grey[100],
@@ -58,7 +63,7 @@ class _HomeState extends State<Home> {
           ),
           Container(
             color: Colors.grey[100],
-            child: Profile(),
+            child: Profile(changeHomePage: onPageChanged),
           )
         ],
         controller: pageController,
