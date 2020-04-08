@@ -1,5 +1,5 @@
 import 'package:eng_life/screens/home/home_screens/add_photo.dart';
-import 'package:eng_life/screens/home/home_screens/feed.dart';
+import 'package:eng_life/screens/home/home_screens/feed_users.dart';
 import 'package:eng_life/screens/home/home_screens/profile.dart';
 import 'package:eng_life/screens/home/home_screens/search.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +51,7 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           Container(
             color: Colors.grey[100],
-            child: Feed(changeHomePage: onNavigationItemTapped),
+            child: FeedUsers(changeHomePage: onNavigationItemTapped),
           ),
           Container(
             color: Colors.grey[100],

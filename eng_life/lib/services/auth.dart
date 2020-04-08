@@ -234,15 +234,15 @@ class AuthService {
   //curUser will follow user2.
   Future<void> addUserFollow(User curUser, User user2) async{
     await Future.wait([
-      _userAsFollowerOf(curUser.uid, user2, true),
-      _userAsFollowing(curUser, user2.uid, true)
+      _userAsFollowerOf(curUser, user2, true),
+      _userAsFollowing(curUser, user2, true)
     ]);
   }
   //curUser will unfollow user2.
   Future<void> removeUserFollow(User curUser, User user2) async {
     await Future.wait([
-      _userAsFollowerOf(curUser.uid, user2, false),
-      _userAsFollowing(curUser, user2.uid, false)
+      _userAsFollowerOf(curUser, user2, false),
+      _userAsFollowing(curUser, user2, false)
     ]);
   }
   //endregion
@@ -251,39 +251,39 @@ class AuthService {
   //endregion
 
   //region Handle synchronization
-  Future<void> _userAsFollowerOf(String curUserId, User user2, bool addFollow) async{
+  Future<void> _userAsFollowerOf(User curUser, User user2, bool addFollow) async{
     String uid2 = user2.uid;
     //Wait
     if (_isFollowed[uid2] != null){
       await _isFollowed[uid2];
-      return _userAsFollowerOf(curUserId, user2, addFollow);
+      return _userAsFollowerOf(curUser, user2, addFollow);
     }
     //Lock
     Completer completer = Completer<Null>();
     _isFollowed[uid2] = completer.future;
 
     //Critical Section
-    addFollow ? await _addUserAsFollowerOf(curUserId, user2)
-        : await _removeUserAsFollowerOf(curUserId, user2);
+    addFollow ? await _addUserAsFollowerOf(curUser, user2)
+        : await _removeUserAsFollowerOf(curUser.uid, user2);
 
     //Unlock
     completer.complete();
     _isFollowed[uid2] = null;
   }
-  Future<void> _userAsFollowing(User curUser, String uid2, bool addFollow) async{
+  Future<void> _userAsFollowing(User curUser, User user2, bool addFollow) async{
     String curUserId = curUser.uid;
     //Wait
     if (_isFollowing[curUserId] != null){
       await _isFollowing[curUserId];
-      return _userAsFollowing(curUser, uid2, addFollow);
+      return _userAsFollowing(curUser, user2, addFollow);
     }
     //Lock
     Completer completer = Completer<Null>();
     _isFollowing[curUserId] = completer.future;
 
     //Critical Section
-    addFollow ? await _addUserAsFollowing(curUser, uid2)
-        : await _removeUserAsFollowing(curUser, uid2);
+    addFollow ? await _addUserAsFollowing(curUser, user2)
+        : await _removeUserAsFollowing(curUser, user2.uid);
 
     //Unlock
     completer.complete();
@@ -292,21 +292,21 @@ class AuthService {
   //endregion
 
   //region Follow/Following Methods
-  Future<void> _addUserAsFollowerOf(String curUserId, User user2) async{
+  Future<void> _addUserAsFollowerOf(User curUser, User user2) async{
     String uid2 = user2.uid;
     DocumentReference _ref = _firestore.collection("users").document(uid2);
-    Map<String, dynamic> map = {'userid': curUserId};
-    _ref.collection("followers").document(curUserId).setData(map);
+    Map<String, dynamic> map = {'userid': curUser.uid, 'isGroup': curUser.isGroup};
+    _ref.collection("followers").document(curUser.uid).setData(map);
 
 	  //update number of followers
     return _changeDocumentFieldValue(_ref, Field.numberOfFollowers.name, true);
   }
 
-  Future<void> _addUserAsFollowing(User curUser, String uid2) async{
+  Future<void> _addUserAsFollowing(User curUser, User user2) async{
     String curUserId = curUser.uid;
     DocumentReference _ref = _firestore.collection("users").document(curUserId);
-    Map<String, dynamic> map = {'userid': uid2};
-    _ref.collection("following").document(uid2).setData(map);
+    Map<String, dynamic> map = {'userid': user2.uid, 'isGroup': user2.isGroup};
+    _ref.collection("following").document(user2.uid).setData(map);
 
     //update number of followers
     return _changeDocumentFieldValue(_ref, Field.numberOfFollowings.name, true);
@@ -448,7 +448,7 @@ class AuthService {
     return _changeDocumentFieldValue(_ref, Field.numberOfPosts.name, false);
   }
 
-  Future<List<DocumentSnapshot>> fetchFeed(String currentUserId) async {
+  Future<List<DocumentSnapshot>> fetchFeed(String currentUserId, bool viewingGroupFeed) async {
 
     QuerySnapshot _querySnapshot;
 
@@ -460,7 +460,18 @@ class AuthService {
 
     //1.2 add the userIds to the userIdFollowing list
     for (int i = 0; i < _querySnapshot.documents.length; i++) {
-      _userIdFollowing.add(_querySnapshot.documents[i].documentID);
+
+      print(_querySnapshot.documents[i].data['isGroup']);
+
+      //add users depending on if the current user is viewing the group feed or not
+      if (viewingGroupFeed) {
+        if (_querySnapshot.documents[i].data['isGroup'] == true)
+          _userIdFollowing.add(_querySnapshot.documents[i].documentID);
+      }
+      else {
+        if (_querySnapshot.documents[i].data['isGroup'] == false)
+          _userIdFollowing.add(_querySnapshot.documents[i].documentID);
+      }
     }
 
     print("FETCH FEED - # OF FOLLOWING IDS: ${_userIdFollowing.length}");
