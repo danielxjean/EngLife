@@ -13,8 +13,9 @@ class User {
   String educationMajor;
   bool isGroup;
   bool firstLogin;
+  String searchKey;
 
-  User({this.uid, this.email, this.profilePictureUrl, this.profilePictureRef, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor, this.username, this.isGroup, this.firstLogin});
+  User({this.uid, this.email, this.profilePictureUrl, this.profilePictureRef, this.displayName, this.numOfFollowers, this.numOfFollowing, this.numOfPosts, this.bio, this.educationMajor, this.username, this.isGroup, this.firstLogin, this.searchKey});
 
 
   Map<String, dynamic> userToMap(User user) {
@@ -32,6 +33,7 @@ class User {
     map['username'] = user.username;
     map['isGroup'] = user.isGroup;
     map['firstLogin'] = user.firstLogin;
+    map['searchKey'] = user.searchKey;
     return map;
   }
 
@@ -49,6 +51,7 @@ class User {
     this.username = map['username'];
     this.isGroup = map['isGroup'];
     this.firstLogin = map['firstLogin'];
+    this.searchKey = map['searchKey'];
   }
 
   @override

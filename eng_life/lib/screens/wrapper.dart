@@ -39,7 +39,7 @@ class _WrapperState extends State<Wrapper> {
     }
     else {
       return FutureBuilder<void>(
-          future: retrieveUser().whenComplete(() => currentUser.firstLogin = _firstVisit),
+          future: retrieveUser(),
           builder: (context, AsyncSnapshot<void> snapshot) {
             if (snapshot.hasData) {
               //currentUser ??= user;
