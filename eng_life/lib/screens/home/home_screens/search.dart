@@ -60,7 +60,8 @@ class _SearchState extends State<Search> {
       });
 
       _queryResultSet.forEach((element) {
-        if (element['displayName'].startsWith(text)) {
+        String displayName = element['displayName'];
+        if (displayName.toUpperCase().startsWith(text.toUpperCase())) {
           setState(() {
             _tempSearchStore.add(element);
           });
@@ -88,7 +89,8 @@ class _SearchState extends State<Search> {
     else {
       _tempSearchStore = [];
       _queryResultSet.forEach((element) {
-        if (element['displayName'].startsWith(text)) {
+        String displayName = element['displayName'];
+        if (displayName.toUpperCase().startsWith(text.toUpperCase())) {
           setState(() {
             _tempSearchStore.add(element);
           });
@@ -126,18 +128,8 @@ class _SearchState extends State<Search> {
             //TODO SEARCH THE DATABASE AFTER EVERY MODIFICATION AND UPDATE LIST OF USERS
             print(text);
             initiateSearch(text);
-
           },
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
-            iconSize: 20.0,
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(

@@ -44,7 +44,20 @@ class _RegisterState extends State<Register> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              widget.toggleView();
+              widget.toggleView(0);
+            },
+          ),
+          FlatButton.icon(
+            icon: Icon(
+              Icons.group,
+              color: Colors.white,
+            ),
+            label: Text(
+              "Society",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              widget.toggleView(2);
             },
           )
         ],
