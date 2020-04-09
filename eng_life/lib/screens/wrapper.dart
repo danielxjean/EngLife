@@ -53,6 +53,9 @@ class _WrapperState extends State<Wrapper> {
                 print("Hit the home page: firstLogin is " + currentUser.firstLogin.toString() + " and isGroup is " + currentUser.isGroup.toString());
                 return Home(initialPage: 0);
               }
+              else if (currentUser.isGroup) {
+                return Home(initialPage: 0);
+              }
               else{
                 return Text('Error: Invalid state in wrapper. Please restart and try again.');
               }
