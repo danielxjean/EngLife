@@ -85,7 +85,7 @@ class _FeedUsersState extends State<FeedUsers> {
         ],
       ),
       body: _currentUser != null ? Padding(
-        padding: const EdgeInsets.only(top: 4.0),
+        padding: const EdgeInsets.only(top: 0.0),
         child: postsWidget(),
       ) : Center(
         child: Loading(),

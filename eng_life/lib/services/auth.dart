@@ -408,7 +408,7 @@ class AuthService {
     return querySnapshot.documents;
   }
 
-  Future<void> updateUserProfileInformation(User user, Map<String, String> imageData, String newDisplayName, String newBio) {
+  Future<void> updateUserProfileInformation(User user, Map<String, String> imageData, String newDisplayName, String newBio) async {
     user.displayName = newDisplayName;
     user.bio = newBio;
     if (imageData != null) {
@@ -421,7 +421,16 @@ class AuthService {
       user.profilePictureUrl = imageData['imageUrl'];
       user.profilePictureRef = imageData['storageRef'];
     }
-    return _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+    await _firestore.collection("users").document("${user.uid}").setData(user.userToMap(user));
+
+    Post post;
+    QuerySnapshot querySnapshot = await _firestore.collection("users").document(user.uid).collection("posts").getDocuments();
+    for (int i = 0; i < querySnapshot.documents.length; i++) {
+      post = Post.mapToPost(querySnapshot.documents[i].data);
+      post.displayName = newDisplayName;
+      post.userProfilePictureUrl = imageData['imageUrl'];
+      _firestore.collection("users").document(user.uid).collection("posts").document(querySnapshot.documents[i].documentID).setData(post.toMap(post));
+    }
   }
 
   Future<void> deleteImageFromStorage(String imageRef) {
@@ -472,6 +481,9 @@ class AuthService {
           _userIdFollowing.add(_querySnapshot.documents[i].documentID);
       }
     }
+
+    if (viewingGroupFeed == false)
+      _userIdFollowing.add(currentUserId);
 
     print("FETCH FEED - # OF FOLLOWING IDS: ${_userIdFollowing.length}");
 
