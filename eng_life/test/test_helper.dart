@@ -1,13 +1,57 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eng_life/models/user.dart';
 import 'package:eng_life/services/auth.dart';
 import 'package:eng_life/services/auth_info.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
 
+class FakeUser {
+   final String testUid = 'oHtooOy6euPB2X7ygMXm5GDkI0K2'; //uid of tester.
+   final String testEmail = 'test@test.com';              //email of tester.
+   User get user =>
+      User(
+          bio: "",
+          uid: testUid,
+          email: testEmail,
+          displayName: 'Default',
+          educationMajor: 'Default',
+          numOfPosts: '0',
+          numOfFollowers: '0',
+          numOfFollowing: '0',
+          profilePictureUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png",
+          username: "Default",//username input needs to be added to register form, must be unique
+          isGroup: false,
+          firstLogin: true);
+}
+
+class DocumentSnapshotMock extends Mock implements DocumentSnapshot {
+  static final String testUid = 'oHtooOy6euPB2X7ygMXm5GDkI0K2'; //uid of tester.
+  String documentID;
+  Map<String, dynamic> data;
+
+  DocumentSnapshotMock(){
+    documentID = 'biMpOZ4NXbz9qQo2ZHVV';
+    data = {
+      'userId': testUid,
+      'postPhotoUrl': 'https://firebasestorage.googleapis.com/v0/b/englife-608ff.appspot.com/o/1586398859979?alt=media&token=39bfb573-5802-4470-b267-d93fc36cef81',
+      'postPhotoRef' : '1586398859979',
+      'caption' : 'caption',
+      'displayName' : 'test',
+      'userProfilePictureUrl' : 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png',
+      'numberOfLikes' : '0',
+      'timestamp' : Timestamp.now()
+    };
+  }
+}
 //Collection of methods to ease testing.
 class TestHelper{
+
+  static final String testUid = 'oHtooOy6euPB2X7ygMXm5GDkI0K2'; //uid of tester.
+
   //Returns a similar widget to the one made in main.dart.
   static Widget makeTestableWidget({Widget childHome, AuthService authService}){
     return AuthInfo(
@@ -73,4 +117,9 @@ class TestHelper{
     }
   }
 
+  //get a document snapshot of a post.
+  static DocumentSnapshot get postDocumentSnapshot => DocumentSnapshotMock();
+
+  //get a test user.
+  static User get user => FakeUser().user;
 }
