@@ -15,7 +15,8 @@ Develop an application that is inspired by the functionality of Instagram, but f
 Project
 ------
 There are a plethora of social media platforms that are used by students around the globe. However, this
-is the first social media of its kind that is intended for local users or students attending Concordia University.
+is the first social media of its kind that is intended for local users or more specifically, engineers
+attending Concordia University.
 
 
 Team Members 
@@ -31,13 +32,14 @@ Languages and Technologies
   * Android Studio
   * SQLite
   * Java
-  * Gimp or Photoshop variant for sprites and logos
-  * TBD
+  * Firebase & Firestore
+  * Flutter 
+  * Dart
 
 
 Core Features
 ------
   * Allow users to post pictures
-  * Allow users to follow one another: Followers will be notified of new pictures posted by the followee
+  * Allow users to follow one another
   * Allow users to leave comments on picture posts
 
