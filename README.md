@@ -43,3 +43,40 @@ Core Features
   * Allow users to follow one another
   * Allow users to leave comments on picture posts
 
+Screenshots
+------
+Logging in as a user or group
+
+<img src="eng_life/screenshots/login.jpg" width="100">
+
+Signup as a user, or signup as a group (requires ECA password)
+
+<img src="eng_life/screenshots/register_as_user.jpg" width="100"> <img src="eng_life/screenshots/register_as_group.jpg" width="100">
+
+Once registered, if it's your first time, you are redirected to the groups page so that you may choose which group you wish to follow
+
+<img src="eng_life/screenshots/choose_groups.jpg" width="100">
+
+Friend feed and group feed (can toggle in between with button top right corner)
+
+<img src="eng_life/screenshots/friends_feed.jpg" width="100"> <img src="eng_life/screenshots/groups_feed.jpg" width="100">
+
+Add photo page
+
+<img src="eng_life/screenshots/add_photo.jpg" width="100">
+
+Search page that dynamically changes the list as user starts searching
+
+<img src="eng_life/screenshots/search.jpg" width="100"> <img src="eng_life/screenshots/dynamic_search.jpg" width="100">
+
+Comments page for every post
+
+<img src="eng_life/screenshots/comments.jpg" width="100">
+
+Other user profiles you can view and follow, and the user's own profile which they can edit
+
+<img src="eng_life/screenshots/other_user_profile.jpg" width="100"> <img src="eng_life/screenshots/user_profile.jpg" width="100">
+
+Editing page for your profile
+
+<img src="eng_life/screenshots/edit_profile.jpg" width="100">
