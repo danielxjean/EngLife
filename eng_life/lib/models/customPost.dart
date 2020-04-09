@@ -109,6 +109,7 @@ class _CustomPostState extends State<CustomPost> {
                         child: Text(
                           _documentSnapshot.data['displayName'],
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                          key: Key('displayName')
                         ),
                         onTap: () {
                           if (_documentSnapshot.data['userId'] == widget.currentUser.uid && widget.displayedOnFeed == false) {
@@ -130,8 +131,9 @@ class _CustomPostState extends State<CustomPost> {
                       )
                     ],
                   ),
-                  widget.displayedOnFeed == false && _documentSnapshot.data['userId'] == widget.currentUser.uid ? IconButton(
+                  (!widget.displayedOnFeed && _documentSnapshot.data['userId'] == widget.currentUser.uid) ? IconButton(
                     icon: Icon(Icons.delete),
+                    key: Key('delete'),
                     onPressed: () async {
                       final AuthService _auth = AuthInfo.of(context).authService;
                       if (await widget.createDeleteConfirmationDialog(context)) {
@@ -149,6 +151,7 @@ class _CustomPostState extends State<CustomPost> {
             ),
             GestureDetector(
               child: CachedNetworkImage(
+                key: Key('image'),
                 imageUrl: _documentSnapshot.data['postPhotoUrl'],
                 height: 400.0,
                 fit: BoxFit.cover,
@@ -168,10 +171,12 @@ class _CustomPostState extends State<CustomPost> {
                       Icons.favorite,
                       color: Colors.red[900],
                       size: 40.0,
+                      key: Key('liked'),
                     )
                         : Icon(
                       Icons.favorite_border,
                       size: 40.0,
+                      key: Key('unliked'),
                     ),
                     onTap: ()   {
                       likePost();
@@ -182,6 +187,7 @@ class _CustomPostState extends State<CustomPost> {
                     child: Icon(
                       Icons.comment,
                       size: 40.0,
+                      key: Key('comment'),
                     ),
                     onTap: () {
 
